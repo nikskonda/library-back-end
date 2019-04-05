@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+version 'unspecified'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.0.5.RELEASE'
+    compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+    compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.1'
+
+    compile project(':repository')
+    compile project(':exception')
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
