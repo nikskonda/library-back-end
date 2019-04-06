@@ -3,7 +3,7 @@ package by.bntu.fitr.service.book;
 import by.bntu.firt.NotFoundException;
 import by.bntu.fitr.converter.PublishingHouseDtoConverter;
 import by.bntu.fitr.dto.PublishingHouseDto;
-import by.bntu.repository.book.PublishingHouseRepository;
+import by.bntu.fitr.repository.book.PublishingHouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -14,6 +14,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.0.5.RELEASE'
     compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
     compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.1'
+    annotationProcessor 'org.projectlombok:lombok:1.18.6'
 
     compile project(':repository')
     compile project(':exception')

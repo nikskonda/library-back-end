@@ -11,6 +11,8 @@ repositories {
 }
 
 dependencies {
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
+
     compile project(':model')
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

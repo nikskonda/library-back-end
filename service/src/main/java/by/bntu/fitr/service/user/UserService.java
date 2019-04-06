@@ -1,11 +1,11 @@
 package by.bntu.fitr.service.user;
 
 import by.bntu.firt.NotFoundException;
-import by.bntu.firt.model.user.User;
+import by.bntu.fitr.model.user.User;
 import by.bntu.fitr.converter.UserDtoConverter;
 import by.bntu.fitr.dto.UserDto;
-import by.bntu.repository.user.RoleRepository;
-import by.bntu.repository.user.UserRepository;
+import by.bntu.fitr.repository.user.RoleRepository;
+import by.bntu.fitr.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

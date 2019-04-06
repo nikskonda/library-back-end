@@ -1,12 +1,9 @@
 package by.bntu.fitr.service.book;
 
 import by.bntu.firt.NotFoundException;
-import by.bntu.fitr.converter.AuthorDtoConverter;
 import by.bntu.fitr.converter.OrganizationDtoConverter;
-import by.bntu.fitr.dto.AuthorDto;
 import by.bntu.fitr.dto.OrganizationDto;
-import by.bntu.repository.book.AuthorRepository;
-import by.bntu.repository.book.OrganizationRepository;
+import by.bntu.fitr.repository.book.OrganizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

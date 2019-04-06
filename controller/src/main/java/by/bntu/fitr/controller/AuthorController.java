@@ -1,7 +1,7 @@
 package by.bntu.fitr.controller;
 
-import by.bntu.fitr.dto.UserDto;
-import by.bntu.fitr.service.user.UserService;
+import by.bntu.fitr.dto.AuthorDto;
+import by.bntu.fitr.service.book.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,45 +19,53 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.Set;
 
 @Validated
 @RestController
 @CrossOrigin
-@RequestMapping(value = "/user")
-public class UserController {
+@RequestMapping(value = "/book/author")
+public class AuthorController {
 
-    private UserService userService;
+    private AuthorService authorService;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public AuthorController(AuthorService authorService) {
+        this.authorService = authorService;
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public UserDto find(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
-        return userService.find(id);
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    public AuthorDto find(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
+        return authorService.find(id);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    public Set<AuthorDto> findBySearchString(@PathVariable String searchString) {
+        return authorService.findBySearchString(searchString);
     }
 
     @PostMapping
+//    @PreAuthorize("hasAuthority('LIBRARIAN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto create(@Valid @RequestBody UserDto userDto) {
-        return userService.save(userDto);
+    public AuthorDto create(@Valid @RequestBody AuthorDto authorDto) {
+        return authorService.save(authorDto);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
-    public UserDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                          @Validated() @RequestBody UserDto user) {
-        user.setId(id);
-        return userService.save(user);
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    public AuthorDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                          @Validated() @RequestBody AuthorDto authorDto) {
+        authorDto.setId(id);
+        return authorService.save(authorDto);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
     public void remove(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
-        userService.delete(id);
+        authorService.delete(id);
     }
 
 

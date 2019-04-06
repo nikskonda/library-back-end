@@ -1,6 +1,5 @@
 package by.bntu.fitr.dto;
 
-import by.bntu.firt.model.BaseEntity;
 import lombok.Data;
 
 @Data

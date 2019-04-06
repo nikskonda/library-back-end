@@ -1,12 +1,10 @@
-package by.bntu.repository.user;
+package by.bntu.fitr.repository.user;
 
-import by.bntu.firt.model.book.Author;
-import by.bntu.firt.model.user.User;
+import by.bntu.fitr.model.user.User;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-import java.util.Set;
-
+@Repository
 public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
     User findByUsername(String username);

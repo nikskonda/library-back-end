@@ -1,34 +1,63 @@
-package by.bntu.firt.model.user;
+package by.bntu.fitr.model.user;
 
-import by.bntu.firt.model.BaseEntity;
+import by.bntu.fitr.model.BaseEntity;
 import lombok.Data;
-import org.hibernate.FetchMode;
-import org.hibernate.annotations.Fetch;
+import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
+import javax.persistence.AttributeOverride;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.util.Collection;
 import java.util.Set;
 
+
 @Data
+@EqualsAndHashCode(callSuper = true)
+@Entity(name = "User")
+@Table(name = "user", schema = "public")
+@SequenceGenerator(name = "id_generator", sequenceName = "user_sequence", allocationSize = 1)
+@AttributeOverride(name = "id", column = @Column(name = "user_id"))
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@DynamicUpdate
 public class User extends BaseEntity implements UserDetails {
 
+    @Column(name = "user_username", nullable = false, length = 20, unique = true)
     private String username;
+
+    @Column(name = "user_password", nullable = false)
     private String password;
 
-    @Fetch(FetchMode.JOIN)
+//    @Fetch(FetchMode.JOIN)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(name = "user_has_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> authorities;
 
-
+    @Column(name = "user_account_non_expired")
     private Boolean accountNonExpired;
+
+    @Column(name = "user_account_non_locked")
     private Boolean accountNonLocked;
+
+    @Column(name = "user_credentials_non_expired")
     private Boolean credentialsNonExpired;
+
+    @Column(name = "user_enabled")
     private Boolean enabled;
+
 
     public User(){
     }
@@ -36,6 +65,17 @@ public class User extends BaseEntity implements UserDetails {
     public User(String username, String password){
         this.username = username;
         this.password = password;
+
+        this.accountNonExpired = false;
+        this.accountNonLocked = false;
+        this.credentialsNonExpired = false;
+        this.enabled = false;
+    }
+
+    public User(String username, String password, Set<Role> authorities){
+        this.username = username;
+        this.password = password;
+        this.authorities = authorities;
 
         this.accountNonExpired = false;
         this.accountNonLocked = false;

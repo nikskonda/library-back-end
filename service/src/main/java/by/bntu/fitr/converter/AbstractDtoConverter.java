@@ -1,11 +1,10 @@
 package by.bntu.fitr.converter;
 
-import by.bntu.firt.model.BaseEntity;
+import by.bntu.fitr.model.BaseEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
