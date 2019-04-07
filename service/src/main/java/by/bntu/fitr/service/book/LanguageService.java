@@ -1,16 +1,11 @@
 package by.bntu.fitr.service.book;
 
 import by.bntu.firt.NotFoundException;
-import by.bntu.fitr.converter.LanguageDtoConverter;
-import by.bntu.fitr.converter.OrganizationDtoConverter;
-import by.bntu.fitr.dto.LanguageDto;
-import by.bntu.fitr.dto.OrganizationDto;
+import by.bntu.fitr.converter.book.LanguageDtoConverter;
+import by.bntu.fitr.dto.book.LanguageDto;
 import by.bntu.fitr.repository.book.LanguageRepository;
-import by.bntu.fitr.repository.book.OrganizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 public class LanguageService {

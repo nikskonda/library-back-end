@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,10 @@ public abstract class AbstractDtoConverter<E extends BaseEntity, DTO> {
 
     public Set<DTO> convertToDtoSet(Set<E> set){
         return set.stream().map(this::convertToDto).collect(Collectors.toSet());
+    }
+
+    public Set<DTO> convertToDtoSet(List<E> list){
+        return list.stream().map(this::convertToDto).collect(Collectors.toSet());
     }
 
 //    public abstract Page<DTO> convertPageToDto(Page<E> page);

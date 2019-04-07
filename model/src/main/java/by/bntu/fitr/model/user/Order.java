@@ -48,7 +48,7 @@ public class Order extends BaseEntity {
     private String comment;
 
 
-    enum Status{
+    public enum Status{
         COMPLETED, NEW, IN_PROCESS
     }
 

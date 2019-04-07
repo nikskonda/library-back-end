@@ -6,10 +6,14 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.AttributeOverride;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Data
@@ -20,21 +24,21 @@ import javax.persistence.Table;
 @DynamicUpdate
 public class UserData extends User {
 
-    @Column(name = "user_data_first_name", nullable = false, length = 30)
+    @Column(name = "user_data_first_name", length = 30)
     private String firstName;
-    @Column(name = "user_data_last_name", nullable = false, length = 30)
+    @Column(name = "user_data_last_name", length = 30)
     private String lastName;
 
-    @Column(name = "user_data_email", nullable = false, length = 30)
+    @Column(name = "user_data_email", length = 30)
     private String email;
 
-
-    @Column(name = "user_data_city", nullable = false, length = 30)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "city_id")
     private City city;
 
-    @Column(name = "user_data_address", nullable = false, length = 30)
+    @Column(name = "user_data_address", length = 30)
     private String address;
-    @Column(name = "user_data_postalCode", nullable = false, length = 30)
+    @Column(name = "user_data_postalCode", length = 6)
     private Integer postalCode;
 
 }

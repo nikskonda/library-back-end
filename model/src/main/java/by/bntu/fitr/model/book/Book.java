@@ -70,14 +70,16 @@ public class Book extends BaseEntity {
     private Integer pages;
     @Column(name = "book_picture_url")
     private String pictureUrl;
+    @Column(name = "book_thumbnail_url")
+    private String thumbnailUrl;
     @Column(name = "book_pdf_url")
     private String pdfUrl;
     @Column(name = "book_ISBN", unique = true)
     private String ISBN;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "produser_id")
-    private Organization produser;
+    @JoinColumn(name = "producer_id")
+    private Organization producer;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "importer_id")
     private Organization importer;

@@ -1,9 +1,10 @@
 package by.bntu.fitr.service.user;
 
 import by.bntu.firt.NotFoundException;
+import by.bntu.fitr.model.user.Role;
 import by.bntu.fitr.model.user.User;
-import by.bntu.fitr.converter.UserDtoConverter;
-import by.bntu.fitr.dto.UserDto;
+import by.bntu.fitr.converter.user.UserDtoConverter;
+import by.bntu.fitr.dto.user.UserDto;
 import by.bntu.fitr.repository.user.RoleRepository;
 import by.bntu.fitr.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 @Service
 @Transactional
@@ -41,9 +46,16 @@ public class UserService implements UserDetailsService {
 
     public UserDto save(UserDto userDto){
         User user = this.userDtoConverter.convertFromDto(userDto);
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-
-        return userDtoConverter.convertToDto(userRepository.save(user));
+        if (user.getId() == null || !userRepository.existsById(user.getId())) {
+            if (CollectionUtils.isEmpty(user.getAuthorities()))
+                user.setAuthorities(new HashSet<>(Arrays.asList(roleRepository.findByAuthority(DEFAULT_ROLE))));
+            if (user.getPassword() != null) {
+                user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            }
+        }
+        user = userRepository.save(user);
+//        user.setPassword(null);
+        return userDtoConverter.convertToDto(user);
 //                .orElseThrow(() -> new ServiceException(String.format(SERVICE_ERROR, "creation", "user"))));
      }
 

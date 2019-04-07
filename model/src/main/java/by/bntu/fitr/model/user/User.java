@@ -3,7 +3,9 @@ package by.bntu.fitr.model.user;
 import by.bntu.fitr.model.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.FetchMode;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Fetch;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -29,7 +31,7 @@ import java.util.Set;
 @Table(name = "user", schema = "public")
 @SequenceGenerator(name = "id_generator", sequenceName = "user_sequence", allocationSize = 1)
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DynamicUpdate
 public class User extends BaseEntity implements UserDetails {
 
