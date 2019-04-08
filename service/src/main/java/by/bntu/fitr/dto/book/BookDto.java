@@ -13,13 +13,15 @@ import java.util.Set;
 public class BookDto {
 
     private Long id;
-    private Language language;
+    private LanguageDto language;
     private String title;
     private String description;
 
-    private Set<Author> author;
+    private Set<AuthorDto> author;
 
-    private Set<Author> translator;
+    private Set<AuthorDto> translator;
+
+    private Set<GenreDto> genres;
 
     private Book.Type type; //журнал, книга, комикс
     private String ageRestriction;
@@ -33,8 +35,8 @@ public class BookDto {
     private String thumbnailUrl;
     private String pdfUrl;
     private String ISBN;
-    private Organization producer;
-    private Organization importer;
+    private OrganizationDto producer;
+    private OrganizationDto importer;
     private BigDecimal price;
 
 }

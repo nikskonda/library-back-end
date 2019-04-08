@@ -42,7 +42,7 @@ public class User extends BaseEntity implements UserDetails {
     private String password;
 
 //    @Fetch(FetchMode.JOIN)
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinTable(name = "user_has_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -62,31 +62,27 @@ public class User extends BaseEntity implements UserDetails {
 
 
     public User(){
+        this.accountNonExpired = true;
+        this.accountNonLocked = true;
+        this.credentialsNonExpired = true;
+        this.enabled = true;
     }
 
     public User(String username, String password){
+        this();
         this.username = username;
         this.password = password;
-
-        this.accountNonExpired = false;
-        this.accountNonLocked = false;
-        this.credentialsNonExpired = false;
-        this.enabled = false;
     }
 
     public User(String username, String password, Set<Role> authorities){
+        this();
         this.username = username;
         this.password = password;
         this.authorities = authorities;
-
-        this.accountNonExpired = false;
-        this.accountNonLocked = false;
-        this.credentialsNonExpired = false;
-        this.enabled = false;
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<Role> getAuthorities() {
         return this.authorities;
     }
 

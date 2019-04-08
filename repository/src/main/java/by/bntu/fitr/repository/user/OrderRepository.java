@@ -1,6 +1,8 @@
 package by.bntu.fitr.repository.user;
 
 import by.bntu.fitr.model.user.Order;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,10 +11,10 @@ import java.util.Set;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    Set<Order> findOrdersByBookId(Long bookId);
+    Page<Order> findOrdersByBookId(Long bookId, Pageable pageable);
 
-    Set<Order> findOrdersByUserId(Long userId);
+    Page<Order> findOrdersByUserId(Long userId, Pageable pageable);
 
-    Set<Order> findOrdersByStatus(Order.Status status);
+    Page<Order> findOrdersByStatus(Order.Status status, Pageable pageable);
 
 }

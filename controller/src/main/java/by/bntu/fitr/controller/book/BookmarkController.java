@@ -1,12 +1,15 @@
 package by.bntu.fitr.controller.book;
 
+import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.book.AuthorDto;
 import by.bntu.fitr.dto.book.BookmarkDto;
 import by.bntu.fitr.service.book.AuthorService;
 import by.bntu.fitr.service.book.BookmarkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,16 +48,18 @@ public class BookmarkController {
     @PostMapping
     @PreAuthorize("hasAuthority('USER')")
     @ResponseStatus(HttpStatus.CREATED)
-    public BookmarkDto create(@Valid @RequestBody BookmarkDto bookmarkDto) {
-        return bookmarkService.save(bookmarkDto);
+    public BookmarkDto create(@Valid @RequestBody BookmarkDto bookmarkDto,
+                              Authentication authentication) {
+        return bookmarkService.save(bookmarkDto, authentication.getName());
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('USER')")
     public BookmarkDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                          @Validated() @RequestBody BookmarkDto bookmarkDto) {
+                              @Valid @RequestBody BookmarkDto bookmarkDto,
+                              Authentication authentication) {
         bookmarkDto.setId(id);
-        return bookmarkService.save(bookmarkDto);
+        return bookmarkService.save(bookmarkDto, authentication.getName());
     }
 
     @DeleteMapping("/{id}")
@@ -62,6 +67,11 @@ public class BookmarkController {
     @PreAuthorize("hasAuthority('USER')")
     public void remove(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
         bookmarkService.delete(id);
+    }
+
+    @GetMapping
+    public Page<BookmarkDto> findByPage(PageableDto pageableDto) {
+        return bookmarkService.findAll(pageableDto);
     }
 
 

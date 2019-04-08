@@ -12,6 +12,6 @@ import java.util.Set;
 @Repository
 public interface PublishingHouseRepository extends JpaRepository<PublishingHouse, Long> {
 
-    @Query("Select ph from PublishingHouse ph where ph.title like:searchString")
+    @Query("Select ph from PublishingHouse ph where ph.title like %:searchString%")
     Set<PublishingHouse> findBySearchString(@Param("searchString") String searchString);
 }

@@ -1,12 +1,16 @@
 package by.bntu.fitr.controller.news;
 
+import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.news.NewsCoverDto;
 import by.bntu.fitr.dto.news.NewsDto;
 import by.bntu.fitr.service.news.NewsCoverService;
 import by.bntu.fitr.service.news.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,24 +48,26 @@ public class NewsController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('LIBRARIAN')")
-    public Set<NewsCoverDto> findBySearchString(@PathVariable String searchString) {
-        return newsCoverService.findBySearchString(searchString);
+    public Page<NewsCoverDto> findByParameters(String searchString,
+                                                 PageableDto pageableDto) {
+        return newsCoverService.findByParameters(searchString, pageableDto);
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public NewsDto create(@Valid @RequestBody NewsDto newsDto) {
-        return newsService.save(newsDto);
+    public NewsDto create(@Valid @RequestBody NewsDto newsDto,
+                          Authentication authentication) {
+        return newsService.save(newsDto, authentication.getName());
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     public NewsDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                          @Validated() @RequestBody NewsDto newsDto) {
+                          @Validated() @RequestBody NewsDto newsDto,
+                          Authentication authentication) {
         newsDto.setId(id);
-        return newsService.save(newsDto);
+        return newsService.save(newsDto, authentication.getName());
     }
 
     @DeleteMapping("/{id}")
@@ -70,11 +76,4 @@ public class NewsController {
     public void remove(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
         newsService.delete(id);
     }
-
-
-    @GetMapping("/list")
-    public Set<NewsCoverDto> findByPage() {
-        return newsCoverService.findAll();
-    }
-
 }

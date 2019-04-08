@@ -1,23 +1,26 @@
 package by.bntu.fitr.service.user;
 
 import by.bntu.firt.NotFoundException;
+import by.bntu.fitr.converter.user.UserDtoConverter;
+import by.bntu.fitr.dto.PageableDto;
+import by.bntu.fitr.dto.user.UserDto;
 import by.bntu.fitr.model.user.Role;
 import by.bntu.fitr.model.user.User;
-import by.bntu.fitr.converter.user.UserDtoConverter;
-import by.bntu.fitr.dto.user.UserDto;
 import by.bntu.fitr.repository.user.RoleRepository;
 import by.bntu.fitr.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -46,15 +49,28 @@ public class UserService implements UserDetailsService {
 
     public UserDto save(UserDto userDto){
         User user = this.userDtoConverter.convertFromDto(userDto);
-        if (user.getId() == null || !userRepository.existsById(user.getId())) {
-            if (CollectionUtils.isEmpty(user.getAuthorities()))
-                user.setAuthorities(new HashSet<>(Arrays.asList(roleRepository.findByAuthority(DEFAULT_ROLE))));
-            if (user.getPassword() != null) {
-                user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        if (user.getAuthorities()==null || user.getAuthorities().isEmpty()){
+            user.setAuthorities(new HashSet<>());
+        } else {
+            Set<Role> roles = new HashSet<>(user.getAuthorities());
+            user.setAuthorities(new HashSet<>());
+            for (Role role: roles){
+                if (roleRepository.existsByAuthority(role.getAuthority())){
+                    user.getAuthorities().add(roleRepository.findByAuthority(role.getAuthority()));
+                } else {
+                    user.getAuthorities().add(roleRepository.save(role));
+                }
             }
         }
+
+        setDefaultRole(user);
+        if (user.getPassword()!=null){
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        } else if (userRepository.existsByUsername(user.getUsername())) {
+            user.setPassword(loadUserByUsername(user.getUsername()).getPassword());
+        }
+
         user = userRepository.save(user);
-//        user.setPassword(null);
         return userDtoConverter.convertToDto(user);
 //                .orElseThrow(() -> new ServiceException(String.format(SERVICE_ERROR, "creation", "user"))));
      }
@@ -72,10 +88,56 @@ public class UserService implements UserDetailsService {
         userRepository.delete(userDtoConverter.convertFromDto(userDto));
     }
 
+    public void addRole(String username, String authority){
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
+        Role role = roleRepository.findByAuthority(authority);
+        if (!user.getAuthorities().contains(role)){
+            user.getAuthorities().add(role);
+            userRepository.save(user);
+        }
+    }
 
+    public void addRole(Long userId, String authority){
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
+        Role role = roleRepository.findByAuthority(authority);
+        if (!user.getAuthorities().contains(role)){
+            user.getAuthorities().add(role);
+            userRepository.save(user);
+        }
+    }
+
+    public void deleteRole(String username, String authority){
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
+        Role role = roleRepository.findByAuthority(authority);
+        if (!user.getAuthorities().contains(role)){
+            user.getAuthorities().remove(role);
+            userRepository.save(user);
+        }
+    }
+
+    public void deleteRole(Long userId, String authority){
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
+        Role role = roleRepository.findByAuthority(authority);
+        if (!user.getAuthorities().contains(role)){
+            user.getAuthorities().remove(role);
+            userRepository.save(user);
+        }
+    }
+
+    public Page<UserDto> findAll(PageableDto pageableDto){
+        Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
+        return userDtoConverter.convertToDtoPage(userRepository.findAll(pageable));
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username);
+        return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
+    }
+
+    private void setDefaultRole(User user) {
+        Role defaultUserRole = roleRepository.findByAuthority(DEFAULT_ROLE);
+        if (!user.getAuthorities().contains(defaultUserRole)){
+            user.getAuthorities().add(defaultUserRole);
+        }
     }
 }

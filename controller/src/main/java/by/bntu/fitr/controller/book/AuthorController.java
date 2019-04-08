@@ -42,7 +42,7 @@ public class AuthorController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('LIBRARIAN')")
-    public Set<AuthorDto> findBySearchString(@PathVariable String searchString) {
+    public Set<AuthorDto> findBySearchString(String searchString) {
         return authorService.findBySearchString(searchString);
     }
 

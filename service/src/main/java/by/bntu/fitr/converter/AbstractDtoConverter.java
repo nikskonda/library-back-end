@@ -2,6 +2,7 @@ package by.bntu.fitr.converter;
 
 import by.bntu.fitr.model.BaseEntity;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.ParameterizedType;
@@ -37,6 +38,10 @@ public abstract class AbstractDtoConverter<E extends BaseEntity, DTO> {
 
     public Set<DTO> convertToDtoSet(List<E> list){
         return list.stream().map(this::convertToDto).collect(Collectors.toSet());
+    }
+
+    public Page<DTO> convertToDtoPage(Page<E> page){
+        return page.map(this::convertToDto);
     }
 
 //    public abstract Page<DTO> convertPageToDto(Page<E> page);

@@ -26,7 +26,7 @@ public class State extends BaseEntity {
     @Column(name = "state_name", unique = true, nullable = false)
     private String name;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "country_id", referencedColumnName = "country_id")
     private Country country;
 

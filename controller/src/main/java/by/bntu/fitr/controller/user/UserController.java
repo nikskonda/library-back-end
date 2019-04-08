@@ -1,8 +1,10 @@
 package by.bntu.fitr.controller.user;
 
+import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.user.UserDto;
 import by.bntu.fitr.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -51,6 +53,12 @@ public class UserController {
                           @Validated() @RequestBody UserDto user) {
         user.setId(id);
         return userService.save(user);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public Page<UserDto> findByPage(PageableDto pageableDto) {
+        return userService.findAll(pageableDto);
     }
 
     @DeleteMapping("/{id}")

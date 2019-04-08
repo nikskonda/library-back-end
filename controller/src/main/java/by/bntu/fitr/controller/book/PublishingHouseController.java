@@ -42,7 +42,7 @@ public class PublishingHouseController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('LIBRARIAN')")
-    public Set<PublishingHouseDto> findBySearchString(@PathVariable String searchString) {
+    public Set<PublishingHouseDto> findBySearchString(String searchString) {
         return service.findBySearchString(searchString);
     }
 

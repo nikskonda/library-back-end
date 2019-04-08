@@ -28,20 +28,21 @@ import java.util.Set;
 @DynamicUpdate
 public class BookCover extends BaseEntity {
 
-    @Column(name = "book_language", nullable = false)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "language_id")
     private Language language;
 
     @Column(name = "book_title", nullable = false)
     private String title;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "book_has_author",
             joinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "book_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id", referencedColumnName = "author_id")})
     private Set<Author> author;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "book_has_translator",
             joinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "book_id")},

@@ -1,9 +1,12 @@
 package by.bntu.fitr.controller.user;
 
+import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.user.OrderDto;
+import by.bntu.fitr.dto.user.UserDto;
 import by.bntu.fitr.model.user.Order;
 import by.bntu.fitr.service.user.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.awt.print.Pageable;
 import java.util.Set;
 
 @Validated
@@ -57,18 +61,30 @@ public class OrderController {
 
 
     @GetMapping("/user/{id}")
-    public Set<OrderDto> findByUserId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
-        return orderService.findOrdersByUserId(id);
+    @PreAuthorize("hasAuthority('USER')")
+    public Page<OrderDto> findByUserId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                                       PageableDto pageableDto) {
+        return orderService.findOrdersByUserId(id, pageableDto);
     }
 
     @GetMapping("/book/{id}")
-    public Set<OrderDto> findByBookId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
-        return orderService.findOrdersByBookId(id);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public Page<OrderDto> findByBookId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                                      PageableDto pageableDto) {
+        return orderService.findOrdersByBookId(id, pageableDto);
+    }
+
+    @GetMapping("/status")
+    @PreAuthorize("hasAuthority('USER')")
+    public Page<OrderDto> findByUserId(Order.Status status,
+                                      PageableDto pageableDto) {
+        return orderService.findOrdersByStatus(status, pageableDto);
     }
 
     @GetMapping
-    public Set<OrderDto> findByUserId(Order.Status status) {
-        return orderService.findOrdersByStatus(status);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public Page<OrderDto> findByPage(PageableDto pageableDto) {
+        return orderService.findAll(pageableDto);
     }
 
 }

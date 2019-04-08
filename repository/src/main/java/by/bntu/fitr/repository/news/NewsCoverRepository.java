@@ -1,6 +1,8 @@
 package by.bntu.fitr.repository.news;
 
 import by.bntu.fitr.model.news.NewsCover;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -13,6 +15,6 @@ import java.util.Set;
 public interface NewsCoverRepository extends JpaRepository<NewsCover, Long> {
 
     @Query("select n from NewsCover n where n.title like %:searchString%")
-    Set<NewsCover> findBySearchString(@Param("searchString") String searchString);
+    Page<NewsCover> findBySearchString(@Param("searchString") String searchString, Pageable pageable);
 
 }

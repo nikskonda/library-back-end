@@ -3,13 +3,18 @@ package by.bntu.fitr.service.book;
 import by.bntu.firt.NotFoundException;
 import by.bntu.fitr.converter.book.AuthorDtoConverter;
 import by.bntu.fitr.converter.book.BookCoverDtoConverter;
+import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.book.AuthorDto;
 import by.bntu.fitr.dto.book.BookCoverDto;
 import by.bntu.fitr.model.book.BookCover;
 import by.bntu.fitr.repository.book.AuthorRepository;
 import by.bntu.fitr.repository.book.BookCoverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Set;
 
@@ -31,8 +36,14 @@ public class BookCoverService {
         return converter.convertToDto(repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
     }
 
-    public Set<BookCoverDto> findBySearchString(String searchString){
-        return  converter.convertToDtoSet(repository.findBySearchString(searchString));
+    public Page<BookCoverDto> findByParameters(String searchString, PageableDto pageableDto){
+        Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
+        if (StringUtils.isEmpty(searchString)){
+            return  converter.convertToDtoPage(repository.findAll(pageable));
+        } else {
+            return  converter.convertToDtoPage(repository.findBySearchString(searchString, pageable));
+        }
     }
+
 
 }

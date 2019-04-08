@@ -32,7 +32,7 @@ public class UserData extends User {
     @Column(name = "user_data_email", length = 30)
     private String email;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")
     private City city;
 

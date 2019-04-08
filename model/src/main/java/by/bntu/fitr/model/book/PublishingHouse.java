@@ -4,11 +4,8 @@ import by.bntu.fitr.model.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -27,5 +24,4 @@ public class PublishingHouse extends BaseEntity {
     private String siteLink;
     @Column(name = "publishing_house_logo_url")
     private String logoUrl;
-
 }

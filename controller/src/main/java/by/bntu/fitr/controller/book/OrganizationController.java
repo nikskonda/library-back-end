@@ -42,7 +42,7 @@ public class OrganizationController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('LIBRARIAN')")
-    public Set<OrganizationDto> findBySearchString(@PathVariable String searchString) {
+    public Set<OrganizationDto> findBySearchString(String searchString) {
         return organizationService.findBySearchString(searchString);
     }
 

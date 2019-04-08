@@ -1,5 +1,6 @@
 package by.bntu.fitr.controller.book;
 
+import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.book.BookCoverDto;
 import by.bntu.fitr.dto.book.BookDto;
 import by.bntu.fitr.dto.news.NewsCoverDto;
@@ -8,8 +9,10 @@ import by.bntu.fitr.service.book.BookCoverService;
 import by.bntu.fitr.service.book.BookService;
 import by.bntu.fitr.service.news.NewsCoverService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,8 +50,9 @@ public class BookController {
     }
 
     @GetMapping
-    public Set<BookCoverDto> findBySearchString(@PathVariable String searchString) {
-        return bookCoverService.findBySearchString(searchString);
+    public Page<BookCoverDto> findByParameters(String searchString,
+                                                 PageableDto pageableDto) {
+        return bookCoverService.findByParameters(searchString, pageableDto);
     }
 
     @PostMapping
@@ -73,10 +77,5 @@ public class BookController {
         bookService.delete(id);
     }
 
-
-//    @GetMapping("/list")
-//    public Set<Bo> findByPage() {
-//        return bookCoverService.findAll();
-//    }
 
 }

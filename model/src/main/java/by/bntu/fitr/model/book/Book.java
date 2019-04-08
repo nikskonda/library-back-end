@@ -28,7 +28,8 @@ import java.util.Set;
 @DynamicUpdate
 public class Book extends BaseEntity {
 
-    @Column(name = "book_language", nullable = false)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "language_id")
     private Language language;
 
     @Column(name = "book_title", nullable = false)
@@ -37,14 +38,21 @@ public class Book extends BaseEntity {
     @Column(name = "book_description", nullable = false)
     private String description;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "book_has_genre",
+            joinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "book_id")},
+            inverseJoinColumns = {@JoinColumn(name = "genre_id", referencedColumnName = "genre_id")})
+    private Set<Genre> genres;
+
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "book_has_author",
             joinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "book_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id", referencedColumnName = "author_id")})
     private Set<Author> author;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "book_has_translator",
             joinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "book_id")},
@@ -77,10 +85,14 @@ public class Book extends BaseEntity {
     @Column(name = "book_ISBN", unique = true)
     private String ISBN;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "publishing_house_id")
+    private PublishingHouse publishingHouse;
+
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "producer_id")
     private Organization producer;
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "importer_id")
     private Organization importer;
 

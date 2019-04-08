@@ -1,8 +1,10 @@
 package by.bntu.fitr.dto.user;
 
+import by.bntu.fitr.model.user.Role;
 import lombok.Data;
 
 import javax.validation.constraints.*;
+import java.util.Set;
 
 @Data
 public class UserDto {
@@ -18,5 +20,7 @@ public class UserDto {
 //    @NotNull(message = "exception.validation.size.password")
 //    @Size(min = 5, max = 20, message = "exception.validation.size.password")
     private String password;
+
+    private Set<RoleDto> authorities;
 
 }

@@ -5,11 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -25,5 +22,4 @@ public class Language extends BaseEntity {
 
     @Column(name = "language_tag", nullable = false, length = 5, unique = true)
     private String tag;
-
 }
