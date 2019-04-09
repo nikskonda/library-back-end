@@ -1,5 +1,6 @@
 package by.bntu.fitr.model.user;
 
+import by.bntu.fitr.model.BaseEntity;
 import by.bntu.fitr.model.user.util.City;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,7 +23,10 @@ import javax.persistence.Table;
 @Table(name = "user_data", schema = "public")
 //@AttributeOverride(name = "id", column = @Column(name = "user_id"))
 @DynamicUpdate
-public class UserData extends User {
+public class UserData extends BaseEntity {
+
+    @Column(name = "user_username", nullable = false, length = 20, unique = true)
+    private String username;
 
     @Column(name = "user_data_first_name", length = 30)
     private String firstName;

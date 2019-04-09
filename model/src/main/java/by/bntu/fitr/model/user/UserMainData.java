@@ -1,10 +1,12 @@
 package by.bntu.fitr.model.user;
 
 import by.bntu.fitr.model.BaseEntity;
-import by.bntu.fitr.model.user.util.City;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.FetchMode;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Fetch;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.AttributeOverride;
@@ -17,22 +19,21 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.util.Collection;
 import java.util.Set;
 
 
-@Data
 @EqualsAndHashCode(callSuper = true)
-@Entity(name = "User")
+@Data
+@Entity(name = "UserMainData")
 @Table(name = "user", schema = "public")
 @SequenceGenerator(name = "id_generator", sequenceName = "user_sequence", allocationSize = 1)
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
 @Inheritance(strategy = InheritanceType.JOINED)
 @DynamicUpdate
-public class User extends BaseEntity implements UserDetails {
+public class UserMainData extends BaseEntity implements UserDetails {
 
     @Column(name = "user_username", nullable = false, length = 20, unique = true)
     private String username;
@@ -59,37 +60,21 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "user_enabled")
     private Boolean enabled;
 
-    @Column(name = "user_first_name", length = 30)
-    private String firstName;
-    @Column(name = "user_last_name", length = 30)
-    private String lastName;
 
-    @Column(name = "user_email", length = 30)
-    private String email;
-
-    @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "city_id")
-    private City city;
-
-    @Column(name = "user_address", length = 30)
-    private String address;
-    @Column(name = "user_postalCode", length = 6)
-    private Integer postalCode;
-
-    public User(){
+    public UserMainData(){
         this.accountNonExpired = true;
         this.accountNonLocked = true;
         this.credentialsNonExpired = true;
         this.enabled = true;
     }
 
-    public User(String username, String password){
+    public UserMainData(String username, String password){
         this();
         this.username = username;
         this.password = password;
     }
 
-    public User(String username, String password, Set<Role> authorities){
+    public UserMainData(String username, String password, Set<Role> authorities){
         this();
         this.username = username;
         this.password = password;

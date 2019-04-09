@@ -3,6 +3,7 @@ package by.bntu.fitr.service.book;
 import by.bntu.firt.NotFoundException;
 import by.bntu.fitr.converter.book.OrganizationDtoConverter;
 import by.bntu.fitr.dto.book.OrganizationDto;
+import by.bntu.fitr.model.book.Organization;
 import by.bntu.fitr.repository.book.OrganizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,4 +46,18 @@ public class OrganizationService {
         repository.delete(converter.convertFromDto(organizationDto));
     }
 
+    public Organization getPersistents(Organization organization) {
+        if (organization == null) {
+            return null;
+        }
+        if (organization.getId() != null && repository.existsById(organization.getId())) {
+            return repository
+                    .findById(organization.getId())
+                    .orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
+        } else {
+            organization.setId(null);
+            return repository.save(organization);
+        }
+
+    }
 }

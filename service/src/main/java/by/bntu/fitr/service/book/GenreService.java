@@ -5,6 +5,7 @@ import by.bntu.fitr.converter.book.AuthorDtoConverter;
 import by.bntu.fitr.converter.book.GenreDtoConverter;
 import by.bntu.fitr.dto.book.AuthorDto;
 import by.bntu.fitr.dto.book.GenreDto;
+import by.bntu.fitr.model.book.Genre;
 import by.bntu.fitr.model.book.Language;
 import by.bntu.fitr.repository.book.AuthorRepository;
 import by.bntu.fitr.repository.book.GenreRepository;
@@ -43,7 +44,7 @@ public class GenreService {
             return  converter.convertToDtoSet(repository.findBySearchString(searchString));
         }
         if (language != null){
-            return  converter.convertToDtoSet(repository.findByLanguage(language));
+//            return  converter.convertToDtoSet(repository.findByLanguage(language));
         }
         return new HashSet<>();
     }
@@ -57,4 +58,28 @@ public class GenreService {
         repository.delete(converter.convertFromDto(genreDto));
     }
 
+
+    public Set<Genre> getPersistents(Set<Genre> genres) {
+        if (genres == null || genres.isEmpty()) {
+            return null;
+        }
+        Set<Genre> persistents = new HashSet<>();
+        for (Genre genre : genres) {
+            if (genre.getId() != null && repository.existsById(genre.getId())) {
+                persistents
+                        .add(repository
+                                .findById(genre.getId())
+                                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
+            } else if (!StringUtils.isEmpty(genre.getName()) && repository.existsByName(genre.getName())) {
+                persistents
+                        .add(repository
+                                .findByName(genre.getName())
+                                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
+            } else {
+                genre.setId(null);
+                persistents.add(repository.save(genre));
+            }
+        }
+        return persistents;
+    }
 }

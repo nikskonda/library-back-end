@@ -40,7 +40,7 @@ public class NewsService {
         } else {
             news.setCreationDate(LocalDateTime.now());
         }
-        news.setCreator((User)userService.loadUserByUsername(username));
+        news.setCreator(userService.getPersistant(username));
         return converter.convertToDto(repository.save(news));
 //                .orElseThrow(() -> new ServiceException(String.format(SERVICE_ERROR, "creation", "user"))));
     }

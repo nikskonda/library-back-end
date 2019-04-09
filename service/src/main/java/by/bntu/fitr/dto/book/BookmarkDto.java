@@ -1,5 +1,6 @@
 package by.bntu.fitr.dto.book;
 
+import by.bntu.fitr.dto.user.UserMainDataDto;
 import by.bntu.fitr.model.user.User;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ public class BookmarkDto {
 
     private BookDto book;
 
-    private User user;
+    private UserMainDataDto user;
 
 
 }

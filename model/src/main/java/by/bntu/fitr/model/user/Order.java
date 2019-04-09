@@ -33,16 +33,16 @@ public class Order extends BaseEntity {
 
     @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserData user;
+    private User user;
 
     @Column(name = "order_status", nullable = false)
     private Status status;
 
-    @Column(name = "order_date_time", nullable = false)
-    private LocalDateTime dateTime;
+    @Column(name = "order_creation_date_time", nullable = false)
+    private LocalDateTime creationDateTime;
 
-    @Column(name = "order_modification")
-    private LocalDateTime modification;
+    @Column(name = "order_modification_date_time")
+    private LocalDateTime modificationDateTime;
 
     @Column(name = "order_comment", length = 500)
     private String comment;

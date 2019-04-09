@@ -1,5 +1,6 @@
 package by.bntu.fitr.dto.user;
 
+import by.bntu.fitr.dto.book.BookDto;
 import by.bntu.fitr.model.book.Book;
 import by.bntu.fitr.model.user.Order;
 import by.bntu.fitr.model.user.UserData;
@@ -11,14 +12,14 @@ import java.time.LocalDateTime;
 public class OrderDto {
 
     private Long id;
-    private Book book;
-    private UserData user;
+    private BookDto book;
+    private UserDataDto user;
 
     private Order.Status status;
 
-    private LocalDateTime dateTime;
+    private LocalDateTime creationDateTime;
 
-    private LocalDateTime modification;
+    private LocalDateTime modificationDateTime;
 
     private String comment;
 

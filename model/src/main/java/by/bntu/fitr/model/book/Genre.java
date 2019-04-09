@@ -17,11 +17,11 @@ import javax.persistence.*;
 public class Genre extends BaseEntity {
 
 
-    @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "language_id")
-    private Language language;
+//    @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "language_id")
+//    private Language language;
 
-    @Column(name = "genre_name", nullable = false)
+    @Column(name = "genre_name", nullable = false, unique = true)
     private String name;
 
 }

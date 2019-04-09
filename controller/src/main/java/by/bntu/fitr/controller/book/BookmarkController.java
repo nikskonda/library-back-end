@@ -1,10 +1,8 @@
 package by.bntu.fitr.controller.book;
 
 import by.bntu.fitr.dto.PageableDto;
-import by.bntu.fitr.dto.book.AuthorDto;
 import by.bntu.fitr.dto.book.BookmarkDto;
-import by.bntu.fitr.service.book.AuthorService;
-import by.bntu.fitr.service.book.BookmarkService;
+import by.bntu.fitr.service.user.BookmarkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.Set;
 
 @Validated
 @RestController
@@ -41,8 +38,9 @@ public class BookmarkController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('USER')")
-    public BookmarkDto find(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
-        return bookmarkService.find(id);
+    public BookmarkDto find(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                            Authentication authentication) {
+        return bookmarkService.find(id, authentication.getName());
     }
 
     @PostMapping
@@ -65,13 +63,15 @@ public class BookmarkController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('USER')")
-    public void remove(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
-        bookmarkService.delete(id);
+    public void remove(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                       Authentication authentication) {
+        bookmarkService.delete(id, authentication.getName());
     }
 
     @GetMapping
-    public Page<BookmarkDto> findByPage(PageableDto pageableDto) {
-        return bookmarkService.findAll(pageableDto);
+    public Page<BookmarkDto> findByPage(Authentication authentication,
+                                        PageableDto pageableDto) {
+        return bookmarkService.findAll(authentication.getName(), pageableDto);
     }
 
 

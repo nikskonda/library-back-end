@@ -3,6 +3,8 @@ package by.bntu.fitr.service.book;
 import by.bntu.firt.NotFoundException;
 import by.bntu.fitr.converter.book.PublishingHouseDtoConverter;
 import by.bntu.fitr.dto.book.PublishingHouseDto;
+import by.bntu.fitr.model.book.Organization;
+import by.bntu.fitr.model.book.PublishingHouse;
 import by.bntu.fitr.repository.book.PublishingHouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,20 @@ public class PublishingHouseService {
 
     public void delete(PublishingHouseDto publishingHouseDto){
         repository.delete(converter.convertFromDto(publishingHouseDto));
+    }
+
+    public PublishingHouse getPersistents(PublishingHouse publishingHouse) {
+        if (publishingHouse == null) {
+            return null;
+        }
+        if (publishingHouse.getId() != null && repository.existsById(publishingHouse.getId())) {
+            return repository
+                    .findById(publishingHouse.getId())
+                    .orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
+        } else {
+            publishingHouse.setId(null);
+            return repository.save(publishingHouse);
+        }
     }
 
 }

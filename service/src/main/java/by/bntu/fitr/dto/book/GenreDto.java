@@ -7,7 +7,7 @@ import lombok.Data;
 public class GenreDto {
 
     private Long id;
-    private Language language;
+//    private Language language;
     private String name;
 
 }

@@ -11,27 +11,40 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import java.io.Serializable;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity(name = "Bookmark")
-@Table(name = "bookmark", schema = "public")
-@SequenceGenerator(name = "id_generator", sequenceName = "bookmark_sequence", allocationSize = 1)
-@AttributeOverride(name = "id", column = @Column(name = "bookmark_id"))
+@Table(
+        name = "bookmark",
+        schema = "public",
+        uniqueConstraints={
+                @UniqueConstraint(columnNames = {"book_id", "user_id"})
+        })
+@SequenceGenerator(name = "id_generator",
+        sequenceName = "bookmark_sequence",
+        allocationSize = 1)
+@AttributeOverride(name = "id",
+        column = @Column(name = "bookmark_id"))
 @DynamicUpdate
-public class Bookmark extends BaseEntity {
+public class Bookmark extends BaseEntity
+{
 
-    @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "language_id")
-    private Language language;
+    @JoinColumn(name = "bookmark_page", nullable = false)
+    private Integer page;
+
 
     @ManyToOne(cascade = CascadeType.MERGE , fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
+
 
     @ManyToOne(cascade = CascadeType.MERGE , fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

@@ -1,7 +1,7 @@
 package by.bntu.fitr.controller.user;
 
 import by.bntu.fitr.dto.PageableDto;
-import by.bntu.fitr.dto.user.UserDto;
+import by.bntu.fitr.dto.user.UserMainDataDto;
 import by.bntu.fitr.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,27 +37,27 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public UserDto find(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
+    public UserMainDataDto find(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
         return userService.find(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto create(@Valid @RequestBody UserDto userDto) {
-        return userService.save(userDto);
+    public UserMainDataDto create(@Valid @RequestBody UserMainDataDto userMainDataDto) {
+        return userService.save(userMainDataDto);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('USER')")
-    public UserDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                          @Validated() @RequestBody UserDto user) {
+    public UserMainDataDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                                  @Validated() @RequestBody UserMainDataDto user) {
         user.setId(id);
         return userService.save(user);
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Page<UserDto> findByPage(PageableDto pageableDto) {
+    public Page<UserMainDataDto> findByPage(PageableDto pageableDto) {
         return userService.findAll(pageableDto);
     }
 

@@ -3,10 +3,12 @@ package by.bntu.fitr.service.book;
 import by.bntu.firt.NotFoundException;
 import by.bntu.fitr.converter.book.AuthorDtoConverter;
 import by.bntu.fitr.dto.book.AuthorDto;
+import by.bntu.fitr.model.book.Author;
 import by.bntu.fitr.repository.book.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -45,4 +47,22 @@ public class AuthorService {
         repository.delete(converter.convertFromDto(authorDto));
     }
 
+    public Set<Author> getPersistents(Set<Author> authors){
+        if (authors == null || authors.isEmpty()) {
+            return null;
+        }
+        Set<Author> persistents = new HashSet<>();
+        for (Author author : authors) {
+            if (author.getId() != null && repository.existsById(author.getId())) {
+                persistents
+                        .add(repository
+                                .findById(author.getId())
+                                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
+            } else {
+                author.setId(null);
+                persistents.add(repository.save(author));
+            }
+        }
+        return persistents;
+    }
 }
