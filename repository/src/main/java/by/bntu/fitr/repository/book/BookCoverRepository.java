@@ -13,7 +13,7 @@ import java.util.Set;
 @Repository
 public interface BookCoverRepository extends JpaRepository<BookCover, Long> {
 
-    @Query("select b from Book b where b.title like %:searchString%")
+    @Query("select b from BookCover b where b.title like %:searchString%")
     Page<BookCover> findBySearchString(@Param("searchString") String searchString, Pageable pageable);
 
 

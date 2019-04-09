@@ -42,7 +42,7 @@ public class User extends BaseEntity implements UserDetails {
     private String password;
 
 //    @Fetch(FetchMode.JOIN)
-    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.MERGE }, fetch = FetchType.EAGER)
     @JoinTable(name = "user_has_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))

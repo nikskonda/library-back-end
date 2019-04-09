@@ -30,7 +30,7 @@ public class News extends BaseEntity {
     private String title;
     @Column(name = "news_thumbnail_url")
     private String thumbnailUrl;
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     private User creator;
     @Column(name = "news_creation_date")

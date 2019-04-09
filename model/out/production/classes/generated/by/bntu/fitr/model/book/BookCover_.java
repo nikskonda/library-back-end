@@ -13,6 +13,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class BookCover_ extends by.bntu.fitr.model.BaseEntity_ {
 
 	public static volatile SingularAttribute<BookCover, Integer> year;
+	public static volatile SetAttribute<BookCover, Genre> genres;
 	public static volatile SetAttribute<BookCover, Author> author;
 	public static volatile SingularAttribute<BookCover, BigDecimal> price;
 	public static volatile SetAttribute<BookCover, Author> translator;
@@ -25,6 +26,7 @@ public abstract class BookCover_ extends by.bntu.fitr.model.BaseEntity_ {
 	public static volatile SingularAttribute<BookCover, String> thumbnailUrl;
 
 	public static final String YEAR = "year";
+	public static final String GENRES = "genres";
 	public static final String AUTHOR = "author";
 	public static final String PRICE = "price";
 	public static final String TRANSLATOR = "translator";

@@ -28,4 +28,5 @@ public class Author extends BaseEntity {
     @Column(name = "author_wiki_link")
     private String wikiLink;
 
+
 }

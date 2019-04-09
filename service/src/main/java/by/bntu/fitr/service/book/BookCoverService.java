@@ -41,7 +41,8 @@ public class BookCoverService {
         if (StringUtils.isEmpty(searchString)){
             return  converter.convertToDtoPage(repository.findAll(pageable));
         } else {
-            return  converter.convertToDtoPage(repository.findBySearchString(searchString, pageable));
+            Page<BookCover> page = repository.findBySearchString(searchString, pageable);
+            return  converter.convertToDtoPage(page);
         }
     }
 

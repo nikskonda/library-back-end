@@ -25,15 +25,15 @@ import javax.persistence.Table;
 @DynamicUpdate
 public class Bookmark extends BaseEntity {
 
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "language_id")
     private Language language;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE , fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE , fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

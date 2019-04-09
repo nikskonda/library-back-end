@@ -26,7 +26,7 @@ public class City extends BaseEntity {
     @Column(name = "city_name", unique = true, nullable = false)
     private String name;
 
-    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @OneToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.EAGER)
     @JoinColumn(name = "state_id", referencedColumnName = "state_id")
     private State state;
 

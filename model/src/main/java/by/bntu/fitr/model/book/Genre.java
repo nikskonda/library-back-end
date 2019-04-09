@@ -17,7 +17,7 @@ import javax.persistence.*;
 public class Genre extends BaseEntity {
 
 
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "language_id")
     private Language language;
 

@@ -1,9 +1,6 @@
 package by.bntu.fitr.dto.book;
 
-import by.bntu.fitr.model.book.Author;
-import by.bntu.fitr.model.book.Book;
-import by.bntu.fitr.model.book.Language;
-import by.bntu.fitr.model.book.Organization;
+import by.bntu.fitr.model.book.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -35,6 +32,7 @@ public class BookDto {
     private String thumbnailUrl;
     private String pdfUrl;
     private String ISBN;
+    private PublishingHouse publishingHouse;
     private OrganizationDto producer;
     private OrganizationDto importer;
     private BigDecimal price;

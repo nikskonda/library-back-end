@@ -28,21 +28,28 @@ import java.util.Set;
 @DynamicUpdate
 public class BookCover extends BaseEntity {
 
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "language_id")
     private Language language;
 
     @Column(name = "book_title", nullable = false)
     private String title;
 
-    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.MERGE  }, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "book_has_genre",
+            joinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "book_id")},
+            inverseJoinColumns = {@JoinColumn(name = "genre_id", referencedColumnName = "genre_id")})
+    private Set<Genre> genres;
+
+    @ManyToMany(cascade = {CascadeType.MERGE  }, fetch = FetchType.LAZY)
     @JoinTable(
             name = "book_has_author",
             joinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "book_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id", referencedColumnName = "author_id")})
     private Set<Author> author;
 
-    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.MERGE  }, fetch = FetchType.LAZY)
     @JoinTable(
             name = "book_has_translator",
             joinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "book_id")},

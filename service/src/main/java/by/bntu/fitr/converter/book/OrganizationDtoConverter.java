@@ -19,4 +19,9 @@ public class OrganizationDtoConverter extends AbstractDtoConverter<Organization,
     public OrganizationDto convertToDto(Organization entity) {
         return modelMapper.map(entity, OrganizationDto.class);
     }
+
+    @Override
+    public Organization convertFromDto(OrganizationDto dto) {
+        return modelMapper.map(dto, Organization.class);
+    }
 }
