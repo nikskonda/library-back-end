@@ -23,6 +23,10 @@ public class UserDataDto {
     private String address;
     private Integer postalCode;
 
+    public UserDataDto(){
+
+    }
+
     public UserDataDto(Long id, String username) {
         this.id = id;
         this.username = username;

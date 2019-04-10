@@ -47,7 +47,7 @@ public class UserDataService {
     public UserDataDto save(UserDataDto userDataDto) {
         UserData user = this.userDtoConverter.convertFromDto(userDataDto);
         if (user.getId() != null && userRepository.existsById(user.getId()) &&
-                StringUtils.isEmpty(user.getUsername()) && userRepository.existsByUsername(user.getUsername())) {
+                !StringUtils.isEmpty(user.getUsername()) && userRepository.existsByUsername(user.getUsername())) {
             user = userRepository.save(user);
             return userDtoConverter.convertToDto(user);
         } else {

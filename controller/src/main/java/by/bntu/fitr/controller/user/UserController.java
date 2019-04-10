@@ -1,7 +1,12 @@
 package by.bntu.fitr.controller.user;
 
 import by.bntu.fitr.dto.PageableDto;
+import by.bntu.fitr.dto.user.UserDataDto;
+import by.bntu.fitr.dto.user.UserDto;
 import by.bntu.fitr.dto.user.UserMainDataDto;
+import by.bntu.fitr.model.user.UserData;
+import by.bntu.fitr.service.user.UserDataService;
+import by.bntu.fitr.service.user.UserMainDataService;
 import by.bntu.fitr.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,36 +34,48 @@ import javax.validation.constraints.Min;
 public class UserController {
 
     private UserService userService;
+    private UserDataService userDataService;
+    private UserMainDataService userMainDataService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserDataService userDataService, UserMainDataService userMainDataService) {
         this.userService = userService;
+        this.userDataService = userDataService;
+        this.userMainDataService = userMainDataService;
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public UserMainDataDto find(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
+    public UserDto find(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
         return userService.find(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserMainDataDto create(@Valid @RequestBody UserMainDataDto userMainDataDto) {
-        return userService.save(userMainDataDto);
+    public UserDto create(@Valid @RequestBody UserDto userDto) {
+        return userService.save(userDto);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('USER')")
-    public UserMainDataDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+    public UserMainDataDto updateMainData(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
                                   @Validated() @RequestBody UserMainDataDto user) {
         user.setId(id);
-        return userService.save(user);
+        return userMainDataService.save(user);
+    }
+
+    @PutMapping("/data/{id}")
+    @PreAuthorize("hasAuthority('USER')")
+    public UserDataDto updateData(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                                  @Validated() @RequestBody UserDataDto user) {
+        user.setId(id);
+        return userDataService.save(user);
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Page<UserMainDataDto> findByPage(PageableDto pageableDto) {
-        return userService.findAll(pageableDto);
+    public Page<UserDataDto> findByPage(PageableDto pageableDto) {
+        return userDataService.findAll(pageableDto);
     }
 
     @DeleteMapping("/{id}")

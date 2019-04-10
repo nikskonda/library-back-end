@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 
@@ -48,10 +49,11 @@ public class OrderService {
             order.setStatus(Order.Status.NEW);
         } else {
             order = getPersist(orderDto.getId());
-            if (isOwnerAccess(username, order.getUser())){
+            order.setModificationDateTime(LocalDateTime.now());
+            if (isOwnerAccess(username, order.getUser()) && !StringUtils.isEmpty(orderDto.getComment())){
                 order.setComment(orderDto.getComment());
             }
-            if (isAdminAccess(username)){
+            if (isAdminAccess(username) && orderDto.getStatus()!=null){
                 order.setStatus(orderDto.getStatus());
             }
         }

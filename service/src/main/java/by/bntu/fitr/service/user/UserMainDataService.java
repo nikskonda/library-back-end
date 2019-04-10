@@ -54,7 +54,7 @@ public class UserMainDataService implements UserDetailsService {
         UserMainData user = this.userDtoConverter.convertFromDto(userMainDataDto);
 
         if (user.getId()!=null && userRepository.existsById(user.getId()) &&
-                StringUtils.isEmpty(user.getUsername()) && userRepository.existsByUsername(user.getUsername())){
+                !StringUtils.isEmpty(user.getUsername()) && userRepository.existsByUsername(user.getUsername())){
             if (user.getAuthorities()==null || user.getAuthorities().isEmpty()){
                 user.setAuthorities(new HashSet<>());
             } else {

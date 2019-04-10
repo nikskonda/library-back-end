@@ -20,29 +20,29 @@ import javax.persistence.Table;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity(name = "UserData")
-@Table(name = "user_data", schema = "public")
-//@AttributeOverride(name = "id", column = @Column(name = "user_id"))
+@Table(name = "user", schema = "public")
+@AttributeOverride(name = "id", column = @Column(name = "user_id"))
 @DynamicUpdate
 public class UserData extends BaseEntity {
 
     @Column(name = "user_username", nullable = false, length = 20, unique = true)
     private String username;
 
-    @Column(name = "user_data_first_name", length = 30)
+    @Column(name = "user_first_name", length = 30)
     private String firstName;
-    @Column(name = "user_data_last_name", length = 30)
+    @Column(name = "user_last_name", length = 30)
     private String lastName;
 
-    @Column(name = "user_data_email", length = 30)
+    @Column(name = "user_email", length = 30)
     private String email;
 
     @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")
     private City city;
 
-    @Column(name = "user_data_address", length = 30)
+    @Column(name = "user_address", length = 30)
     private String address;
-    @Column(name = "user_data_postalCode", length = 6)
+    @Column(name = "user_postalCode", length = 6)
     private Integer postalCode;
 
 }

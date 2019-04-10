@@ -60,10 +60,9 @@ public class OrderController {
         return orderService.save(orderDto, authentication.getName());
     }
 
-    @GetMapping
+    @GetMapping("/user")
     @PreAuthorize("hasAuthority('USER')")
-    public Page<OrderDto> findByUsername(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                                         Authentication authentication,
+    public Page<OrderDto> findByUsername( Authentication authentication,
                                          PageableDto pageableDto) {
         return orderService.findOrdersByUsername(authentication.getName(), pageableDto);
     }
@@ -84,15 +83,15 @@ public class OrderController {
         return orderService.findOrdersByBookId(authentication.getName(), id, pageableDto);
     }
 
-    @GetMapping("/status")
-    @PreAuthorize("hasAuthority('USER')")
-    public Page<OrderDto> findByStatus(Order.Status status,
+    @GetMapping("/status/{status}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public Page<OrderDto> findByStatus(@PathVariable Order.Status status,
                                        Authentication authentication,
                                        PageableDto pageableDto) {
         return orderService.findOrdersByStatus(authentication.getName(), status, pageableDto);
     }
 
-    @GetMapping("/user/status")
+    @GetMapping("/status")
     @PreAuthorize("hasAuthority('USER')")
     public Page<OrderDto> findOrdersByStatusAndUsername(Order.Status status,
                                        Authentication authentication,

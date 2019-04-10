@@ -31,7 +31,7 @@ public class BookDto {
     private String pictureUrl;
     private String thumbnailUrl;
     private String pdfUrl;
-    private String ISBN;
+    private String isbn;
     private PublishingHouse publishingHouse;
     private OrganizationDto producer;
     private OrganizationDto importer;

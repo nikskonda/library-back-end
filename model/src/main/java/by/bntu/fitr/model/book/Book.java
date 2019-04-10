@@ -82,8 +82,8 @@ public class Book extends BaseEntity {
     private String thumbnailUrl;
     @Column(name = "book_pdf_url")
     private String pdfUrl;
-    @Column(name = "book_ISBN", unique = true)
-    private String ISBN;
+    @Column(name = "book_isbn", unique = true)
+    private String isbn;
 
     @ManyToOne(cascade = {CascadeType.MERGE  }, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "publishing_house_id")
