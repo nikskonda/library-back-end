@@ -1,6 +1,6 @@
 package by.bntu.fitr.service.book;
 
-import by.bntu.firt.NotFoundException;
+import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.converter.book.LanguageDtoConverter;
 import by.bntu.fitr.dto.book.LanguageDto;
 import by.bntu.fitr.model.book.Language;

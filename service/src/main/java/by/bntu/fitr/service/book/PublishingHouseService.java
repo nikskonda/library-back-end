@@ -1,9 +1,8 @@
 package by.bntu.fitr.service.book;
 
-import by.bntu.firt.NotFoundException;
+import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.converter.book.PublishingHouseDtoConverter;
 import by.bntu.fitr.dto.book.PublishingHouseDto;
-import by.bntu.fitr.model.book.Organization;
 import by.bntu.fitr.model.book.PublishingHouse;
 import by.bntu.fitr.repository.book.PublishingHouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;

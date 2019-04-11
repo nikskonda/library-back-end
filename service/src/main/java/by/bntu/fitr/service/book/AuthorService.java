@@ -1,6 +1,6 @@
 package by.bntu.fitr.service.book;
 
-import by.bntu.firt.NotFoundException;
+import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.converter.book.AuthorDtoConverter;
 import by.bntu.fitr.dto.book.AuthorDto;
 import by.bntu.fitr.model.book.Author;

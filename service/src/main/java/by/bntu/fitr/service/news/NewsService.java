@@ -1,20 +1,15 @@
 package by.bntu.fitr.service.news;
 
-import by.bntu.firt.NotFoundException;
-import by.bntu.fitr.converter.book.AuthorDtoConverter;
+import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.converter.news.NewsDtoConverter;
-import by.bntu.fitr.dto.book.AuthorDto;
 import by.bntu.fitr.dto.news.NewsDto;
 import by.bntu.fitr.model.news.News;
-import by.bntu.fitr.model.user.User;
-import by.bntu.fitr.repository.book.AuthorRepository;
 import by.bntu.fitr.repository.news.NewsRepository;
 import by.bntu.fitr.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Service
 public class NewsService {

@@ -1,6 +1,7 @@
 package by.bntu.fitr.controller.book;
 
 import by.bntu.fitr.dto.book.GenreDto;
+import by.bntu.fitr.dto.book.LanguageDto;
 import by.bntu.fitr.model.book.Language;
 import by.bntu.fitr.service.book.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.List;
 import java.util.Set;
 
 @Validated
@@ -36,6 +38,11 @@ public class GenreController {
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     public Set<GenreDto> findByParameters(String searchString, Language language) {
         return genreService.findByParameters(searchString, language);
+    }
+
+    @GetMapping("/popular")
+    public Set<GenreDto> findPopular(@RequestBody LanguageDto language) {
+        return genreService.getPopularGenres(language);
     }
 
     @PostMapping

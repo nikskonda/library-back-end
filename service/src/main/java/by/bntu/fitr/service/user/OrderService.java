@@ -1,13 +1,12 @@
 package by.bntu.fitr.service.user;
 
-import by.bntu.firt.AccessDeniedException;
-import by.bntu.firt.NotFoundException;
+import by.bntu.fitr.AccessDeniedException;
+import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.converter.user.OrderDtoConverter;
 import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.user.OrderDto;
 import by.bntu.fitr.model.user.Order;
 import by.bntu.fitr.model.user.User;
-import by.bntu.fitr.model.user.UserMainData;
 import by.bntu.fitr.repository.user.OrderRepository;
 import by.bntu.fitr.service.book.BookService;
 import org.springframework.beans.factory.annotation.Autowired;

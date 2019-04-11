@@ -1,4 +1,4 @@
-package by.bntu.firt;
+package by.bntu.fitr;
 
 public class AccessDeniedException extends AbstractException {
 

@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class LanguageDto {
 
-    private Integer id;
+    private Long id;
     private String name;
     private String tag;
 

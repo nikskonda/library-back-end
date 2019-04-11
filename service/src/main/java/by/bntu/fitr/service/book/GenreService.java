@@ -1,25 +1,25 @@
 package by.bntu.fitr.service.book;
 
-import by.bntu.firt.NotFoundException;
-import by.bntu.fitr.converter.book.AuthorDtoConverter;
+import by.bntu.fitr.NotFoundException;
+import by.bntu.fitr.UnsupportedOperationException;
 import by.bntu.fitr.converter.book.GenreDtoConverter;
-import by.bntu.fitr.dto.book.AuthorDto;
 import by.bntu.fitr.dto.book.GenreDto;
+import by.bntu.fitr.dto.book.LanguageDto;
 import by.bntu.fitr.model.book.Genre;
 import by.bntu.fitr.model.book.Language;
-import by.bntu.fitr.repository.book.AuthorRepository;
 import by.bntu.fitr.repository.book.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GenreService {
 
     private static final String NOT_FOUND_ERROR = "exception.not_found.genre";
+    private static final Integer COUNT_POPULAR_ENTITIES = 20;
 
     private GenreRepository repository;
     private GenreDtoConverter converter;
@@ -58,6 +58,19 @@ public class GenreService {
         repository.delete(converter.convertFromDto(genreDto));
     }
 
+    public Set<GenreDto> getPopularGenres(LanguageDto language){
+        if (language.getId()==null && StringUtils.isEmpty(language.getTag())){
+            throw new UnsupportedOperationException();
+        }
+
+        Set<Genre> genres = new LinkedHashSet<>(
+                repository
+                    .findByPopularGenresByLang(COUNT_POPULAR_ENTITIES, language.getId(), language.getTag())
+                    .stream()
+                    .sorted(Comparator.comparing(Genre::getName))
+                    .collect(Collectors.toList()));
+        return converter.convertToDtoSet(genres);
+    }
 
     public Set<Genre> getPersistents(Set<Genre> genres) {
         if (genres == null || genres.isEmpty()) {

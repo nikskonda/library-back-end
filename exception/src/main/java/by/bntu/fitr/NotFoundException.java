@@ -1,4 +1,4 @@
-package by.bntu.firt;
+package by.bntu.fitr;
 
 public class NotFoundException extends AbstractException {
 

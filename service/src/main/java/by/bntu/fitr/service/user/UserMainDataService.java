@@ -1,12 +1,11 @@
 package by.bntu.fitr.service.user;
 
-import by.bntu.firt.NotFoundException;
-import by.bntu.firt.UnsupportedOperationException;
+import by.bntu.fitr.NotFoundException;
+import by.bntu.fitr.UnsupportedOperationException;
 import by.bntu.fitr.converter.user.UserMainDataDtoConverter;
 import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.user.UserMainDataDto;
 import by.bntu.fitr.model.user.Role;
-import by.bntu.fitr.model.user.User;
 import by.bntu.fitr.model.user.UserMainData;
 import by.bntu.fitr.repository.user.RoleRepository;
 import by.bntu.fitr.repository.user.UserMainDataRepository;

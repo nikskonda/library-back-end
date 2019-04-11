@@ -1,32 +1,19 @@
 package by.bntu.fitr.service.user;
 
-import by.bntu.firt.NotFoundException;
-import by.bntu.firt.UnsupportedOperationException;
+import by.bntu.fitr.NotFoundException;
+import by.bntu.fitr.UnsupportedOperationException;
 import by.bntu.fitr.converter.user.UserDataDtoConverter;
-import by.bntu.fitr.converter.user.UserDtoConverter;
 import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.user.UserDataDto;
-import by.bntu.fitr.dto.user.UserMainDataDto;
-import by.bntu.fitr.model.user.Role;
-import by.bntu.fitr.model.user.User;
 import by.bntu.fitr.model.user.UserData;
-import by.bntu.fitr.repository.user.RoleRepository;
 import by.bntu.fitr.repository.user.UserDataRepository;
-import by.bntu.fitr.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 @Transactional

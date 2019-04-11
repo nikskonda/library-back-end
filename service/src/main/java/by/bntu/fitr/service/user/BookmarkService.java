@@ -1,25 +1,19 @@
 package by.bntu.fitr.service.user;
 
-import by.bntu.firt.AccessDeniedException;
-import by.bntu.firt.NotFoundException;
-import by.bntu.fitr.converter.book.AuthorDtoConverter;
+import by.bntu.fitr.AccessDeniedException;
+import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.converter.book.BookmarkDtoConverter;
 import by.bntu.fitr.dto.PageableDto;
-import by.bntu.fitr.dto.book.AuthorDto;
 import by.bntu.fitr.dto.book.BookmarkDto;
 import by.bntu.fitr.model.book.Bookmark;
 import by.bntu.fitr.model.user.User;
-import by.bntu.fitr.repository.book.AuthorRepository;
 import by.bntu.fitr.repository.book.BookmarkRepository;
 import by.bntu.fitr.service.book.BookService;
-import by.bntu.fitr.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 public class BookmarkService {

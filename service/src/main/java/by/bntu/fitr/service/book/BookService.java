@@ -1,23 +1,12 @@
 package by.bntu.fitr.service.book;
 
-import by.bntu.firt.NotFoundException;
-import by.bntu.fitr.converter.book.AuthorDtoConverter;
+import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.converter.book.BookDtoConverter;
-import by.bntu.fitr.dto.book.AuthorDto;
 import by.bntu.fitr.dto.book.BookDto;
-import by.bntu.fitr.model.book.Author;
 import by.bntu.fitr.model.book.Book;
-import by.bntu.fitr.model.book.Genre;
-import by.bntu.fitr.model.book.Language;
-import by.bntu.fitr.model.book.Organization;
-import by.bntu.fitr.model.book.PublishingHouse;
 import by.bntu.fitr.repository.book.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 public class BookService {

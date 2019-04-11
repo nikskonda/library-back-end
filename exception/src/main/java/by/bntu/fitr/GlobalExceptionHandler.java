@@ -1,4 +1,4 @@
-package by.bntu.firt;
+package by.bntu.fitr;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

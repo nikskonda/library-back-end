@@ -1,6 +1,6 @@
 package by.bntu.fitr.service.user.util;
 
-import by.bntu.firt.NotFoundException;
+import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.converter.user.util.CityDtoConverter;
 import by.bntu.fitr.converter.user.util.StateDtoConverter;
 import by.bntu.fitr.dto.user.util.CityDto;

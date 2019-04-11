@@ -1,9 +1,8 @@
 package by.bntu.fitr.service.user.util;
 
-import by.bntu.firt.NotFoundException;
+import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.converter.user.util.CountryDtoConverter;
 import by.bntu.fitr.dto.user.util.CountryDto;
-import by.bntu.fitr.dto.user.util.StateDto;
 import by.bntu.fitr.repository.user.util.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
