@@ -39,7 +39,7 @@ public class GenreService {
         return converter.convertToDto(repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
     }
 
-    public Set<GenreDto> findByParameters(String searchString, Language language){
+    public Set<GenreDto> findByParameters(String searchString, LanguageDto language){
         if (!StringUtils.isEmpty(searchString)){
             return  converter.convertToDtoSet(repository.findBySearchString(searchString));
         }

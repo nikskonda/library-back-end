@@ -36,7 +36,8 @@ public class GenreController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('LIBRARIAN')")
-    public Set<GenreDto> findByParameters(String searchString, Language language) {
+    public Set<GenreDto> findByParameters(String searchString,
+                                          @RequestBody LanguageDto language) {
         return genreService.findByParameters(searchString, language);
     }
 
