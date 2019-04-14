@@ -3,6 +3,7 @@ package by.bntu.fitr.controller.book;
 import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.book.BookCoverDto;
 import by.bntu.fitr.dto.book.BookDto;
+import by.bntu.fitr.dto.book.BookSeatchParameters;
 import by.bntu.fitr.dto.news.NewsCoverDto;
 import by.bntu.fitr.dto.news.NewsDto;
 import by.bntu.fitr.service.book.BookCoverService;
@@ -50,9 +51,9 @@ public class BookController {
     }
 
     @GetMapping
-    public Page<BookCoverDto> findByParameters(String searchString,
-                                                 PageableDto pageableDto) {
-        return bookCoverService.findByParameters(searchString, pageableDto);
+    public Page<BookCoverDto> findByParameters(BookSeatchParameters params,
+                                               PageableDto pageableDto) {
+        return bookCoverService.findByParameters(params, pageableDto);
     }
 
     @PostMapping

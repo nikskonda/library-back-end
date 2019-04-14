@@ -15,9 +15,9 @@ import java.util.Set;
 @AttributeOverride(name = "id", column = @Column(name = "publishing_house_id"))
 public class PublishingHouse extends BaseEntity {
 
-    @Column(name = "publishing_house_title", nullable = false, length=20, unique = true)
+    @Column(name = "publishing_house_title", nullable = false, length=40, unique = true)
     private String title;
-    @Column(name = "publishing_house_description")
+    @Column(name = "publishing_house_description", length = 600)
     private String description;
 
     @Column(name = "publishing_house_site_link")

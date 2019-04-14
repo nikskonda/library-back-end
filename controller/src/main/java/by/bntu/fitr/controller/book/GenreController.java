@@ -37,12 +37,12 @@ public class GenreController {
     @GetMapping
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     public Set<GenreDto> findByParameters(String searchString,
-                                          @RequestBody LanguageDto language) {
+                                          LanguageDto language) {
         return genreService.findByParameters(searchString, language);
     }
 
     @GetMapping("/popular")
-    public Set<GenreDto> findPopular(@RequestBody LanguageDto language) {
+    public Set<GenreDto> findPopular(LanguageDto language) {
         return genreService.getPopularGenres(language);
     }
 
@@ -56,7 +56,7 @@ public class GenreController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     public GenreDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                          @Validated() @RequestBody GenreDto genreDto) {
+                          @Valid @RequestBody GenreDto genreDto) {
         genreDto.setId(id);
         return genreService.save(genreDto);
     }

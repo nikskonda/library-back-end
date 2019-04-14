@@ -35,7 +35,7 @@ public class Book extends BaseEntity {
     @Column(name = "book_title", nullable = false)
     private String title;
 
-    @Column(name = "book_description", nullable = false)
+    @Column(name = "book_description", length = 600)
     private String description;
 
     @ManyToMany(cascade = {CascadeType.MERGE  }, fetch = FetchType.LAZY)
@@ -85,18 +85,18 @@ public class Book extends BaseEntity {
     @Column(name = "book_isbn", unique = true)
     private String isbn;
 
-    @ManyToOne(cascade = {CascadeType.MERGE  }, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = {CascadeType.MERGE  }, fetch = FetchType.LAZY)
     @JoinColumn(name = "publishing_house_id")
     private PublishingHouse publishingHouse;
 
-    @ManyToOne(cascade = {CascadeType.MERGE  }, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = {CascadeType.MERGE  }, fetch = FetchType.LAZY)
     @JoinColumn(name = "producer_id")
     private Organization producer;
-    @ManyToOne(cascade = {CascadeType.MERGE  }, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = {CascadeType.MERGE  }, fetch = FetchType.LAZY)
     @JoinColumn(name = "importer_id")
     private Organization importer;
 
-    @Column(name = "book_price", precision = 10, scale = 2, nullable = false)
+    @Column(name = "book_price", precision = 10, scale = 2, nullable = true)
     private BigDecimal price;
 
 

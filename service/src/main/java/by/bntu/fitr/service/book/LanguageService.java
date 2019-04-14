@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Set;
+
 @Service
 public class LanguageService {
 
@@ -30,11 +32,19 @@ public class LanguageService {
     }
 
     public LanguageDto find(Long id){
-        return converter.convertToDto(repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
+        Language language = new Language();
+        language.setId(id);
+        return  converter.convertToDto(getPersistents(language));
     }
 
     public LanguageDto findByTag(String tag){
-        return  converter.convertToDto(repository.findByTag(tag).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
+        Language language = new Language();
+        language.setTag(tag);
+        return  converter.convertToDto(getPersistents(language));
+    }
+
+    public Set<LanguageDto> findAll(){
+        return  converter.convertToDtoSet(repository.findAll());
     }
 
     public LanguageDto findByName(String name){

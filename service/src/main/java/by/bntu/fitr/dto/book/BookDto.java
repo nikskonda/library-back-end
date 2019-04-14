@@ -32,7 +32,7 @@ public class BookDto {
     private String thumbnailUrl;
     private String pdfUrl;
     private String isbn;
-    private PublishingHouse publishingHouse;
+    private PublishingHouseDto publishingHouse;
     private OrganizationDto producer;
     private OrganizationDto importer;
     private BigDecimal price;
