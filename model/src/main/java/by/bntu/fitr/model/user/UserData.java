@@ -30,17 +30,17 @@ public class UserData extends BaseEntity {
 
     @Column(name = "user_first_name", length = 30)
     private String firstName;
-    @Column(name = "user_last_name", length = 30)
+    @Column(name = "user_last_name", length = 31)
     private String lastName;
 
-    @Column(name = "user_email", length = 30)
+    @Column(name = "user_email", length = 32)
     private String email;
 
     @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")
     private City city;
 
-    @Column(name = "user_address", length = 30)
+    @Column(name = "user_address", length = 60)
     private String address;
     @Column(name = "user_postalCode", length = 6)
     private Integer postalCode;

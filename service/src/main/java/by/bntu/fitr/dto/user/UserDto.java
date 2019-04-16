@@ -1,5 +1,6 @@
 package by.bntu.fitr.dto.user;
 
+import by.bntu.fitr.dto.user.util.CityDto;
 import by.bntu.fitr.model.BaseEntity;
 import by.bntu.fitr.model.user.Role;
 import by.bntu.fitr.model.user.util.City;
@@ -33,7 +34,7 @@ public class UserDto {
 
     private String password;
 
-    private Set<Role> authorities;
+    private Set<RoleDto> authorities;
 
     private Boolean accountNonExpired;
 
@@ -48,8 +49,28 @@ public class UserDto {
 
     private String email;
 
-    private City city;
+    private CityDto city;
 
     private String address;
     private Integer postalCode;
+
+    public UserDto(){
+        this.accountNonExpired = true;
+        this.accountNonLocked = true;
+        this.credentialsNonExpired = true;
+        this.enabled = true;
+    }
+
+    public UserDto(String username, String password){
+        this();
+        this.username = username;
+        this.password = password;
+    }
+
+    public UserDto(String username, String password, Set<RoleDto> authorities){
+        this();
+        this.username = username;
+        this.password = password;
+        this.authorities = authorities;
+    }
 }

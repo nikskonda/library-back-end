@@ -5,7 +5,10 @@ import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.converter.user.OrderDtoConverter;
 import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.user.OrderDto;
+import by.bntu.fitr.dto.user.RoleDto;
+import by.bntu.fitr.dto.user.UserDto;
 import by.bntu.fitr.model.user.Order;
+import by.bntu.fitr.model.user.Role;
 import by.bntu.fitr.model.user.User;
 import by.bntu.fitr.repository.user.OrderRepository;
 import by.bntu.fitr.service.book.BookService;
@@ -48,6 +51,9 @@ public class OrderService {
             order.setStatus(Order.Status.NEW);
         } else {
             order = getPersist(orderDto.getId());
+
+            checkAccess(username, order.getUser());
+
             order.setModificationDateTime(LocalDateTime.now());
             if (isOwnerAccess(username, order.getUser()) && !StringUtils.isEmpty(orderDto.getComment())){
                 order.setComment(orderDto.getComment());
@@ -107,22 +113,29 @@ public class OrderService {
 
     private boolean isOwnerAccess(String username, User orderUser){
         if (!username.equals(orderUser.getUsername())){
-            throw new AccessDeniedException();
+            return false;
         }
         return true;
     }
 
     private boolean isAdminAccess(String username){
+//        User userDto = userService.getPersistant(username);
+//        Role role = userService.findRole(ROLE_FOR_ORDER_EDIT);
         if (!userService
-                        .find(username)
+                        .getPersistant(username)
                         .getAuthorities()
                         .contains(userService.findRole(ROLE_FOR_ORDER_EDIT))){
-            throw new AccessDeniedException();
+            return false;
         }
         return true;
     }
 
+
     private boolean checkAccess(String username, User orderUser){
-        return isOwnerAccess(username, orderUser) && isAdminAccess(username);
+        if (isOwnerAccess(username, orderUser) || isAdminAccess(username)){
+            return true;
+        } else {
+            throw new AccessDeniedException();
+        }
     }
 }

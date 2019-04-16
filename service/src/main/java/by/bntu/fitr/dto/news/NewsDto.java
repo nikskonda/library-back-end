@@ -1,5 +1,6 @@
 package by.bntu.fitr.dto.news;
 
+import by.bntu.fitr.dto.user.UserDataDto;
 import by.bntu.fitr.model.user.User;
 import lombok.Data;
 
@@ -14,7 +15,7 @@ public class NewsDto {
     private String thumbnailUrl;
     private String text;
 
-    private User creator;
+    private UserDataDto creator;
     private LocalDateTime creationDate;
     private LocalDateTime modificationDate;
 

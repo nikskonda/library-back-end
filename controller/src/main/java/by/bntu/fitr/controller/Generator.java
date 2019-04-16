@@ -1,14 +1,18 @@
 package by.bntu.fitr.controller;
 
-import by.bntu.fitr.dto.book.AuthorDto;
-import by.bntu.fitr.dto.book.BookDto;
-import by.bntu.fitr.dto.book.GenreDto;
-import by.bntu.fitr.dto.book.LanguageDto;
-import by.bntu.fitr.dto.book.OrganizationDto;
-import by.bntu.fitr.dto.book.PublishingHouseDto;
+import by.bntu.fitr.dto.PageableDto;
+import by.bntu.fitr.dto.book.*;
+import by.bntu.fitr.dto.news.NewsCoverDto;
+import by.bntu.fitr.dto.news.NewsDto;
+import by.bntu.fitr.dto.user.*;
+import by.bntu.fitr.dto.user.util.CityDto;
+import by.bntu.fitr.dto.user.util.CountryDto;
+import by.bntu.fitr.dto.user.util.StateDto;
 import by.bntu.fitr.model.book.Book;
 import by.bntu.fitr.model.book.Genre;
 import by.bntu.fitr.model.book.Language;
+import by.bntu.fitr.model.user.Order;
+import by.bntu.fitr.model.user.util.City;
 import by.bntu.fitr.service.book.AuthorService;
 import by.bntu.fitr.service.book.BookCoverService;
 import by.bntu.fitr.service.book.BookService;
@@ -16,7 +20,14 @@ import by.bntu.fitr.service.book.GenreService;
 import by.bntu.fitr.service.book.LanguageService;
 import by.bntu.fitr.service.book.OrganizationService;
 import by.bntu.fitr.service.book.PublishingHouseService;
+import by.bntu.fitr.service.news.NewsCoverService;
+import by.bntu.fitr.service.news.NewsService;
+import by.bntu.fitr.service.user.*;
+import by.bntu.fitr.service.user.util.CityService;
+import by.bntu.fitr.service.user.util.CountryService;
+import by.bntu.fitr.service.user.util.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,11 +60,27 @@ public class Generator {
     private GenreService genreService;
     private AuthorService authorService;
 
+    private CountryService countryService;
+    private StateService stateService;
+    private CityService cityService;
+
+    private UserMainDataService userMainDataService;
+    private UserDataService userDataService;
+    private UserService userService;
+
+    private NewsService newsService;
+    private NewsCoverService newsCoverService;
+
+    private BookmarkService bookmarkService;
+    private OrderService orderService;
+
     private final static int MIN_ID = 1;
-    private final static int MAX_ID = 100;
+    private final static int MAX_ID = 1000;
+    private final static int COUNT = MAX_ID-MIN_ID+1;
 
     @Autowired
-    public Generator(BookService bookService, BookCoverService bookCoverService, OrganizationService organizationService, LanguageService languageService, PublishingHouseService publishingHouseService, GenreService genreService, AuthorService authorService) {
+    public Generator(List<String> words, BookService bookService, BookCoverService bookCoverService, OrganizationService organizationService, LanguageService languageService, PublishingHouseService publishingHouseService, GenreService genreService, AuthorService authorService, CountryService countryService, StateService stateService, CityService cityService, UserMainDataService userMainDataService, UserDataService userDataService, UserService userService, NewsService newsService, NewsCoverService newsCoverService, BookmarkService bookmarkService, OrderService orderService) {
+        this.words = words;
         this.bookService = bookService;
         this.bookCoverService = bookCoverService;
         this.organizationService = organizationService;
@@ -61,21 +88,288 @@ public class Generator {
         this.publishingHouseService = publishingHouseService;
         this.genreService = genreService;
         this.authorService = authorService;
+        this.countryService = countryService;
+        this.stateService = stateService;
+        this.cityService = cityService;
+        this.userMainDataService = userMainDataService;
+        this.userDataService = userDataService;
+        this.userService = userService;
+        this.newsService = newsService;
+        this.newsCoverService = newsCoverService;
+        this.bookmarkService = bookmarkService;
+        this.orderService = orderService;
     }
 
     @GetMapping
     public String generate() {
-        initStrings();
-        generateAuthors(MAX_ID);
-        generateGenres(MAX_ID);
-        generateOrg(MAX_ID);
-        generatePH(MAX_ID);
-        generateLang();
+//        generateLang();
+
+//        initStrings("c:/dp/library-back-end/controller/src/main/resources/vocabulary.txt", Pattern.compile("[A-Za-z]+"));
+
+        initStrings("c:/dp/library-back-end/controller/src/main/resources/vocabulary_ru.txt", Pattern.compile("[А-Яа-я]+"));
+
+        generateAuthors(COUNT);
+        generateGenres(COUNT);
+        generateOrg(COUNT);
+        generatePH(COUNT);
 
 
-        generateBooks(MAX_ID);
+        generateBooks(COUNT, MIN_ID, MAX_ID);
+//
+        generateCountry(COUNT);
+        generateState(COUNT, MIN_ID, MAX_ID);
+        generateCity(COUNT, MIN_ID, MAX_ID);
+
+//        generateDefaultUsers(MIN_ID, MAX_ID);
+
+        generateUser(COUNT, MIN_ID, MAX_ID);
+
+        generateNews(COUNT, MIN_ID, MAX_ID);
+        generateOrder(COUNT, MIN_ID, MAX_ID);
+        generateBookmark(COUNT, MIN_ID, MAX_ID);
+
         return "Success!";
     }
+
+    private void generateBookmark(int count, int minId, int maxId){
+        for(int i=0; i<count; i++){
+            BookmarkDto bookmarkDto = new BookmarkDto();
+            BookDto book = new BookDto();
+            book.setId((long)generateInt(minId, maxId));
+            bookmarkDto.setBook(book);
+            bookmarkDto.setPage(generateInt(10, 1000));
+            PageableDto pageableDto =  new PageableDto();
+            pageableDto.setNumber(0);
+            pageableDto.setSize(count);
+            boolean flag = true;
+            String username = "";
+            while (flag){
+                flag = false;
+                username = getRandomUserDataDto(minId, maxId).getUsername();
+                Page<BookmarkDto> page = bookmarkService.findAll(username, pageableDto);
+                for (BookmarkDto b : page){
+                    if (b.getBook().getId().equals(bookmarkDto.getBook().getId())){
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+
+            bookmarkService.save(bookmarkDto, username);
+        }
+    }
+
+    private void generateOrder(int count, int minId, int maxId){
+        for(int i=0; i<count; i++){
+            OrderDto orderDto = new OrderDto();
+            BookDto book = new BookDto();
+            book.setId((long)generateInt(minId, maxId));
+            orderDto.setBook(book);
+            if (generateInt(0, 10)>5)
+                orderDto.setComment(getRandomWord(generateInt(5, 20)));
+            orderDto = orderService.save(orderDto, getRandomUserDataDto(minId, maxId).getUsername());
+            if (generateInt(0, 10)>5) {
+                orderDto.setStatus(getOrderStatus());
+                orderService.save(orderDto, "admin");
+            }
+        }
+    }
+
+    private Order.Status getOrderStatus(){
+        return Order.Status.values()[generateInt(0, Order.Status.values().length)];
+    }
+
+    private void generateNews(int count, int minId, int maxId){
+        for (int i=0; i<count; i++){
+            NewsDto newsDto = new NewsDto();
+            newsDto.setTitle(getRandomWord(generateInt(4, 14)));
+            newsDto.setText(getRandomWord(generateInt(100, 200)));
+            newsDto.setCreator(getRandomUserDataDto(minId, maxId));
+            newsDto.setPictureUrl(generateUrl());
+            newsDto.setThumbnailUrl(generateUrl());
+            newsService.save(newsDto, newsDto.getCreator().getUsername());
+        }
+    }
+
+    private UserMainDataDto getRandomUserMainDataDto(int minId, int maxId){
+        return userMainDataService.find((long)generateInt(minId, maxId));
+    }
+
+    private UserDataDto getRandomUserDataDto(int minId, int maxId){
+        return userDataService.find((long)generateInt(minId, maxId));
+    }
+
+    private UserDto getRandomUserDto(int minId, int maxId){
+        return userService.find((long)generateInt(minId, maxId));
+    }
+
+    private void generateDefaultUsers(int minId, int maxId){
+        List<RoleDto> roleList = generateDefRole();
+        UserDto userDto = new UserDto();
+        userDto.setUsername("user");
+        userDto.setPassword("user");
+        Set<RoleDto> set = new HashSet<>();
+        set.add(roleList.get(0));
+        userDto.setAuthorities(set);
+        userDto.setAddress(generateUrl());
+        String str = getRandomWord();
+        userDto.setFirstName(str.substring(0, 1).toUpperCase() + str.substring(1));
+        str = getRandomWord();
+        userDto.setLastName(str.substring(0, 1).toUpperCase() + str.substring(1));
+        userDto.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
+        userDto.setPostalCode(generateInt(100000, 999999));
+        userDto.setCity(getRandomCity(minId, maxId));
+        userService.save(userDto);
+
+        userDto = new UserDto();
+        userDto.setUsername("librarian");
+        userDto.setPassword("librarian");
+        set = new HashSet<>();
+        set.add(roleList.get(0));
+        set.add(roleList.get(1));
+        userDto.setAuthorities(set);
+        userDto.setAddress(generateUrl());
+        str = getRandomWord();
+        userDto.setFirstName(str.substring(0, 1).toUpperCase() + str.substring(1));
+        str = getRandomWord();
+        userDto.setLastName(str.substring(0, 1).toUpperCase() + str.substring(1));
+        userDto.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
+        userDto.setPostalCode(generateInt(100000, 999999));
+        userDto.setCity(getRandomCity(minId, maxId));
+        userService.save(userDto);
+
+        userDto = new UserDto();
+        userDto.setUsername("admin");
+        userDto.setPassword("admin");
+        set = new HashSet<>();
+        set.add(roleList.get(0));
+        set.add(roleList.get(1));
+        set.add(roleList.get(2));
+        userDto.setAuthorities(set);
+        userDto.setAddress(generateUrl());
+        str = getRandomWord();
+        userDto.setFirstName(str.substring(0, 1).toUpperCase() + str.substring(1));
+        str = getRandomWord();
+        userDto.setLastName(str.substring(0, 1).toUpperCase() + str.substring(1));
+        userDto.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
+        userDto.setPostalCode(generateInt(100000, 999999));
+        userDto.setCity(getRandomCity(minId, maxId));
+        userService.save(userDto);
+    }
+
+    private void generateUser(int count, int minId, int maxId){
+        UserDto userDto = new UserDto();
+        String str;
+
+        List<RoleDto> roleList = generateRole(count);
+
+        List<String> usernames = new ArrayList<>(words);
+        for (int i=0; i<count-3; i++){
+            userDto = new UserDto();
+            str = getRandomWord(usernames);
+            userDto.setUsername(str);
+            userDto.setPassword(str);
+            Set<RoleDto> set = getRandomRoleSet(generateInt(1, 5), roleList);
+            set.add(roleList.get(0));
+            userDto.setAuthorities(set);
+            if (generateInt(0, 10)>5)
+                userDto.setAddress(generateUrl());
+            str = getRandomWord();
+            if (generateInt(0, 10)>5)
+                userDto.setFirstName(str.substring(0, 1).toUpperCase() + str.substring(1));
+            str = getRandomWord();
+            if (generateInt(0, 10)>5)
+                userDto.setLastName(str.substring(0, 1).toUpperCase() + str.substring(1));
+            if (generateInt(0, 10)>5)
+                userDto.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
+            if (generateInt(0, 10)>5)
+                userDto.setPostalCode(generateInt(100000, 999999));
+            if (generateInt(0, 10)>5)
+                userDto.setCity(getRandomCity(minId, maxId));
+            userService.save(userDto);
+        }
+    }
+
+    private Set<RoleDto> getRandomRoleSet(int count, List<RoleDto> roleList){
+        Set<RoleDto> set = new HashSet<>();
+        for (int i=0; i<count; i++){
+            set.add(roleList.get(generateInt(0, roleList.size())));
+        }
+        return set;
+    }
+
+    private List<RoleDto> generateDefRole() {
+        List<RoleDto> list = new ArrayList<>();
+        RoleDto roleDto = new RoleDto();
+        roleDto.setAuthority("USER");
+        list.add(roleDto);
+        roleDto = new RoleDto();
+        roleDto.setAuthority("ADMIN");
+        list.add(roleDto);
+        roleDto = new RoleDto();
+        roleDto.setAuthority("LIBRARIAN");
+        list.add(roleDto);
+        return list;
+    }
+
+    private List<RoleDto> generateRole(int count){
+        Set<RoleDto> set = new HashSet<>();
+        RoleDto roleDto;
+        List<String> strings = new ArrayList<>(words);
+        for (int i=0; i<count; i++){
+            roleDto = new RoleDto();
+            roleDto.setAuthority(getRandomWord(strings));
+            set.add(roleDto);
+        }
+        List<RoleDto> list = generateDefRole();
+        list.addAll(new ArrayList<>(set));
+        return list;
+    }
+
+    private CityDto getRandomCity(int minId, int maxId){
+        return cityService.find(generateLong(minId, maxId));
+    }
+
+    private void generateCity(int count, int minId, int maxId){
+        List<String> strings = new ArrayList<>(words);
+        for (int i=0; i<count; i++){
+            CityDto cityDto = new CityDto();
+            String str = getRandomWord(strings);
+            cityDto.setName(str.substring(0, 1).toUpperCase() + str.substring(1));
+            cityDto.setState(getRandomState(minId, maxId));
+            cityService.save(cityDto);
+        }
+    }
+
+    private StateDto getRandomState(int minId, int maxId){
+        return stateService.find(generateLong(minId, maxId));
+    }
+
+    private void generateState(int count, int minId, int maxId){
+        List<String> strings = new ArrayList<>(words);
+        for (int i=0; i<count; i++){
+            StateDto stateDto = new StateDto();
+            String str = getRandomWord(strings);
+            stateDto.setName(str.substring(0, 1).toUpperCase() + str.substring(1));
+            stateDto.setCountry(getRandomCountry(minId, maxId));
+            stateService.save(stateDto);
+        }
+    }
+
+    private CountryDto getRandomCountry(int minId, int maxId){
+        return countryService.find(generateLong(minId, maxId));
+    }
+
+    private void generateCountry(int count){
+        List<String> strings = new ArrayList<>(words);
+        for (int i=0; i<count; i++){
+            CountryDto countryDto = new CountryDto();
+            String str = getRandomWord(strings);
+            countryDto.setName(str.substring(0, 1).toUpperCase() + str.substring(1));
+            countryService.save(countryDto);
+        }
+    }
+
 
     private BookDto getRandomBook(int minId, int maxId){
         return bookService.find(generateLong(minId, maxId));
@@ -89,26 +383,26 @@ public class Generator {
         return bookDtos;
     }
 
-    private BookDto generateBook(){
+    private BookDto generateBook(int minId, int maxId){
         BookDto bookDto = new BookDto();
         bookDto.setTitle(getRandomWord(generateInt(1,6)));
         bookDto.setDescription(getRandomWord(generateInt(15, 50)));
-        bookDto.setAuthor(getRandomAuthorSet(MIN_ID, MAX_ID, generateInt(1, 3)));
+        bookDto.setAuthor(getRandomAuthorSet(minId, maxId, generateInt(1, 3)));
         if (generateInt(0, 10)>8){
-            bookDto.setTranslator(getRandomAuthorSet(MIN_ID, MAX_ID, generateInt(1, 3)));
+            bookDto.setTranslator(getRandomAuthorSet(minId, maxId, generateInt(1, 3)));
         }
-        bookDto.setGenres(getRandomGenreSet(1, MAX_ID, generateInt(2, 5)));
+        bookDto.setGenres(getRandomGenreSet(minId, maxId, generateInt(2, 5)));
         bookDto.setAgeRestriction("+"+generateInt(14, 22));
         if (generateInt(0, 10)>6){
-            bookDto.setImporter(getRandomOrg(MIN_ID, MAX_ID));
+            bookDto.setImporter(getRandomOrg(minId, maxId));
         }
         if (generateInt(0, 10)>5){
-            bookDto.setProducer(getRandomOrg(MIN_ID, MAX_ID));
+            bookDto.setProducer(getRandomOrg(minId, maxId));
         }
         bookDto.setLanguage(getEngLang());
         bookDto.setPages(generateInt(0, 500));
         if (generateInt(0, 10)>3){
-            bookDto.setPublishingHouse(getRandomPH(MIN_ID, MAX_ID));
+            bookDto.setPublishingHouse(getRandomPH(minId, maxId));
         }
         bookDto.setType(getType());
         bookDto.setStatus(getStatus());
@@ -146,9 +440,9 @@ public class Generator {
         return Book.Status.values()[generateInt(0, Book.Status.values().length)];
     }
 
-    private void generateBooks(int count){
+    private void generateBooks(int count, int minId, int maxId){
         for (int i=0; i<count; i++){
-            bookService.save(generateBook());
+            bookService.save(generateBook(minId, maxId));
         }
     }
 
@@ -279,10 +573,10 @@ public class Generator {
         return stringBuilder.toString();
     }
 
-    private void initStrings() {
+    private void initStrings(String fileName, Pattern pattern) {
         Set<String> newWords = new HashSet<>();
-        String text = readFromFile("/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end/controller/src/main/resources/vocabulary.txt");
-        Pattern p = Pattern.compile("[A-Za-z]+");
+        String text = readFromFile(fileName);
+        Pattern p = pattern;
         Matcher m = p.matcher(text);
         while (m.find()) {
             newWords.add(text.substring(m.start(), m.end()).toLowerCase());
