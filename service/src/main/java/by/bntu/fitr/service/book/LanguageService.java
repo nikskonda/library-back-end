@@ -32,13 +32,13 @@ public class LanguageService {
     }
 
     public LanguageDto find(Long id){
-        Language language = new Language();
+        LanguageDto language = new LanguageDto();
         language.setId(id);
         return  converter.convertToDto(getPersistents(language));
     }
 
     public LanguageDto findByTag(String tag){
-        Language language = new Language();
+        LanguageDto language = new LanguageDto();
         language.setTag(tag);
         return  converter.convertToDto(getPersistents(language));
     }
@@ -59,7 +59,8 @@ public class LanguageService {
         repository.delete(converter.convertFromDto(languageDto));
     }
 
-    public Language getPersistents(Language language) {
+    public Language getPersistents(LanguageDto language) {
+        System.out.println("Language Service ="+language);
         if (language == null) {
             return null;
         }
@@ -73,7 +74,7 @@ public class LanguageService {
                     .orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
         } else {
             language.setId(null);
-            return repository.save(language);
+            return converter.convertFromDto(save(language));
         }
 
     }

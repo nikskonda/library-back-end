@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CountryService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.author";
+    private static final String NOT_FOUND_ERROR = "exception.not_found.country";
 
     private CountryRepository repository;
 

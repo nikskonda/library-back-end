@@ -39,14 +39,20 @@ public class GenreService {
         return converter.convertToDto(repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
     }
 
+    public GenreDto find(String name){
+        return converter.convertToDto(repository.findByName(name).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
+    }
+
     public Set<GenreDto> findByParameters(String searchString, LanguageDto language){
-        if (!StringUtils.isEmpty(searchString)){
-            return  converter.convertToDtoSet(repository.findBySearchString(searchString));
+        return  converter.convertToDtoSet(findByParametersPersistents(searchString, language));
+    }
+
+    public Set<Genre> findByParametersPersistents(String searchString, LanguageDto language){
+        if ((searchString==null) ||
+                (language.getId()==null && StringUtils.isEmpty(language.getTag()))  ){
+            throw new UnsupportedOperationException();
         }
-        if (language != null){
-//            return  converter.convertToDtoSet(repository.findByLanguage(language));
-        }
-        return new HashSet<>();
+        return  repository.findBySearchString('%'+searchString+'%', language.getId(), language.getTag());
     }
 
 
@@ -78,6 +84,7 @@ public class GenreService {
         }
         Set<Genre> persistents = new HashSet<>();
         for (Genre genre : genres) {
+            System.out.println("Genre Service ="+genre);
             if (genre.getId() != null && repository.existsById(genre.getId())) {
                 persistents
                         .add(repository

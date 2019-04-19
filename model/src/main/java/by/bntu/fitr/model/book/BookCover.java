@@ -37,24 +37,24 @@ public class BookCover extends BaseEntity {
 
     @ManyToMany(cascade = {CascadeType.MERGE  }, fetch = FetchType.LAZY)
     @JoinTable(
-            name = "book_has_genre",
+            name = "book_has_genres",
             joinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "book_id")},
             inverseJoinColumns = {@JoinColumn(name = "genre_id", referencedColumnName = "genre_id")})
     private Set<Genre> genres;
 
     @ManyToMany(cascade = {CascadeType.MERGE  }, fetch = FetchType.LAZY)
     @JoinTable(
-            name = "book_has_author",
+            name = "book_has_authors",
             joinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "book_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id", referencedColumnName = "author_id")})
-    private Set<Author> author;
+    private Set<Author> authors;
 
     @ManyToMany(cascade = {CascadeType.MERGE  }, fetch = FetchType.LAZY)
     @JoinTable(
-            name = "book_has_translator",
+            name = "book_has_translators",
             joinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "book_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id", referencedColumnName = "author_id")})
-    private Set<Author> translator;
+    private Set<Author> translators;
 
     @Column(name = "book_type")
     private Type type; //журнал, книга, комикс

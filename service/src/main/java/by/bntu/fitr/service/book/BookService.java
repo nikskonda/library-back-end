@@ -42,12 +42,18 @@ public class BookService {
         Book book = converter.convertFromDto(bookDto);
 //        if (book.getId()!=null && repository.existsById(book.getId())){
         book.setGenres(genreService.getPersistents(book.getGenres()));
-        book.setAuthor(authorService.getPersistents(book.getAuthor()));
-        book.setTranslator(authorService.getPersistents(book.getTranslator()));
-        book.setLanguage(languageService.getPersistents(book.getLanguage()));
+        book.setAuthors(authorService.getPersistents(book.getAuthors()));
+        book.setTranslators(authorService.getPersistents(book.getTranslators()));
+        book.setLanguage(languageService.getPersistents(bookDto.getLanguage()));
         book.setImporter(organizationService.getPersistents(book.getImporter()));
         book.setProducer(organizationService.getPersistents(book.getProducer()));
         book.setPublishingHouse(publishingHouseService.getPersistents(book.getPublishingHouse()));
+        if (book.getYear()==null){
+            book.setYear(-1);
+        }
+        if (book.getRating()==null){
+            book.setRating(0);
+        }
 //        }
         return converter.convertToDto(repository.save(book));
 //                .orElseThrow(() -> new ServiceException(String.format(SERVICE_ERROR, "creation", "user"))));

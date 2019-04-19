@@ -47,6 +47,7 @@ public class PublishingHouseService {
     }
 
     public PublishingHouse getPersistents(PublishingHouse publishingHouse) {
+        System.out.println("PublishingHouse Service ="+publishingHouse);
         if (publishingHouse == null) {
             return null;
         }

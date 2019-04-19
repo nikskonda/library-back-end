@@ -14,9 +14,9 @@ public class BookDto {
     private String title;
     private String description;
 
-    private Set<AuthorDto> author;
+    private Set<AuthorDto> authors;
 
-    private Set<AuthorDto> translator;
+    private Set<AuthorDto> translators;
 
     private Set<GenreDto> genres;
 
@@ -36,5 +36,9 @@ public class BookDto {
     private OrganizationDto producer;
     private OrganizationDto importer;
     private BigDecimal price;
+
+    public BookDto() {
+        this.rating = 0;
+    }
 
 }

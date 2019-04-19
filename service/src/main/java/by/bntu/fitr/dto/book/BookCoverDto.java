@@ -16,8 +16,8 @@ public class BookCoverDto {
     private Language language;
 
     private String title;
-    private Set<Author> author;
-    private Set<Author> translator;
+    private Set<Author> authors;
+    private Set<Author> translators;
 
     private Set<GenreDto> genres;
 

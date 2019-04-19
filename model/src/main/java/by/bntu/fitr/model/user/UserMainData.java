@@ -35,7 +35,7 @@ import java.util.Set;
 @DynamicUpdate
 public class UserMainData extends BaseEntity implements UserDetails {
 
-    @Column(name = "user_username", nullable = false, length = 20, unique = true)
+    @Column(name = "user_username", nullable = false, length = 30, unique = true)
     private String username;
 
     @Column(name = "user_password", nullable = false)

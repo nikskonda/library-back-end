@@ -14,7 +14,7 @@ import java.util.Set;
 @Service
 public class CityService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.author";
+    private static final String NOT_FOUND_ERROR = "exception.not_found.city";
 
     private CityRepository repository;
     private CityDtoConverter converter;

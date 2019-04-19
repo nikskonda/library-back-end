@@ -25,22 +25,23 @@ import javax.persistence.Table;
 @DynamicUpdate
 public class UserData extends BaseEntity {
 
-    @Column(name = "user_username", nullable = false, length = 20, unique = true)
+    @Column(name = "user_username", nullable = false, length = 30, unique = true)
     private String username;
+
 
     @Column(name = "user_first_name", length = 30)
     private String firstName;
-    @Column(name = "user_last_name", length = 31)
+    @Column(name = "user_last_name", length = 30)
     private String lastName;
 
-    @Column(name = "user_email", length = 32)
+    @Column(name = "user_email", length = 254)
     private String email;
 
     @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")
     private City city;
 
-    @Column(name = "user_address", length = 60)
+    @Column(name = "user_address", length = 200)
     private String address;
     @Column(name = "user_postalCode", length = 6)
     private Integer postalCode;

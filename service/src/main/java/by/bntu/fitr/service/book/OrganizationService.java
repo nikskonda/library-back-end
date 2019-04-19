@@ -47,6 +47,7 @@ public class OrganizationService {
     }
 
     public Organization getPersistents(Organization organization) {
+        System.out.println("Organization Service ="+organization);
         if (organization == null) {
             return null;
         }

@@ -1,6 +1,7 @@
 package by.bntu.fitr.controller.book;
 
 import by.bntu.fitr.dto.book.AuthorDto;
+import by.bntu.fitr.dto.book.LanguageDto;
 import by.bntu.fitr.service.book.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,8 +43,8 @@ public class AuthorController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('LIBRARIAN')")
-    public Set<AuthorDto> findBySearchString(String searchString) {
-        return authorService.findBySearchString(searchString);
+    public Set<AuthorDto> findBySearchString(String searchString, LanguageDto languageDto) {
+        return authorService.findBySearchString(searchString, languageDto);
     }
 
     @PostMapping

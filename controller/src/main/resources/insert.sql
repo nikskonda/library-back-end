@@ -40,7 +40,7 @@ SET default_with_oids = false;
 
 --
 -- TOC entry 209 (class 1259 OID 16633)
--- Name: author; Type: TABLE; Schema: public; Owner: postgres
+-- Name: authors; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.author (
@@ -549,7 +549,7 @@ ALTER TABLE public.user_sequence OWNER TO postgres;
 --
 -- TOC entry 2988 (class 0 OID 16633)
 -- Dependencies: 209
--- Data for Name: author; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: authors; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 INSERT INTO public.author (author_id, author_description, author_first_name, author_last_name, author_wiki_link) VALUES (1, NULL, 'Александр', 'Pushkin', NULL);
@@ -868,7 +868,7 @@ SELECT pg_catalog.setval('public.user_sequence', 8, true);
 
 --
 -- TOC entry 2774 (class 2606 OID 16640)
--- Name: author author_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: authors author_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.author

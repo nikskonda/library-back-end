@@ -59,10 +59,12 @@ public class UserDataService {
     }
 
     private UserData getPersisten(Long id){
+        System.out.println("UserDataService id="+id);
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
     }
 
     private UserData getPersisten(String username){
+        System.out.println("UserDataService username="+username);
         return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
     }
 

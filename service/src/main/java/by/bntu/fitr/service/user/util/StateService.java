@@ -14,7 +14,7 @@ import java.util.Set;
 @Service
 public class StateService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.author";
+    private static final String NOT_FOUND_ERROR = "exception.not_found.state";
 
     private StateRepository repository;
     private StateDtoConverter converter;

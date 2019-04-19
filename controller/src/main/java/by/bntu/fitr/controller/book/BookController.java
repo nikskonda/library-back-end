@@ -3,17 +3,13 @@ package by.bntu.fitr.controller.book;
 import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.book.BookCoverDto;
 import by.bntu.fitr.dto.book.BookDto;
-import by.bntu.fitr.dto.book.BookSeatchParameters;
-import by.bntu.fitr.dto.news.NewsCoverDto;
-import by.bntu.fitr.dto.news.NewsDto;
+import by.bntu.fitr.dto.book.BookSearchParameters;
 import by.bntu.fitr.service.book.BookCoverService;
 import by.bntu.fitr.service.book.BookService;
-import by.bntu.fitr.service.news.NewsCoverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.Set;
 
 @Validated
 @RestController
@@ -51,7 +46,7 @@ public class BookController {
     }
 
     @GetMapping
-    public Page<BookCoverDto> findByParameters(BookSeatchParameters params,
+    public Page<BookCoverDto> findByParameters(BookSearchParameters params,
                                                PageableDto pageableDto) {
         return bookCoverService.findByParameters(params, pageableDto);
     }

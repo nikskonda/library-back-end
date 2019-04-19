@@ -12,6 +12,8 @@ public class PageableDto {
     private Sort.Direction direction;
 
     public PageableDto() {
+        this.number = 0;
+        this.size = 20;
         this.sort = new String[]{"id"};
         this.direction = Sort.Direction.ASC;
     }

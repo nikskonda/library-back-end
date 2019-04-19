@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @Service
 public class OrderService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.author";
+    private static final String NOT_FOUND_ERROR = "exception.not_found.order";
     private static final String ROLE_FOR_ORDER_EDIT = "ADMIN";
 
     private OrderRepository repository;

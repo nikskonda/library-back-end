@@ -2,17 +2,13 @@ package by.bntu.fitr.controller;
 
 import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.book.*;
-import by.bntu.fitr.dto.news.NewsCoverDto;
 import by.bntu.fitr.dto.news.NewsDto;
 import by.bntu.fitr.dto.user.*;
 import by.bntu.fitr.dto.user.util.CityDto;
 import by.bntu.fitr.dto.user.util.CountryDto;
 import by.bntu.fitr.dto.user.util.StateDto;
 import by.bntu.fitr.model.book.Book;
-import by.bntu.fitr.model.book.Genre;
-import by.bntu.fitr.model.book.Language;
 import by.bntu.fitr.model.user.Order;
-import by.bntu.fitr.model.user.util.City;
 import by.bntu.fitr.service.book.AuthorService;
 import by.bntu.fitr.service.book.BookCoverService;
 import by.bntu.fitr.service.book.BookService;
@@ -75,8 +71,12 @@ public class Generator {
     private OrderService orderService;
 
     private final static int MIN_ID = 1;
-    private final static int MAX_ID = 1000;
+    private final static int MAX_ID = 300;
     private final static int COUNT = MAX_ID-MIN_ID+1;
+
+    private final static int MIN_ID_RU = 301;
+    private final static int MAX_ID_RU = 600;
+    private final static int COUNT_RU = MAX_ID-MIN_ID+1;
 
     @Autowired
     public Generator(List<String> words, BookService bookService, BookCoverService bookCoverService, OrganizationService organizationService, LanguageService languageService, PublishingHouseService publishingHouseService, GenreService genreService, AuthorService authorService, CountryService countryService, StateService stateService, CityService cityService, UserMainDataService userMainDataService, UserDataService userDataService, UserService userService, NewsService newsService, NewsCoverService newsCoverService, BookmarkService bookmarkService, OrderService orderService) {
@@ -102,31 +102,50 @@ public class Generator {
 
     @GetMapping
     public String generate() {
-//        generateLang();
+        generateLang();
 
-//        initStrings("c:/dp/library-back-end/controller/src/main/resources/vocabulary.txt", Pattern.compile("[A-Za-z]+"));
+        initStrings("c:/dp/library-back-end/controller/src/main/resources/vocabulary.txt", Pattern.compile("[A-Za-z]+"));
 
-        initStrings("c:/dp/library-back-end/controller/src/main/resources/vocabulary_ru.txt", Pattern.compile("[А-Яа-я]+"));
+//        initStrings("c:/dp/library-back-end/controller/src/main/resources/vocabulary_ru.txt", Pattern.compile("[А-Яа-я]+"));
 
         generateAuthors(COUNT);
         generateGenres(COUNT);
         generateOrg(COUNT);
         generatePH(COUNT);
 
+        generateBooks(COUNT, MIN_ID, MAX_ID, getEngLang());
 
-        generateBooks(COUNT, MIN_ID, MAX_ID);
-//
         generateCountry(COUNT);
         generateState(COUNT, MIN_ID, MAX_ID);
         generateCity(COUNT, MIN_ID, MAX_ID);
 
-//        generateDefaultUsers(MIN_ID, MAX_ID);
+        generateDefaultUsers(MIN_ID, MAX_ID);
 
-        generateUser(COUNT, MIN_ID, MAX_ID);
+        generateUser(COUNT-3, MIN_ID, MAX_ID);
 
         generateNews(COUNT, MIN_ID, MAX_ID);
         generateOrder(COUNT, MIN_ID, MAX_ID);
         generateBookmark(COUNT, MIN_ID, MAX_ID);
+
+
+        initStrings("c:/dp/library-back-end/controller/src/main/resources/vocabulary_ru.txt", Pattern.compile("[А-Яа-я]+"));
+
+        generateAuthors(COUNT_RU);
+        generateGenres(COUNT_RU);
+        generateOrg(COUNT_RU);
+        generatePH(COUNT_RU);
+
+        generateBooks(COUNT_RU, MIN_ID_RU, MAX_ID_RU, getRuLang());
+
+        generateCountry(COUNT_RU);
+        generateState(COUNT_RU, MIN_ID_RU, MAX_ID_RU);
+        generateCity(COUNT_RU, MIN_ID_RU, MAX_ID_RU);
+
+        generateUser(COUNT_RU, MIN_ID_RU, MAX_ID_RU);
+
+        generateNews(COUNT_RU, MIN_ID_RU, MAX_ID_RU);
+        generateOrder(COUNT_RU, MIN_ID_RU, MAX_ID_RU);
+        generateBookmark(COUNT_RU, MIN_ID_RU, MAX_ID_RU);
 
         return "Success!";
     }
@@ -264,7 +283,7 @@ public class Generator {
         List<RoleDto> roleList = generateRole(count);
 
         List<String> usernames = new ArrayList<>(words);
-        for (int i=0; i<count-3; i++){
+        for (int i=0; i<count; i++){
             userDto = new UserDto();
             str = getRandomWord(usernames);
             userDto.setUsername(str);
@@ -318,7 +337,7 @@ public class Generator {
         List<String> strings = new ArrayList<>(words);
         for (int i=0; i<count; i++){
             roleDto = new RoleDto();
-            roleDto.setAuthority(getRandomWord(strings));
+            roleDto.setAuthority(getRandomWord(strings).toUpperCase());
             set.add(roleDto);
         }
         List<RoleDto> list = generateDefRole();
@@ -383,13 +402,13 @@ public class Generator {
         return bookDtos;
     }
 
-    private BookDto generateBook(int minId, int maxId){
+    private BookDto generateBook(int minId, int maxId, LanguageDto languageDto){
         BookDto bookDto = new BookDto();
         bookDto.setTitle(getRandomWord(generateInt(1,6)));
         bookDto.setDescription(getRandomWord(generateInt(15, 50)));
-        bookDto.setAuthor(getRandomAuthorSet(minId, maxId, generateInt(1, 3)));
+        bookDto.setAuthors(getRandomAuthorSet(minId, maxId, generateInt(1, 3)));
         if (generateInt(0, 10)>8){
-            bookDto.setTranslator(getRandomAuthorSet(minId, maxId, generateInt(1, 3)));
+            bookDto.setTranslators(getRandomAuthorSet(minId, maxId, generateInt(1, 3)));
         }
         bookDto.setGenres(getRandomGenreSet(minId, maxId, generateInt(2, 5)));
         bookDto.setAgeRestriction("+"+generateInt(14, 22));
@@ -399,7 +418,7 @@ public class Generator {
         if (generateInt(0, 10)>5){
             bookDto.setProducer(getRandomOrg(minId, maxId));
         }
-        bookDto.setLanguage(getEngLang());
+        bookDto.setLanguage(languageDto);
         bookDto.setPages(generateInt(0, 500));
         if (generateInt(0, 10)>3){
             bookDto.setPublishingHouse(getRandomPH(minId, maxId));
@@ -440,9 +459,9 @@ public class Generator {
         return Book.Status.values()[generateInt(0, Book.Status.values().length)];
     }
 
-    private void generateBooks(int count, int minId, int maxId){
+    private void generateBooks(int count, int minId, int maxId, LanguageDto languageDto){
         for (int i=0; i<count; i++){
-            bookService.save(generateBook(minId, maxId));
+            bookService.save(generateBook(minId, maxId, languageDto));
         }
     }
 
