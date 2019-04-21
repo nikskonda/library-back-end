@@ -23,7 +23,7 @@ public class Author extends BaseEntity {
     @Column(name = "author_last_name", nullable = false, length = 30)
     private String lastName;
 
-    @Column(name = "author_description", length = 600)
+    @Column(name = "author_description", length = 3000)
     private String description;
     @Column(name = "author_wiki_link")
     private String wikiLink;

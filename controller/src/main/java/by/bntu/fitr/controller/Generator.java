@@ -79,8 +79,7 @@ public class Generator {
     private final static int COUNT_RU = MAX_ID-MIN_ID+1;
 
     @Autowired
-    public Generator(List<String> words, BookService bookService, BookCoverService bookCoverService, OrganizationService organizationService, LanguageService languageService, PublishingHouseService publishingHouseService, GenreService genreService, AuthorService authorService, CountryService countryService, StateService stateService, CityService cityService, UserMainDataService userMainDataService, UserDataService userDataService, UserService userService, NewsService newsService, NewsCoverService newsCoverService, BookmarkService bookmarkService, OrderService orderService) {
-        this.words = words;
+    public Generator(BookService bookService, BookCoverService bookCoverService, OrganizationService organizationService, LanguageService languageService, PublishingHouseService publishingHouseService, GenreService genreService, AuthorService authorService, CountryService countryService, StateService stateService, CityService cityService, UserMainDataService userMainDataService, UserDataService userDataService, UserService userService, NewsService newsService, NewsCoverService newsCoverService, BookmarkService bookmarkService, OrderService orderService) {
         this.bookService = bookService;
         this.bookCoverService = bookCoverService;
         this.organizationService = organizationService;
@@ -104,7 +103,8 @@ public class Generator {
     public String generate() {
         generateLang();
 
-        initStrings("c:/dp/library-back-end/controller/src/main/resources/vocabulary.txt", Pattern.compile("[A-Za-z]+"));
+//        initStrings("c:/dp/library-back-end/controller/src/main/resources/vocabulary.txt", Pattern.compile("[A-Za-z]+"));
+        initStrings("/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end/controller/src/main/resources/vocabulary.txt", Pattern.compile("[A-Za-z]+"));
 
 //        initStrings("c:/dp/library-back-end/controller/src/main/resources/vocabulary_ru.txt", Pattern.compile("[А-Яа-я]+"));
 
@@ -128,7 +128,8 @@ public class Generator {
         generateBookmark(COUNT, MIN_ID, MAX_ID);
 
 
-        initStrings("c:/dp/library-back-end/controller/src/main/resources/vocabulary_ru.txt", Pattern.compile("[А-Яа-я]+"));
+//        initStrings("c:/dp/library-back-end/controller/src/main/resources/vocabulary_ru.txt", Pattern.compile("[А-Яа-я]+"));
+        initStrings("/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end/controller/src/main/resources/vocabulary_ru.txt", Pattern.compile("[А-Яа-я]+"));
 
         generateAuthors(COUNT_RU);
         generateGenres(COUNT_RU);
@@ -202,7 +203,11 @@ public class Generator {
         for (int i=0; i<count; i++){
             NewsDto newsDto = new NewsDto();
             newsDto.setTitle(getRandomWord(generateInt(4, 14)));
-            newsDto.setText(getRandomWord(generateInt(100, 200)));
+            String text = getRandomWord(generateInt(500, 1000));
+            if (text.length()>=10000){
+                text = text.substring(0, 9999);
+            }
+            newsDto.setText(text);
             newsDto.setCreator(getRandomUserDataDto(minId, maxId));
             newsDto.setPictureUrl(generateUrl());
             newsDto.setThumbnailUrl(generateUrl());
@@ -405,7 +410,11 @@ public class Generator {
     private BookDto generateBook(int minId, int maxId, LanguageDto languageDto){
         BookDto bookDto = new BookDto();
         bookDto.setTitle(getRandomWord(generateInt(1,6)));
-        bookDto.setDescription(getRandomWord(generateInt(15, 50)));
+        String text = getRandomWord(generateInt(200, 300));
+        if (text.length()>=3000){
+            text = text.substring(0, 2999);
+        }
+        bookDto.setDescription(text);
         bookDto.setAuthors(getRandomAuthorSet(minId, maxId, generateInt(1, 3)));
         if (generateInt(0, 10)>8){
             bookDto.setTranslators(getRandomAuthorSet(minId, maxId, generateInt(1, 3)));
@@ -486,7 +495,11 @@ public class Generator {
             str = getRandomWord();
             authorDto.setLastName(str.substring(0, 1).toUpperCase() + str.substring(1));
             if (generateInt(0, 10)>5){
-                authorDto.setDescription(getRandomWord(generateInt(10, 50)));
+                String text = getRandomWord(generateInt(150, 300));
+                if (text.length()>=3000){
+                    text = text.substring(0, 2999);
+                }
+                authorDto.setDescription(text);
                 authorDto.setWikiLink(generateLink());
             }
             authorService.save(authorDto);

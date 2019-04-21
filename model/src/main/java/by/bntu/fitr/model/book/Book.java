@@ -35,7 +35,7 @@ public class Book extends BaseEntity {
     @Column(name = "book_title", nullable = false)
     private String title;
 
-    @Column(name = "book_description", length = 600)
+    @Column(name = "book_description", length = 3000)
     private String description;
 
     @ManyToMany(cascade = {CascadeType.MERGE  }, fetch = FetchType.LAZY)

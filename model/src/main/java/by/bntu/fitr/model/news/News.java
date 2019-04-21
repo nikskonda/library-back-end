@@ -40,7 +40,7 @@ public class News extends BaseEntity {
 
     @Column(name = "news_picture_url")
     private String pictureUrl;
-    @Column(name = "news_text", length = 3000)
+    @Column(name = "news_text", length = 10000)
     private String text;
 
 }
