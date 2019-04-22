@@ -38,16 +38,15 @@ public class AuthorService {
         return converter.convertToDto(repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
     }
 
-    public Set<AuthorDto> findBySearchString(String searchString, LanguageDto language){
-        return  converter.convertToDtoSet(findBySearchStringPersistents(searchString, language));
+    public Set<AuthorDto> findBySearchString(String searchString){
+        return  converter.convertToDtoSet(findBySearchStringPersistents(searchString));
     }
 
-    public Set<Author> findBySearchStringPersistents(String searchString, LanguageDto language){
-        if ((searchString==null) ||
-                (language.getId()==null && StringUtils.isEmpty(language.getTag()))  ){
+    public Set<Author> findBySearchStringPersistents(String searchString){
+        if (searchString==null){
             throw new UnsupportedOperationException();
         }
-        return  repository.findBySearchString('%'+searchString+'%', language.getId(), language.getTag());
+        return  repository.findBySearchString('%'+searchString+'%');
     }
 
     public void delete(Long id) {

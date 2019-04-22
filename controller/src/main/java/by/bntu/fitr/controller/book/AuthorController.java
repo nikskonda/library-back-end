@@ -43,8 +43,8 @@ public class AuthorController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('LIBRARIAN')")
-    public Set<AuthorDto> findBySearchString(String searchString, LanguageDto languageDto) {
-        return authorService.findBySearchString(searchString, languageDto);
+    public Set<AuthorDto> findBySearchString(String searchString) {
+        return authorService.findBySearchString(searchString);
     }
 
     @PostMapping

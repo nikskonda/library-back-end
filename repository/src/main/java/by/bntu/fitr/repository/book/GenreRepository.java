@@ -7,24 +7,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 @Repository
 public interface GenreRepository extends JpaRepository<Genre, Long> {
 
-    @Query(value = "SELECT g.genre_id, g.genre_name " +
-            "FROM public.genre g " +
-            "INNER JOIN book_has_genres bg ON bg.genre_id = g.genre_id " +
-            "INNER JOIN book b ON b.book_id = bg.book_id " +
-            "INNER JOIN \"language\" l ON b.language_id = l.language_id " +
-            "WHERE (b.language_id = :langId OR l.language_tag=:langTag) " +
-                "AND lower(g.genre_name) like lower(:searchString) " +
-            "GROUP BY g.genre_id",
-            nativeQuery=true)
-    Set<Genre> findBySearchString(@Param("searchString") String searchString,
-                                  @Param("langId") Long langId,
-                                  @Param("langTag") String langTag);
+
+    List<Genre> findAllByNameLikeOrderByNameAsc(String searchString);
 
     Optional<Genre> findByName(String name);
 

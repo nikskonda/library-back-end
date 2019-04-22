@@ -43,16 +43,15 @@ public class GenreService {
         return converter.convertToDto(repository.findByName(name).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
     }
 
-    public Set<GenreDto> findByParameters(String searchString, LanguageDto language){
-        return  converter.convertToDtoSet(findByParametersPersistents(searchString, language));
+    public Set<GenreDto> findByParameters(String searchString){
+        return  converter.convertToDtoSet(findByParametersPersistents(searchString));
     }
 
-    public Set<Genre> findByParametersPersistents(String searchString, LanguageDto language){
-        if ((searchString==null) ||
-                (language.getId()==null && StringUtils.isEmpty(language.getTag()))  ){
+    public Set<Genre> findByParametersPersistents(String searchString){
+        if (searchString==null){
             throw new UnsupportedOperationException();
         }
-        return  repository.findBySearchString('%'+searchString+'%', language.getId(), language.getTag());
+        return  new LinkedHashSet<>(repository.findAllByNameLikeOrderByNameAsc('%'+searchString+'%'));
     }
 
 

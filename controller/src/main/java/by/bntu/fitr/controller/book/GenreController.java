@@ -36,9 +36,8 @@ public class GenreController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('LIBRARIAN')")
-    public Set<GenreDto> findByParameters(String searchString,
-                                          LanguageDto language) {
-        return genreService.findByParameters(searchString, language);
+    public Set<GenreDto> findByParameters(String searchString) {
+        return genreService.findByParameters(searchString);
     }
 
     @GetMapping("/popular")
