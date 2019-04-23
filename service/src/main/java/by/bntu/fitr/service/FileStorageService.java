@@ -2,8 +2,8 @@ package by.bntu.fitr.service;
 
 import by.bntu.fitr.FileNotFoundException;
 import by.bntu.fitr.FileStorageException;
-import by.bntu.fitr.dto.FileStorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -16,15 +16,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Random;
 
 @Service
 public class FileStorageService {
 
+    //    @Value("${file.upload-dir}")
+    @Value("/dp/files/uploads")
+    private String FILE_UPLOAD_PATH = "/dp/files/uploads";
+
     private final Path fileStorageLocation;
 
     @Autowired
-    public FileStorageService(FileStorageProperties fileStorageProperties) {
-        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
+    public FileStorageService() {
+        this.fileStorageLocation = Paths.get(FILE_UPLOAD_PATH)
                 .toAbsolutePath().normalize();
 
         try {
@@ -45,7 +50,22 @@ public class FileStorageService {
             }
 
             // Copy file to the target location (Replacing existing file with the same name)
+            boolean flag = true;
+            Random random = new Random();
+
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
+
+            while (flag) {
+                fileName = "" + Math.abs(random.nextInt()) + Math.abs(random.nextInt()) + Math.abs(random.nextInt()) + getFileExtension(fileName);
+                targetLocation = this.fileStorageLocation.resolve(fileName);
+                if (targetLocation.toFile().exists()) {
+                    fileName = "" + Math.abs(random.nextInt()) + Math.abs(random.nextInt()) + Math.abs(random.nextInt()) + getFileExtension(fileName);
+                } else {
+                    flag = false;
+                }
+            }
+
+
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             return fileName;
@@ -66,5 +86,13 @@ public class FileStorageService {
         } catch (MalformedURLException ex) {
             throw new FileNotFoundException("File not found " + fileName, ex);
         }
+    }
+
+    private String getFileExtension(String name) {
+        int lastIndexOf = name.lastIndexOf(".");
+        if (lastIndexOf == -1) {
+            return ""; // empty extension
+        }
+        return name.substring(lastIndexOf);
     }
 }
