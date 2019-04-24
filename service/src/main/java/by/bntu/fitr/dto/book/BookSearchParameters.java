@@ -95,7 +95,7 @@ public class BookSearchParameters {
     }
 
     public void setBookLangTag(String bookLangTag) {
-        if (!StringUtils.isEmpty(searchString)) {
+        if (!StringUtils.isEmpty(bookLangTag)) {
             this.bookLangTag = bookLangTag;
         }
     }
