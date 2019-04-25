@@ -17,4 +17,10 @@ public class PageableDto {
         this.sort = new String[]{"id"};
         this.direction = Sort.Direction.ASC;
     }
+
+    public void setNumber(Integer number) {
+        if (number>0){
+            this.number = number-1;
+        }
+    }
 }
