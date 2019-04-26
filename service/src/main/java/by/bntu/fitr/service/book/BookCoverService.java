@@ -48,34 +48,29 @@ public class BookCoverService {
         if (params.getGenres() != null && !params.getGenres().isEmpty()) {
             Set<Genre> genres = new HashSet<>();
             for (String genreName : params.getGenres()) {
-                Genre genre = new Genre();
-                genre.setName(genreName);
-                genres.add(genre);
+                genres.addAll(genreService.findByParametersPersistents(genreName));
             }
-            genres = genreService.getPersistents(genres);
             return converter.convertToDtoPage(
                     repository
-                            .findBookCoversByTitleLikeAndLanguageTagAndGenres(
+                            .findBookCoversByLanguageTagAndTitleLikeAndGenres(
                                     params.getBookLangTag(),
                                     '%' + params.getSearchString() + '%',
-                                    genres, pageable));
+                                    genres,
+                                    pageable));
         }
-
-//        if (params.getGenres()!=null && !params.getGenres().isEmpty()){
-//            Set<Genre> genres = new HashSet<>();
-//            for (String genreName : params.getGenres()){
-//                Genre genre = new Genre();
-//                genre.setName(genreName);
-//                genres.add(genre);
-//            }
-//            genres = genreService.getPersistents(genres);
-//            repository.findBookCoversByTitleLikeAndLanguageTagAndGenres(params.getBookLangTag(), params.getSearchString(), genres, pageable);
-//        }
-        Page<BookCover> bc = repository
-                .findBookCoversByLanguageTagAndTitleLike(
-                        params.getBookLangTag(),
-                        '%' + params.getSearchString() + '%',
-                        pageable);
+        if (params.getAuthors() != null && !params.getAuthors().isEmpty()) {
+            Set<Author> authors = new HashSet<>();
+            for (String partOfName : params.getAuthors()) {
+                authors.addAll(authorService.findBySearchStringPersistents(partOfName));
+            }
+            return converter.convertToDtoPage(
+                    repository
+                            .findBookCoversByLanguageTagAndTitleLikeAndAuthors(
+                                    params.getBookLangTag(),
+                                    '%' + params.getSearchString() + '%',
+                                    authors,
+                                    pageable));
+        }
         return converter
                 .convertToDtoPage(repository
                         .findBookCoversByLanguageTagAndTitleLike(
@@ -84,53 +79,4 @@ public class BookCoverService {
                                 pageable)
                     );
     }
-
-//    public Page<BookCoverDto> findByParameters(BookSearchParameters params, PageableDto pageableDto){
-//        Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
-//
-//        LanguageDto languageDto = languageService.findByTag(params.getBookLangTag());
-//
-//        Set<Genre> genres = new HashSet<>();
-//        for (String genreName : params.getGenres()){
-//            Genre genre = new Genre();
-//            genre.setName(genreName);
-//            genres.add(genre);
-//        }
-//        genres = genreService.getPersistents(genres);
-////
-////        Set<Author> authors = new HashSet<>();
-////        for (String authors : params.getAuthors()){
-////            authors.addAll(authorService.findBySearchStringPersistents(authors, languageDto));
-////        }
-//
-//        return converter.convertToDtoPage(repository
-//                .findCustom(
-////                        languageDto.getTag(),
-////                        params.getMinYear(),
-////                        params.getMaxYear(),
-////                        params.getMinPrice(),
-////                        params.getMaxPrice(),
-////                        params.getMinRating(),
-////                        params.getMaxRating(),
-//                        genres,
-//                        pageable));
-//
-////        if (!StringUtils.isEmpty(params.getSearchString())){
-////            Page<BookCover> page = repository.findBySearchString(params.getSearchString(), pageable);
-////            return  converter.convertToDtoPage(page);
-////
-////        }
-////        if (params.getGenres() != null && !params.getGenres().isEmpty()){
-////            Set<Genre> genreSet = new HashSet<>();
-////            for (String genre : params.getGenres()){
-////                genreSet.add(new Genre(genre));
-////            }
-////            return converter.convertToDtoPage(repository.findBookCoversByGenres(genreService.getPersistents(genreSet), pageable));
-////        }
-////        LanguageDto languageDto = new LanguageDto();
-////        languageDto.setTag(params.getBookLangTag());
-////        return  converter.convertToDtoPage(repository.findBookCoversByLanguageTag(params.getBookLangTag(), pageable));
-//    }
-
-
 }

@@ -63,15 +63,11 @@ public class AuthorService {
         }
         Set<Author> persistents = new HashSet<>();
         for (Author author : authors) {
-            System.out.println("Author Service ="+author);
             if (author.getId() != null && repository.existsById(author.getId())) {
                 persistents
                         .add(repository
                                 .findById(author.getId())
                                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
-            } else {
-                author.setId(null);
-                persistents.add(repository.save(author));
             }
         }
         return persistents;

@@ -41,8 +41,8 @@ public class GenreController {
     }
 
     @GetMapping("/popular")
-    public Set<GenreDto> findPopular(LanguageDto language) {
-        return genreService.getPopularGenres(language);
+    public Set<GenreDto> findPopular(String languageTag) {
+        return genreService.getPopularGenres(languageTag);
     }
 
     @PostMapping

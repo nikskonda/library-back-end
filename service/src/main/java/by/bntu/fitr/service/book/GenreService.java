@@ -63,14 +63,14 @@ public class GenreService {
         repository.delete(converter.convertFromDto(genreDto));
     }
 
-    public Set<GenreDto> getPopularGenres(LanguageDto language){
-        if (language.getId()==null && StringUtils.isEmpty(language.getTag())){
+    public Set<GenreDto> getPopularGenres(String languageTag){
+        if (StringUtils.isEmpty(languageTag)){
             throw new UnsupportedOperationException();
         }
 
         Set<Genre> genres = new LinkedHashSet<>(
                 repository
-                    .findByPopularGenresByLang(COUNT_POPULAR_ENTITIES, language.getId(), language.getTag())
+                    .findByPopularGenresByLang(COUNT_POPULAR_ENTITIES, languageTag)
                     .stream()
                     .sorted(Comparator.comparing(Genre::getName))
                     .collect(Collectors.toList()));

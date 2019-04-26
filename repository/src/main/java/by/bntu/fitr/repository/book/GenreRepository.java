@@ -26,13 +26,12 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
                     "INNER JOIN book_has_genres bg ON bg.genre_id = g.genre_id " +
                     "INNER JOIN book b ON b.book_id = bg.book_id " +
                     "INNER JOIN \"language\" l ON b.language_id = l.language_id " +
-                        "WHERE b.language_id = :langId OR l.language_tag=:langTag " +
+                        "WHERE l.language_tag=:langTag " +
                     "GROUP BY g.genre_id " +
                         "ORDER BY genre_count DESC " +
                             "LIMIT :count",
             nativeQuery=true)
     Set<Genre> findByPopularGenresByLang(@Param("count") Integer count,
-                                         @Param("langId") Long langId,
                                          @Param("langTag") String langTag);
 
 }
