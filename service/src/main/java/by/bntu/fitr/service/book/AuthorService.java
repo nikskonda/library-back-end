@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -38,11 +39,11 @@ public class AuthorService {
         return converter.convertToDto(repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
     }
 
-    public Set<AuthorDto> findBySearchString(String searchString){
-        return  converter.convertToDtoSet(findBySearchStringPersistents(searchString));
+    public List<AuthorDto> findBySearchString(String searchString){
+        return  converter.convertToDtoList(findBySearchStringPersistents(searchString));
     }
 
-    public Set<Author> findBySearchStringPersistents(String searchString){
+    public List<Author> findBySearchStringPersistents(String searchString){
         if (searchString==null){
             throw new UnsupportedOperationException();
         }

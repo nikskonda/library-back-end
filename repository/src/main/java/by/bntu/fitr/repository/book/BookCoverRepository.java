@@ -17,9 +17,6 @@ import java.util.Set;
 @Repository
 public interface BookCoverRepository extends JpaRepository<BookCover, Long> {
 
-    @Query("select b from BookCover b where lower(b.title) like lower(:searchString)")
-    Page<BookCover> findBySearchString(@Param("searchString") String searchString, Pageable pageable);
-
     Page<BookCover> findBookCoversByLanguageTagAndTitleLikeAndGenres(String languageTag, String searchString, Set<Genre> genres, Pageable pageable);
 
     Page<BookCover> findBookCoversByLanguageTagAndTitleLikeAndAuthors(String languageTag, String searchString, Set<Author> authors, Pageable pageable);

@@ -7,11 +7,11 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
 public interface PublishingHouseRepository extends JpaRepository<PublishingHouse, Long> {
 
-    @Query("Select ph from PublishingHouse ph where ph.title like %:searchString%")
-    Set<PublishingHouse> findBySearchString(@Param("searchString") String searchString);
+    List<PublishingHouse> findAllByTitleLikeOrderByTitleAsc(String searchString);
 }

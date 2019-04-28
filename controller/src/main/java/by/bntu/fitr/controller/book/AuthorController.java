@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.List;
 import java.util.Set;
 
 @Validated
@@ -43,7 +44,7 @@ public class AuthorController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('LIBRARIAN')")
-    public Set<AuthorDto> findBySearchString(String searchString) {
+    public List<AuthorDto> findBySearchString(String searchString) {
         return authorService.findBySearchString(searchString);
     }
 

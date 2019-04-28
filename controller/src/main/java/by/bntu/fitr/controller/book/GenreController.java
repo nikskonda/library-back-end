@@ -36,12 +36,12 @@ public class GenreController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('LIBRARIAN')")
-    public Set<GenreDto> findByParameters(String searchString) {
+    public List<GenreDto> findByParameters(String searchString) {
         return genreService.findByParameters(searchString);
     }
 
     @GetMapping("/popular")
-    public Set<GenreDto> findPopular(String languageTag) {
+    public List<GenreDto> findPopular(String languageTag) {
         return genreService.getPopularGenres(languageTag);
     }
 

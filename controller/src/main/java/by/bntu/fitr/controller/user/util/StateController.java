@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.List;
 import java.util.Set;
 
 @Validated
@@ -65,13 +66,13 @@ public class StateController {
 
     @GetMapping("/country")
     @PreAuthorize("hasAuthority('USER')")
-    public Set<StateDto> findByCountry(@Valid @RequestBody CountryDto countryDto) {
+    public List<StateDto> findByCountry(@Valid @RequestBody CountryDto countryDto) {
         return stateService.findByCountry(countryDto);
     }
 
     @GetMapping("/country/{countryId}")
     @PreAuthorize("hasAuthority('USER')")
-    public Set<StateDto> findByCountryId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long countryId) {
+    public List<StateDto> findByCountryId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long countryId) {
         return stateService.findByCountryId(countryId);
     }
 

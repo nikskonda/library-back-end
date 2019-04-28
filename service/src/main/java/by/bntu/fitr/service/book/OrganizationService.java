@@ -8,6 +8,7 @@ import by.bntu.fitr.repository.book.OrganizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -34,8 +35,8 @@ public class OrganizationService {
         return converter.convertToDto(repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
     }
 
-    public Set<OrganizationDto> findBySearchString(String searchString){
-        return  converter.convertToDtoSet(repository.findBySearchString(searchString));
+    public List<OrganizationDto> findBySearchString(String searchString){
+        return  converter.convertToDtoList(repository.findAllByTitleLikeOrderByTitleAsc(searchString));
     }
 
     public void delete(Long id) {

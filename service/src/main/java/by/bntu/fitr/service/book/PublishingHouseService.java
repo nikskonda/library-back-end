@@ -8,6 +8,7 @@ import by.bntu.fitr.repository.book.PublishingHouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -27,15 +28,14 @@ public class PublishingHouseService {
 
     public PublishingHouseDto save(PublishingHouseDto publishingHouseDto){
         return converter.convertToDto(repository.save(converter.convertFromDto(publishingHouseDto)));
-//                .orElseThrow(() -> new ServiceException(String.format(SERVICE_ERROR, "creation", "user"))));
     }
 
     public PublishingHouseDto find(Long id){
         return converter.convertToDto(repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
     }
 
-    public Set<PublishingHouseDto> findBySearchString(String searchString){
-        return  converter.convertToDtoSet(repository.findBySearchString(searchString));
+    public List<PublishingHouseDto> findBySearchString(String searchString){
+        return  converter.convertToDtoList(repository.findAllByTitleLikeOrderByTitleAsc('%'+searchString+'%'));
     }
 
     public void delete(Long id) {

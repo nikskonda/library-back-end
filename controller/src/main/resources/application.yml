@@ -21,4 +21,4 @@ spring:
 
   main:
     allow-bean-definition-overriding: true
-file.upload-dir: /dp/files/uploads
+file.upload-dir: /media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads

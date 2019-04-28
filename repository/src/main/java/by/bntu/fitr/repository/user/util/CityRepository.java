@@ -5,13 +5,14 @@ import by.bntu.fitr.model.user.util.State;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
 public interface CityRepository extends JpaRepository<City, Long> {
 
-    Set<City> findCitiesByState(State state);
+    List<City> findCitiesByStateOrderByName(State state);
 
-    Set<City> findCitiesByStateId(Long stateId);
+    List<City> findCitiesByStateIdOrderByName(Long stateId);
 
 }

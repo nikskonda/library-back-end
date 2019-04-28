@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.List;
 import java.util.Set;
 
 @Validated
@@ -42,7 +43,7 @@ public class OrganizationController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('LIBRARIAN')")
-    public Set<OrganizationDto> findBySearchString(String searchString) {
+    public List<OrganizationDto> findBySearchString(String searchString) {
         return organizationService.findBySearchString(searchString);
     }
 

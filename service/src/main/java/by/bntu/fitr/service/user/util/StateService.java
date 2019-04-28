@@ -9,6 +9,7 @@ import by.bntu.fitr.repository.user.util.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -44,11 +45,11 @@ public class StateService {
         repository.delete(converter.convertFromDto(stateDto));
     }
 
-    public Set<StateDto> findByCountry(CountryDto countryDto){
-        return converter.convertToDtoSet(repository.findStatesByCountry(countryDtoConverter.convertFromDto(countryDto)));
+    public List<StateDto> findByCountry(CountryDto countryDto){
+        return converter.convertToDtoList(repository.findStatesByCountryOrderByName(countryDtoConverter.convertFromDto(countryDto)));
     }
 
-    public Set<StateDto> findByCountryId(Long countryId){
-        return converter.convertToDtoSet(repository.findStatesByCountryId(countryId));
+    public List<StateDto> findByCountryId(Long countryId){
+        return converter.convertToDtoList(repository.findStatesByCountryIdOrderByName(countryId));
     }
 }

@@ -31,7 +31,7 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
                         "ORDER BY genre_count DESC " +
                             "LIMIT :count",
             nativeQuery=true)
-    Set<Genre> findByPopularGenresByLang(@Param("count") Integer count,
+    List<Genre> findByPopularGenresByLang(@Param("count") Integer count,
                                          @Param("langTag") String langTag);
 
 }

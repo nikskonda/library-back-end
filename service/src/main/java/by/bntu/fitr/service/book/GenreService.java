@@ -43,15 +43,15 @@ public class GenreService {
         return converter.convertToDto(repository.findByName(name).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
     }
 
-    public Set<GenreDto> findByParameters(String searchString){
-        return  converter.convertToDtoSet(findByParametersPersistents(searchString));
+    public List<GenreDto> findByParameters(String searchString){
+        return  converter.convertToDtoList(findByParametersPersistents(searchString));
     }
 
-    public Set<Genre> findByParametersPersistents(String searchString){
+    public List<Genre> findByParametersPersistents(String searchString){
         if (searchString==null){
             throw new UnsupportedOperationException();
         }
-        return  new LinkedHashSet<>(repository.findAllByNameLikeOrderByNameAsc('%'+searchString+'%'));
+        return  (repository.findAllByNameLikeOrderByNameAsc('%'+searchString+'%'));
     }
 
 
@@ -63,18 +63,18 @@ public class GenreService {
         repository.delete(converter.convertFromDto(genreDto));
     }
 
-    public Set<GenreDto> getPopularGenres(String languageTag){
+    public List<GenreDto> getPopularGenres(String languageTag){
         if (StringUtils.isEmpty(languageTag)){
             throw new UnsupportedOperationException();
         }
 
-        Set<Genre> genres = new LinkedHashSet<>(
+        return converter.convertToDtoList(
                 repository
                     .findByPopularGenresByLang(COUNT_POPULAR_ENTITIES, languageTag)
                     .stream()
                     .sorted(Comparator.comparing(Genre::getName))
-                    .collect(Collectors.toList()));
-        return converter.convertToDtoSet(genres);
+                    .collect(Collectors.toList())
+        );
     }
 
     public Set<Genre> getPersistents(Set<Genre> genres) {
