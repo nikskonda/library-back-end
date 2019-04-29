@@ -43,6 +43,13 @@ public class BookmarkController {
         return bookmarkService.find(id, authentication.getName());
     }
 
+    @GetMapping("/book/{bookId}")
+    @PreAuthorize("hasAuthority('USER')")
+    public BookmarkDto findByUserAndBookId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long bookId,
+                            Authentication authentication) {
+        return bookmarkService.findByUserAndBookId(authentication.getName(), bookId);
+    }
+
     @PostMapping
     @PreAuthorize("hasAuthority('USER')")
     @ResponseStatus(HttpStatus.CREATED)

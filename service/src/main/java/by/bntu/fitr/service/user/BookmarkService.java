@@ -34,9 +34,9 @@ public class BookmarkService {
         this.bookService = bookService;
     }
 
-    public BookmarkDto save(BookmarkDto bookmarkDto, String username){
+    public BookmarkDto save(BookmarkDto bookmarkDto, String username) {
         Bookmark bookmark;
-        if (bookmarkDto.getId()==null){
+        if (bookmarkDto.getId() == null) {
             bookmarkDto.setBook(bookService.find(bookmarkDto.getBook().getId()));
             bookmark = converter.convertFromDto(bookmarkDto);
             bookmark.setUser(userService.getPersistant(username));
@@ -48,7 +48,17 @@ public class BookmarkService {
         return converter.convertToDto(repository.save(bookmark));
     }
 
-    public BookmarkDto find(Long id, String username){
+    public BookmarkDto findByUserAndBookId(String username, Long bookId) {
+        Bookmark bookmark = repository.findBookmarkByUserUsernameAndBookId(username, bookId);
+        if (bookmark != null) {
+            checkAccess(username, bookmark.getUser());
+            return converter.convertToDto(bookmark);
+        }
+        return null;
+
+    }
+
+    public BookmarkDto find(Long id, String username) {
         Bookmark bookmark = getPersist(id);
         checkAccess(username, bookmark.getUser());
         return converter.convertToDto(bookmark);
@@ -59,25 +69,25 @@ public class BookmarkService {
         repository.deleteById(id);
     }
 
-    public void delete(BookmarkDto bookmarkDto, String username){
+    public void delete(BookmarkDto bookmarkDto, String username) {
         find(bookmarkDto.getId(), username);
         repository.delete(converter.convertFromDto(bookmarkDto));
     }
 
-    public Page<BookmarkDto> findAll(String username, PageableDto pageableDto){
+    public Page<BookmarkDto> findAll(String username, PageableDto pageableDto) {
         Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
-        return  converter.convertToDtoPage(repository.findByUser(userService.getPersistant(username), pageable));
+        return converter.convertToDtoPage(repository.findByUser(userService.getPersistant(username), pageable));
     }
 
-    public Bookmark getPersist(Long id){
+    public Bookmark getPersist(Long id) {
         return repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
     }
 
-    private boolean checkAccess(String username, User user){
+    private boolean checkAccess(String username, User user) {
         if (!username.equals(user.getUsername()) ||
                 !user
                         .getAuthorities()
-                        .contains(userService.findRole(ROLE_FOR_BOOKMARK_EDIT))){
+                        .contains(userService.findRole(ROLE_FOR_BOOKMARK_EDIT))) {
             throw new AccessDeniedException();
         }
         return true;

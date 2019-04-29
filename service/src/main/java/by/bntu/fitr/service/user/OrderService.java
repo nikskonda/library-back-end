@@ -101,7 +101,8 @@ public class OrderService {
         return converter.convertToDtoPage(repository.findOrdersByUserId(userId, pageable));
     }
 
-    public Page<OrderDto> findAll(PageableDto pageableDto){
+    public Page<OrderDto> findAll(String username, PageableDto pageableDto){
+        isAdminAccess(username);
         Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
         return converter.convertToDtoPage(repository.findAll(pageable));
     }

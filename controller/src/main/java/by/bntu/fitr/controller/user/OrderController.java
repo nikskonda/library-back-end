@@ -70,6 +70,7 @@ public class OrderController {
     @GetMapping("/user/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public Page<OrderDto> findByUserId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                                       Order.Status status,
                                        Authentication authentication,
                                        PageableDto pageableDto) {
         return orderService.findOrdersByUserId(authentication.getName(), id, pageableDto);
@@ -101,8 +102,8 @@ public class OrderController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Page<OrderDto> findByPage(PageableDto pageableDto) {
-        return orderService.findAll(pageableDto);
+    public Page<OrderDto> findByPage(Authentication authentication, PageableDto pageableDto) {
+        return orderService.findAll(authentication.getName(), pageableDto);
     }
 
 }

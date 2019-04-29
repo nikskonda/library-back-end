@@ -12,4 +12,6 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
     Page<Bookmark> findByUser(User user, Pageable pageable);
 
+    Bookmark findBookmarkByUserUsernameAndBookId(String username, Long bookId);
+
 }
