@@ -82,6 +82,9 @@ public class Book extends BaseEntity {
     private String thumbnailUrl;
     @Column(name = "book_pdf_url")
     private String pdfUrl;
+    @Column(name = "book_epub_url")
+    private String ePubUrl;
+
     @Column(name = "book_isbn", unique = true)
     private String isbn;
 

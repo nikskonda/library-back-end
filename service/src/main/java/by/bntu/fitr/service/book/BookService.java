@@ -41,13 +41,13 @@ public class BookService {
     public BookDto save(BookDto bookDto) {
         Book book = converter.convertFromDto(bookDto);
 //        if (book.getId()!=null && repository.existsById(book.getId())){
-        book.setGenres(genreService.getPersistents(book.getGenres()));
-        book.setAuthors(authorService.getPersistents(book.getAuthors()));
-        book.setTranslators(authorService.getPersistents(book.getTranslators()));
-        book.setLanguage(languageService.getPersistents(bookDto.getLanguage()));
-        book.setImporter(organizationService.getPersistents(book.getImporter()));
-        book.setProducer(organizationService.getPersistents(book.getProducer()));
-        book.setPublishingHouse(publishingHouseService.getPersistents(book.getPublishingHouse()));
+        book.setGenres(genreService.getPersistences(book.getGenres()));
+        book.setAuthors(authorService.getPersistences(book.getAuthors()));
+        book.setTranslators(authorService.getPersistences(book.getTranslators()));
+        book.setLanguage(languageService.getPersistences(bookDto.getLanguage()));
+        book.setImporter(organizationService.getPersistences(book.getImporter()));
+        book.setProducer(organizationService.getPersistences(book.getProducer()));
+        book.setPublishingHouse(publishingHouseService.getPersistences(book.getPublishingHouse()));
         if (book.getYear()==null){
             book.setYear(-1);
         }
@@ -61,9 +61,7 @@ public class BookService {
 
 
     public BookDto find(Long id) {
-        return converter.convertToDto(repository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
+        return converter.convertToDto(getPersistence(id));
     }
 
     public void delete(Long id) {
@@ -72,6 +70,12 @@ public class BookService {
 
     public void delete(BookDto bookDto) {
         repository.delete(converter.convertFromDto(bookDto));
+    }
+
+    public Book getPersistence(Long id){
+        return repository
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
     }
 
 }

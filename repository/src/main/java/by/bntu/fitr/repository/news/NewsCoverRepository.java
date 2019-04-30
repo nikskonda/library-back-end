@@ -14,7 +14,6 @@ import java.util.Set;
 @Repository
 public interface NewsCoverRepository extends JpaRepository<NewsCover, Long> {
 
-    @Query("select n from NewsCover n where n.title like %:searchString%")
-    Page<NewsCover> findBySearchString(@Param("searchString") String searchString, Pageable pageable);
+    Page<NewsCover> findNewsCoversByTitleLikeAndLanguageTag(String searchString, String languageTag, Pageable pageable);
 
 }

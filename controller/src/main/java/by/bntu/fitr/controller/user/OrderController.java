@@ -1,9 +1,9 @@
 package by.bntu.fitr.controller.user;
 
 import by.bntu.fitr.dto.PageableDto;
-import by.bntu.fitr.dto.user.OrderDto;
-import by.bntu.fitr.model.user.Order;
-import by.bntu.fitr.service.user.OrderService;
+import by.bntu.fitr.dto.user.order.OrderDto;
+import by.bntu.fitr.dto.user.order.OrderStatusDto;
+import by.bntu.fitr.service.user.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -51,13 +50,20 @@ public class OrderController {
         return orderService.save(orderDto, authentication.getName());
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}/status")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
-    public OrderDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                           @Validated() @RequestBody OrderDto orderDto,
+    public OrderDto addStatus(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                           @Valid @RequestBody OrderStatusDto orderStatusDto,
                            Authentication authentication) {
-        orderDto.setId(id);
-        return orderService.save(orderDto, authentication.getName());
+        return orderService.addStatus(orderStatusDto, id, authentication.getName());
+    }
+
+    @PostMapping("/{id}/cancel")
+    @PreAuthorize("hasAuthority('USER')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderDto cancel(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                           Authentication authentication) {
+        return orderService.cancel(id, authentication.getName());
     }
 
     @GetMapping("/user")
@@ -67,38 +73,38 @@ public class OrderController {
         return orderService.findOrdersByUsername(authentication.getName(), pageableDto);
     }
 
-    @GetMapping("/user/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public Page<OrderDto> findByUserId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                                       Order.Status status,
-                                       Authentication authentication,
-                                       PageableDto pageableDto) {
-        return orderService.findOrdersByUserId(authentication.getName(), id, pageableDto);
-    }
-
-    @GetMapping("/book/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public Page<OrderDto> findByBookId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                                       Authentication authentication,
-                                       PageableDto pageableDto) {
-        return orderService.findOrdersByBookId(authentication.getName(), id, pageableDto);
-    }
-
-    @GetMapping("/status/{status}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public Page<OrderDto> findByStatus(@PathVariable Order.Status status,
-                                       Authentication authentication,
-                                       PageableDto pageableDto) {
-        return orderService.findOrdersByStatus(authentication.getName(), status, pageableDto);
-    }
-
-    @GetMapping("/status")
-    @PreAuthorize("hasAuthority('USER')")
-    public Page<OrderDto> findOrdersByStatusAndUsername(Order.Status status,
-                                       Authentication authentication,
-                                       PageableDto pageableDto) {
-        return orderService.findOrdersByStatusAndUsername(authentication.getName(), status, pageableDto);
-    }
+//    @GetMapping("/user/{id}")
+//    @PreAuthorize("hasAuthority('ADMIN')")
+//    public Page<OrderDto> findByUserId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+//                                       Order.Status status,
+//                                       Authentication authentication,
+//                                       PageableDto pageableDto) {
+//        return orderService.findOrdersByUserId(authentication.getName(), id, pageableDto);
+//    }
+//
+//    @GetMapping("/book/{id}")
+//    @PreAuthorize("hasAuthority('ADMIN')")
+//    public Page<OrderDto> findByBookId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+//                                       Authentication authentication,
+//                                       PageableDto pageableDto) {
+//        return orderService.findOrdersByBookId(authentication.getName(), id, pageableDto);
+//    }
+//
+//    @GetMapping("/status/{status}")
+//    @PreAuthorize("hasAuthority('ADMIN')")
+//    public Page<OrderDto> findByStatus(@PathVariable Order.Status status,
+//                                       Authentication authentication,
+//                                       PageableDto pageableDto) {
+//        return orderService.findOrdersByStatus(authentication.getName(), status, pageableDto);
+//    }
+//
+//    @GetMapping("/status")
+//    @PreAuthorize("hasAuthority('USER')")
+//    public Page<OrderDto> findOrdersByStatusAndUsername(Order.Status status,
+//                                       Authentication authentication,
+//                                       PageableDto pageableDto) {
+//        return orderService.findOrdersByStatusAndUsername(authentication.getName(), status, pageableDto);
+//    }
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")

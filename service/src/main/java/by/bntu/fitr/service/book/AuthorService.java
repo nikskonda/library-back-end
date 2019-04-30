@@ -58,7 +58,7 @@ public class AuthorService {
         repository.delete(converter.convertFromDto(authorDto));
     }
 
-    public Set<Author> getPersistents(Set<Author> authors){
+    public Set<Author> getPersistences(Set<Author> authors){
         if (authors == null || authors.isEmpty()) {
             return null;
         }

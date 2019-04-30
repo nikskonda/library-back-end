@@ -48,14 +48,4 @@ public abstract class AbstractDtoConverter<E extends BaseEntity, DTO> {
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-//    public abstract Page<DTO> convertPageToDto(Page<E> page);
-//
-//    public Pageable convertPageableFromDto(PageableDto pageableDto) {
-//        return modelMapper.map(pageableDto, Pageable.class);
-//    }
-//
-//    protected void setPageableAndTotalCountOfItems(Page<?> pageDto, Page<? extends BaseEntity> page) {
-//        pageDto.setPageable(page.getPageable());
-//        pageDto.setTotalCountOfItems(page.getTotalCountOfItems());
-//    }
 }

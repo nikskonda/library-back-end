@@ -47,7 +47,7 @@ public class OrganizationService {
         repository.delete(converter.convertFromDto(organizationDto));
     }
 
-    public Organization getPersistents(Organization organization) {
+    public Organization getPersistences(Organization organization) {
         System.out.println("Organization Service ="+organization);
         if (organization == null) {
             return null;

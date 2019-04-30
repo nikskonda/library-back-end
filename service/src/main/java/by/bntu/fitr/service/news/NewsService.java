@@ -5,6 +5,7 @@ import by.bntu.fitr.converter.news.NewsDtoConverter;
 import by.bntu.fitr.dto.news.NewsDto;
 import by.bntu.fitr.model.news.News;
 import by.bntu.fitr.repository.news.NewsRepository;
+import by.bntu.fitr.service.book.LanguageService;
 import by.bntu.fitr.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,17 +20,20 @@ public class NewsService {
     private NewsRepository repository;
     private NewsDtoConverter converter;
     private UserService userService;
+    private LanguageService languageService;
 
     @Autowired
-    public NewsService(NewsRepository repository, NewsDtoConverter converter, UserService userService) {
+    public NewsService(NewsRepository repository, NewsDtoConverter converter, UserService userService, LanguageService languageService) {
         this.repository = repository;
         this.converter = converter;
         this.userService = userService;
+        this.languageService = languageService;
     }
 
     public NewsDto save(NewsDto newsDto, String username){
         News news = converter.convertFromDto(newsDto);
         if (news.getId()!=null && repository.existsById(news.getId())){
+            news.setLanguage(languageService.getPersistences(newsDto.getLanguage()));
             news.setModificationDate(LocalDateTime.now());
             news.setCreationDate(find(news.getId()).getCreationDate());
         } else {

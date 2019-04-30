@@ -1,6 +1,7 @@
 package by.bntu.fitr.model.user;
 
 import by.bntu.fitr.model.BaseEntity;
+import by.bntu.fitr.model.user.util.Address;
 import by.bntu.fitr.model.user.util.City;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.util.Collection;
@@ -67,14 +69,10 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "user_email", length = 254)
     private String email;
 
-    @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "city_id")
-    private City city;
+    @OneToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_last_address_id")
+    private Address lastAddress;
 
-    @Column(name = "user_address", length = 200)
-    private String address;
-    @Column(name = "user_postalCode", length = 6)
-    private Integer postalCode;
 
     public User(){
         this.accountNonExpired = true;

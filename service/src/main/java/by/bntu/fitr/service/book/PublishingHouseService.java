@@ -46,7 +46,7 @@ public class PublishingHouseService {
         repository.delete(converter.convertFromDto(publishingHouseDto));
     }
 
-    public PublishingHouse getPersistents(PublishingHouse publishingHouse) {
+    public PublishingHouse getPersistences(PublishingHouse publishingHouse) {
         System.out.println("PublishingHouse Service ="+publishingHouse);
         if (publishingHouse == null) {
             return null;

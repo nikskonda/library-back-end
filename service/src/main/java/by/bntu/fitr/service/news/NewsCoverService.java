@@ -22,24 +22,19 @@ public class NewsCoverService {
 
     @Autowired
     public NewsCoverService(NewsCoverRepository newsCoverRepository,
-                            NewsCoverDtoConverter newsCoverDtoConverter){
+                            NewsCoverDtoConverter newsCoverDtoConverter) {
         this.repository = newsCoverRepository;
         this.converter = newsCoverDtoConverter;
     }
 
-    public NewsCoverDto find(Long id){
+    public NewsCoverDto find(Long id) {
         return converter.convertToDto(repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
     }
 
 
-    public Page<NewsCoverDto> findByParameters(String searchString, PageableDto pageableDto){
+    public Page<NewsCoverDto> findByParameters(String searchString, String languageTag, PageableDto pageableDto) {
         Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
-
-        if (StringUtils.isEmpty(searchString)){
-            return  converter.convertToDtoPage(repository.findAll(pageable));
-        } else {
-            return  converter.convertToDtoPage(repository.findBySearchString(searchString, pageable));
-        }
+        return converter.convertToDtoPage(repository.findNewsCoversByTitleLikeAndLanguageTag(searchString, languageTag, pageable));
     }
 
 }

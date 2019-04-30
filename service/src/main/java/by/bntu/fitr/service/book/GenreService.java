@@ -77,7 +77,7 @@ public class GenreService {
         );
     }
 
-    public Set<Genre> getPersistents(Set<Genre> genres) {
+    public Set<Genre> getPersistences(Set<Genre> genres) {
         if (genres == null || genres.isEmpty()) {
             return null;
         }

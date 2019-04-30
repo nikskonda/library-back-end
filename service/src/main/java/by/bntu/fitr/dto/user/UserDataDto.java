@@ -18,11 +18,6 @@ public class UserDataDto {
 
     private String email;
 
-    private City city;
-
-    private String address;
-    private Integer postalCode;
-
     public UserDataDto(){
 
     }

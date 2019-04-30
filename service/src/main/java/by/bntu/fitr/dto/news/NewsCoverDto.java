@@ -1,7 +1,7 @@
 package by.bntu.fitr.dto.news;
 
+import by.bntu.fitr.dto.book.LanguageDto;
 import by.bntu.fitr.dto.user.UserDataDto;
-import by.bntu.fitr.model.user.User;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class NewsCoverDto {
 
     private Long id;
+    private LanguageDto language;
     private String title;
     private String thumbnailUrl;
     private UserDataDto creator;

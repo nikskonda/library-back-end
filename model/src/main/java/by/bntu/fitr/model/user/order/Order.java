@@ -1,7 +1,9 @@
-package by.bntu.fitr.model.user;
+package by.bntu.fitr.model.user.order;
 
 import by.bntu.fitr.model.BaseEntity;
 import by.bntu.fitr.model.book.Book;
+import by.bntu.fitr.model.user.User;
+import by.bntu.fitr.model.user.util.Address;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicUpdate;
@@ -12,11 +14,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -27,29 +33,21 @@ import java.time.LocalDateTime;
 @DynamicUpdate
 public class Order extends BaseEntity {
 
-    @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private Book book;
+    @OneToMany(mappedBy = "order")
+//            , cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    private Set<OrderDetail> details;
+
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    private List<OrderStatus> statusList;
+
+    @Column(name="order_total_price")
+    private BigDecimal totalPrice;
 
     @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @Column(name = "order_status", nullable = false)
-    private Status status;
+    @JoinColumn(name = "address_id")
+    private Address address;
 
     @Column(name = "order_creation_date_time", nullable = false)
     private LocalDateTime creationDateTime;
-
-    @Column(name = "order_modification_date_time")
-    private LocalDateTime modificationDateTime;
-
-    @Column(name = "order_comment", length = 500)
-    private String comment;
-
-
-    public enum Status{
-        COMPLETED, NEW, IN_PROCESS
-    }
 
 }

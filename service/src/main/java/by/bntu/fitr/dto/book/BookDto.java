@@ -31,6 +31,7 @@ public class BookDto {
     private String pictureUrl;
     private String thumbnailUrl;
     private String pdfUrl;
+    private String ePubUrl;
     private String isbn;
     private PublishingHouseDto publishingHouse;
     private OrganizationDto producer;

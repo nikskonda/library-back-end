@@ -1,6 +1,7 @@
 package by.bntu.fitr.model.news;
 
 import by.bntu.fitr.model.BaseEntity;
+import by.bntu.fitr.model.book.Language;
 import by.bntu.fitr.model.user.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,6 +27,9 @@ import java.time.LocalDateTime;
 @DynamicUpdate
 public class NewsCover extends BaseEntity {
 
+    @ManyToOne(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "language_id")
+    private Language language;
     @Column(name = "news_title")
     private String title;
     @Column(name = "news_thumbnail_url")

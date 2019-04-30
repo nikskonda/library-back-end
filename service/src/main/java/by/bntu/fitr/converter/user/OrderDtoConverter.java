@@ -1,10 +1,8 @@
 package by.bntu.fitr.converter.user;
 
 import by.bntu.fitr.converter.AbstractDtoConverter;
-import by.bntu.fitr.dto.user.OrderDto;
-import by.bntu.fitr.dto.user.util.StateDto;
-import by.bntu.fitr.model.user.Order;
-import by.bntu.fitr.model.user.util.State;
+import by.bntu.fitr.dto.user.order.OrderDto;
+import by.bntu.fitr.model.user.order.Order;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
