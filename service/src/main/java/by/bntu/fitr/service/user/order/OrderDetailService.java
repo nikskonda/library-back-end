@@ -4,6 +4,7 @@ import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.UnsupportedOperationException;
 import by.bntu.fitr.converter.user.OrderDetailDtoConverter;
 import by.bntu.fitr.dto.user.order.OrderDetailDto;
+import by.bntu.fitr.model.user.order.Order;
 import by.bntu.fitr.model.user.order.OrderDetail;
 import by.bntu.fitr.repository.user.OrderDetailRepository;
 import by.bntu.fitr.service.book.BookService;
@@ -28,12 +29,14 @@ public class OrderDetailService {
         this.bookService = bookService;
     }
 
-    public OrderDetail save(OrderDetail orderDetail) {
+    public OrderDetailDto save(OrderDetailDto orderDetailDto, Order order) {
+        OrderDetail orderDetail = converter.convertFromDto(orderDetailDto);
+        orderDetail.setOrder(order);
         if (orderDetail.getId() == null || !repository.existsById(orderDetail.getId())) {
             orderDetail.setId(null);
             orderDetail.setBook(bookService.getPersistence(orderDetail.getBook().getId()));
             orderDetail.setPrice(orderDetail.getBook().getPrice());
-            return repository.save(orderDetail);
+            return converter.convertToDto(repository.save(orderDetail));
         } else {
             throw new UnsupportedOperationException();
         }
@@ -49,7 +52,7 @@ public class OrderDetailService {
     }
 
     public Set<OrderDetailDto> findAll(Long orderId) {
-        return converter.convertToDtoSet(repository.findOrderDetailesByOrderId(orderId));
+        return converter.convertToDtoSet(repository.findOrderDetailsByOrderId(orderId));
     }
 
     public OrderDetail getPersistence(Long id) {

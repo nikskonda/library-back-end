@@ -3,22 +3,17 @@ package by.bntu.fitr.service.user.order;
 import by.bntu.fitr.AccessDeniedException;
 import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.UnsupportedOperationException;
-import by.bntu.fitr.converter.AbstractDtoConverter;
 import by.bntu.fitr.converter.user.OrderDtoConverter;
 import by.bntu.fitr.converter.user.OrderStatusDtoConverter;
 import by.bntu.fitr.dto.PageableDto;
+import by.bntu.fitr.dto.user.UserDto;
 import by.bntu.fitr.dto.user.order.OrderDetailDto;
 import by.bntu.fitr.dto.user.order.OrderDto;
 import by.bntu.fitr.dto.user.order.OrderStatusDto;
-import by.bntu.fitr.model.user.User;
 import by.bntu.fitr.model.user.order.Order;
-import by.bntu.fitr.model.user.order.OrderDetail;
 import by.bntu.fitr.model.user.order.OrderStatus;
 import by.bntu.fitr.model.user.util.Address;
-import by.bntu.fitr.repository.user.OrderDetailRepository;
 import by.bntu.fitr.repository.user.OrderRepository;
-import by.bntu.fitr.repository.user.OrderStatusRepository;
-import by.bntu.fitr.service.book.BookService;
 import by.bntu.fitr.service.user.UserService;
 import by.bntu.fitr.service.user.util.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -65,7 +54,11 @@ public class OrderService {
         Order order = new Order();
         if (orderDto.getId() == null) {
             Address address = addressService.getPersistence(orderDto.getAddress().getId());
-            isOwnerAccess(username, address.getUser());
+
+            if (!username.equals(address.getUser().getUsername())) {
+                throw new AccessDeniedException();
+            }
+
             order.setAddress(address);
             order.setCreationDateTime(LocalDateTime.now());
             BigDecimal totalPrice = new BigDecimal(0);
@@ -77,40 +70,38 @@ public class OrderService {
             order.setTotalPrice(totalPrice);
 
             order = repository.save(order);
-            for (OrderDetailDto orderDetail : orderDto.getDetails()) {
-                or
+            for (OrderDetailDto orderDetailDto : orderDto.getDetails()) {
+                orderDetailService.save(orderDetailDto, order);
             }
+            orderStatusService.save(createStatusNew(order));
 
-
+            return find(order.getId(), username);
         } else {
             throw new UnsupportedOperationException();
         }
     }
 
-    public OrderDto addStatus(OrderStatusDto orderStatusDto, Long id, String username){
+    public OrderDto addStatus(OrderStatusDto orderStatusDto, Long orderId, String username){
         isAdminAccess(username);
-        Order order = getPersistence(id);
-        sortingStatusList(order);
-        order.getStatusList().add(statusConverter.convertFromDto(orderStatusDto));
-        order = repository.save(order);
-        sortingStatusList(order);
-        return converter.convertToDto(order);
+        Order order = getPersistence(orderId);
+        OrderStatus orderStatus = statusConverter.convertFromDto(orderStatusDto);
+        orderStatus.setOrder(order);
+        return find(orderStatus.getOrder().getId(), username);
     }
 
-    public OrderDto find(Long id, String username) {
-        Order order = getPersistence(id);
+    public OrderDto find(Long orderId, String username) {
+        OrderDto order = converter.convertToDto(getPersistence(orderId));
         checkAccess(username, order.getAddress().getUser());
-        sortingStatusList(order);
-        return converter.convertToDto(order);
+        order.setDetails(orderDetailService.findAll(order.getId()));
+        order.setStatusList(orderStatusService.findAll(order.getId()));
+        return order;
     }
 
-    public OrderDto cancel(Long id, String username) {
-        Order order = getPersistence(id);
+    public OrderDto cancel(Long orderId, String username) {
+        OrderDto order = converter.convertToDto(getPersistence(orderId));
         checkAccess(username, order.getAddress().getUser());
-        order.getStatusList().add(createStatusCancelled(order));
-        order = repository.save(order);
-        sortingStatusList(order);
-        return converter.convertToDto(order);
+        createStatusCancelled(converter.convertFromDto(order));
+        return find(orderId, username);
     }
 
 
@@ -134,8 +125,13 @@ public class OrderService {
     public Page<OrderDto> findOrdersByUsername(String username, PageableDto pageableDto) {
         Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
         Page<Order> orders = repository.findOrdersByAddressUserUsername(username, pageable);
-        sortingStatusList(orders);
-        return converter.convertToDtoPage(orders);
+        Page<OrderDto> pageDto = converter.convertToDtoPage(orders);
+        for (OrderDto orderDto : pageDto){
+            orderDto.setStatusList(orderStatusService.findAll(orderDto.getId()));
+            orderDto.setDetails(orderDetailService.findAll(orderDto.getId()));
+        }
+        return pageDto;
+
     }
 
 //    public Page<OrderDto> findOrdersByUserId(String username, Long userId, PageableDto pageableDto) {
@@ -148,30 +144,16 @@ public class OrderService {
         isAdminAccess(username);
         Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
         Page<Order> orders = repository.findAll(pageable);
-        sortingStatusList(orders);
-        return converter.convertToDtoPage(orders);
+        Page<OrderDto> pageDto = converter.convertToDtoPage(orders);
+        for (OrderDto orderDto : pageDto){
+            orderDto.setStatusList(orderStatusService.findAll(orderDto.getId()));
+            orderDto.setDetails(orderDetailService.findAll(orderDto.getId()));
+        }
+        return pageDto;
     }
 
     public Order getPersistence(Long id) {
         return repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
-    }
-
-    private void sortingStatusList(Page<Order> page) {
-        for (Order order: page){
-            order.setStatusList(order
-                    .getStatusList()
-                    .stream()
-                    .sorted(Comparator.comparing(OrderStatus::getDateTime))
-                    .collect(Collectors.toList()));
-        }
-    }
-
-    private void sortingStatusList(Order order) {
-        order.setStatusList(order
-                .getStatusList()
-                .stream()
-                .sorted(Comparator.comparing(OrderStatus::getDateTime))
-                .collect(Collectors.toList()));
     }
 
     private OrderStatus createStatusNew(Order order) {
@@ -182,15 +164,15 @@ public class OrderService {
         return orderStatus;
     }
 
-    private OrderStatus createStatusCancelled(Order order) {
+    private OrderStatusDto createStatusCancelled(Order order) {
         OrderStatus orderStatus = new OrderStatus();
         orderStatus.setDateTime(LocalDateTime.now());
         orderStatus.setStatus(OrderStatus.Status.CANCELLED);
         orderStatus.setOrder(order);
-        return orderStatus;
+        return orderStatusService.save(orderStatus);
     }
 
-    private boolean isOwnerAccess(String username, User orderUser) {
+    private boolean isOwnerAccess(String username, UserDto orderUser) {
         if (!username.equals(orderUser.getUsername())) {
             return false;
         }
@@ -210,7 +192,7 @@ public class OrderService {
     }
 
 
-    private boolean checkAccess(String username, User orderUser) {
+    private boolean checkAccess(String username, UserDto orderUser) {
         if (isOwnerAccess(username, orderUser) || isAdminAccess(username)) {
             return true;
         } else {

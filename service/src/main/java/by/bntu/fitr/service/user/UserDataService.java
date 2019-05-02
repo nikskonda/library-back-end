@@ -31,8 +31,9 @@ public class UserDataService {
         this.userDtoConverter = userDtoConverter;
     }
 
-    public UserDataDto save(UserDataDto userDataDto) {
+    public UserDataDto save(UserDataDto userDataDto, String username) {
         UserData user = this.userDtoConverter.convertFromDto(userDataDto);
+        user.setUsername(username);
         if (user.getId() != null && userRepository.existsById(user.getId()) &&
                 !StringUtils.isEmpty(user.getUsername()) && userRepository.existsByUsername(user.getUsername())) {
             user = userRepository.save(user);
@@ -51,11 +52,12 @@ public class UserDataService {
     }
 
     public void clear(Long id) {
-        save(new UserDataDto(id, find(id).getUsername()));
+        UserData user = getPersisten(id);
+        save(new UserDataDto(id, user.getUsername()), user.getUsername());
     }
 
     public void clear(String username) {
-        save(new UserDataDto(find(username).getId(), username));
+        save(new UserDataDto(find(username).getId(), username), username);
     }
 
     private UserData getPersisten(Long id){

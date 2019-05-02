@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -59,17 +60,24 @@ public class UserController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('USER')")
     public UserMainDataDto updateMainData(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                                  @Validated() @RequestBody UserMainDataDto user) {
+                                          @Validated() @RequestBody UserMainDataDto user) {
         user.setId(id);
         return userMainDataService.save(user);
+    }
+
+    @GetMapping("/data/")
+    @PreAuthorize("hasAuthority('USER')")
+    public UserDataDto getUserData(Authentication authentication) {
+        return userDataService.find(authentication.getName());
     }
 
     @PutMapping("/data/{id}")
     @PreAuthorize("hasAuthority('USER')")
     public UserDataDto updateData(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                                  Authentication authentication,
                                   @Validated() @RequestBody UserDataDto user) {
         user.setId(id);
-        return userDataService.save(user);
+        return userDataService.save(user, authentication.getName());
     }
 
     @GetMapping

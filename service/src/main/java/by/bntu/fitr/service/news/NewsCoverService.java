@@ -33,8 +33,11 @@ public class NewsCoverService {
 
 
     public Page<NewsCoverDto> findByParameters(String searchString, String languageTag, PageableDto pageableDto) {
+        if (searchString==null){
+            searchString="";
+        }
         Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
-        return converter.convertToDtoPage(repository.findNewsCoversByTitleLikeAndLanguageTag(searchString, languageTag, pageable));
+        return converter.convertToDtoPage(repository.findNewsCoversByTitleLikeAndLanguageTag("%"+searchString+"%", languageTag, pageable));
     }
 
 }

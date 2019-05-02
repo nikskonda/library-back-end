@@ -18,6 +18,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -50,5 +51,14 @@ public class Bookmark extends BaseEntity
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "bookmark_date_time")
+    private LocalDateTime dateTime;
+
+    @Column(name = "bookmark_type")
+    private Type type;
+
+    public enum Type{
+        EPUB, PDF
+    }
 
 }

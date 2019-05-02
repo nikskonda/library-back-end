@@ -30,7 +30,7 @@ import java.time.LocalDateTime;
 @DynamicUpdate
 public class OrderDetail extends BaseEntity {
 
-    @ManyToOne( fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 

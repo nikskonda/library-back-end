@@ -11,6 +11,7 @@ import by.bntu.fitr.dto.user.util.CityDto;
 import by.bntu.fitr.dto.user.util.CountryDto;
 import by.bntu.fitr.dto.user.util.StateDto;
 import by.bntu.fitr.model.book.Book;
+import by.bntu.fitr.model.book.Bookmark;
 import by.bntu.fitr.model.user.order.OrderStatus;
 import by.bntu.fitr.service.book.AuthorService;
 import by.bntu.fitr.service.book.BookCoverService;
@@ -190,6 +191,7 @@ public class Generator {
             book.setId((long)generateInt(minId, maxId));
             bookmarkDto.setBook(book);
             bookmarkDto.setPage(generateInt(10, 1000));
+            bookmarkDto.setType(getBookmarkType());
             PageableDto pageableDto =  new PageableDto();
             pageableDto.setNumber(0);
             pageableDto.setSize(count);
@@ -209,6 +211,10 @@ public class Generator {
 
             bookmarkService.save(bookmarkDto, username);
         }
+    }
+
+    private Bookmark.Type getBookmarkType(){
+        return Bookmark.Type.values()[generateInt(0, Bookmark.Type.values().length)];
     }
 
     private void generateOrder(int count, int minId, int maxId){
@@ -232,7 +238,7 @@ public class Generator {
                 orderDto.getDetails().add(orderDetailDto);
             }
 
-            orderService.save(orderDto, getRandomUserDataDto(minId, maxId).getUsername());
+            orderService.save(orderDto, orderDto.getAddress().getUser().getUsername());
         }
     }
 

@@ -21,6 +21,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,12 +35,11 @@ import java.util.Set;
 @DynamicUpdate
 public class Order extends BaseEntity {
 
-    @OneToMany(mappedBy = "order")
-//            , cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    private Set<OrderDetail> details;
-
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    private List<OrderStatus> statusList;
+//    @OneToMany(mappedBy = "order")
+//    private Set<OrderDetail> details = new HashSet<>();
+//
+//    @OneToMany(mappedBy = "order")
+//    private List<OrderStatus> statusList = new ArrayList<>();
 
     @Column(name="order_total_price")
     private BigDecimal totalPrice;

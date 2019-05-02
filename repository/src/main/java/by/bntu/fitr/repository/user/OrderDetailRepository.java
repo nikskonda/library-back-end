@@ -9,7 +9,7 @@ import java.util.Set;
 @Repository
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> {
 
-    Set<OrderDetail> findOrderDetailesByOrderId(Long orderId);
+    Set<OrderDetail> findOrderDetailsByOrderId(Long orderId);
 
 
 }

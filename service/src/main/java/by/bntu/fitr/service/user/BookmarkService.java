@@ -15,6 +15,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class BookmarkService {
 
@@ -45,6 +47,7 @@ public class BookmarkService {
             checkAccess(username, bookmark.getUser());
             bookmark.setPage(bookmarkDto.getPage());
         }
+        bookmark.setDateTime(LocalDateTime.now());
         return converter.convertToDto(repository.save(bookmark));
     }
 
