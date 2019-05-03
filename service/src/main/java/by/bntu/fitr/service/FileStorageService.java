@@ -23,8 +23,8 @@ public class FileStorageService {
 
     //    @Value("${file.upload-dir}")
     @Value("/dp/files/uploads")
-    private String FILE_UPLOAD_PATH = "/dp/files/uploads";
-//    private String FILE_UPLOAD_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads";
+//    private String FILE_UPLOAD_PATH = "/dp/files/uploads";
+    private String FILE_UPLOAD_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads";
 
     private final Path fileStorageLocation;
 

@@ -83,21 +83,22 @@ public class Generator {
 
     private final static int ADMIN_PERCENT = 20;
 
-    private final static int COUNT = 30;
+    private final static int COUNT = 50;
     private final static int MIN_ID = 1;
     private final static int MAX_ID = MIN_ID+COUNT-1;
 
 
-    private final static int COUNT_RU = 30;
+    private final static int COUNT_RU = 50;
     private final static int MIN_ID_RU = MAX_ID+1;
     private final static int MAX_ID_RU = MIN_ID_RU+COUNT_RU-1;
 
-    private final static String LIBRARY_BACK_END_PATH = "c:/dp/library-back-end";
-//    private final static String LIBRARY_BACK_END_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end";
+//    private final static String LIBRARY_BACK_END_PATH = "c:/dp/library-back-end";
+    private final static String LIBRARY_BACK_END_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end";
     private final static String VOCABULARY_EN = "/controller/src/main/resources/vocabulary.txt";
-    private final static String VOCABULARY_RU = "/controller/src/main/resources/vocabulary_RU.txt";
+    private final static String VOCABULARY_RU = "/controller/src/main/resources/vocabulary_ru.txt";
 
-    private final static String DATA_FOLDER = "c:/dp/files/uploads/";
+//    private final static String DATA_FOLDER = "c:/dp/files/uploads/";
+    private final static String DATA_FOLDER = "media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads/";
     private final static String BOOK_IMG = "book/img/";
     private final static String BOOK_TH = "book/th/";
     private final static String BOOK_PDF = "book/pdf/";
@@ -106,8 +107,7 @@ public class Generator {
     private final static String NEWS_TH = "news/th/";
 
     @Autowired
-    public Generator(List<String> words, BookService bookService, BookCoverService bookCoverService, OrganizationService organizationService, LanguageService languageService, PublishingHouseService publishingHouseService, GenreService genreService, AuthorService authorService, CountryService countryService, StateService stateService, CityService cityService, UserMainDataService userMainDataService, UserDataService userDataService, UserService userService, NewsService newsService, NewsCoverService newsCoverService, BookmarkService bookmarkService, OrderService orderService, AddressService addressService) {
-        this.words = words;
+    public Generator(BookService bookService, BookCoverService bookCoverService, OrganizationService organizationService, LanguageService languageService, PublishingHouseService publishingHouseService, GenreService genreService, AuthorService authorService, CountryService countryService, StateService stateService, CityService cityService, UserMainDataService userMainDataService, UserDataService userDataService, UserService userService, NewsService newsService, NewsCoverService newsCoverService, BookmarkService bookmarkService, OrderService orderService, AddressService addressService) {
         this.bookService = bookService;
         this.bookCoverService = bookCoverService;
         this.organizationService = organizationService;
@@ -477,11 +477,18 @@ public class Generator {
     }
 
     private String getRandomFile(String str){
-        File dir = new File(DATA_FOLDER+str);
-        File[] files = dir.listFiles();
+//        File dir = new File(DATA_FOLDER+str);
+//        File[] files = dir.listFiles();
         Random rand = new Random();
-        File file = files[rand.nextInt(files.length)];
-        return str+(file.getName());
+//        File file = files[rand.nextInt(files.length)];
+//        return str+(file.getName());
+        if (str.contains("pdf")){
+            return str+rand.nextInt(8)+".pdf";
+        }
+        if (str.contains("epub")){
+            return str+rand.nextInt(8)+".epub";
+        }
+        return str+rand.nextInt(11)+".jpg";
     }
 
     private BookDto generateBook(int minId, int maxId, LanguageDto languageDto){
