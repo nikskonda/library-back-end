@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 @DynamicUpdate
 public class OrderStatus extends BaseEntity {
 
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 

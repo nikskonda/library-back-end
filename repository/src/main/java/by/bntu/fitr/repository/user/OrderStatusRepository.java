@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface OrderStatusRepository extends JpaRepository<OrderStatus, Long> {
 
-    List<OrderStatus> findOrderStatusesByOrderIdOrderByDateTimeDesc(Long orderId);
+    List<OrderStatus> findOrderStatusesByOrderIdOrderByDateTimeAsc(Long orderId);
 
 }

@@ -87,6 +87,10 @@ public class UserMainDataService implements UserDetailsService {
          return userDtoConverter.convertToDto(userRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
      }
 
+    public UserMainDataDto find(String username){
+        return userDtoConverter.convertToDto(userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
+    }
+
     public Role findRole(String authority){
        return roleRepository.findByAuthority(authority).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
     }

@@ -168,7 +168,9 @@ public class OrderService {
         OrderStatus orderStatus = new OrderStatus();
         orderStatus.setDateTime(LocalDateTime.now());
         orderStatus.setStatus(OrderStatus.Status.CANCELLED);
-        orderStatus.setOrder(order);
+        Order o = new Order();
+        o.setId(order.getId());
+        orderStatus.setOrder(o);
         return orderStatusService.save(orderStatus);
     }
 

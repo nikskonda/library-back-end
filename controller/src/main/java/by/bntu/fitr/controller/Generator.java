@@ -12,6 +12,7 @@ import by.bntu.fitr.dto.user.util.CountryDto;
 import by.bntu.fitr.dto.user.util.StateDto;
 import by.bntu.fitr.model.book.Book;
 import by.bntu.fitr.model.book.Bookmark;
+import by.bntu.fitr.model.user.UserMainData;
 import by.bntu.fitr.model.user.order.OrderStatus;
 import by.bntu.fitr.service.book.AuthorService;
 import by.bntu.fitr.service.book.BookCoverService;
@@ -30,11 +31,13 @@ import by.bntu.fitr.service.user.util.CountryService;
 import by.bntu.fitr.service.user.util.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -78,16 +81,29 @@ public class Generator {
 
     private AddressService addressService;
 
-    private final static int COUNT = 10;
+    private final static int ADMIN_PERCENT = 20;
+
+    private final static int COUNT = 30;
     private final static int MIN_ID = 1;
     private final static int MAX_ID = MIN_ID+COUNT-1;
 
 
-    private final static int COUNT_RU = 10;
+    private final static int COUNT_RU = 30;
     private final static int MIN_ID_RU = MAX_ID+1;
     private final static int MAX_ID_RU = MIN_ID_RU+COUNT_RU-1;
 
+    private final static String LIBRARY_BACK_END_PATH = "c:/dp/library-back-end";
+//    private final static String LIBRARY_BACK_END_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end";
+    private final static String VOCABULARY_EN = "/controller/src/main/resources/vocabulary.txt";
+    private final static String VOCABULARY_RU = "/controller/src/main/resources/vocabulary_RU.txt";
 
+    private final static String DATA_FOLDER = "c:/dp/files/uploads/";
+    private final static String BOOK_IMG = "book/img/";
+    private final static String BOOK_TH = "book/th/";
+    private final static String BOOK_PDF = "book/pdf/";
+    private final static String BOOK_EPUB = "book/epub/";
+    private final static String NEWS_IMG = "news/img/";
+    private final static String NEWS_TH = "news/th/";
 
     @Autowired
     public Generator(List<String> words, BookService bookService, BookCoverService bookCoverService, OrganizationService organizationService, LanguageService languageService, PublishingHouseService publishingHouseService, GenreService genreService, AuthorService authorService, CountryService countryService, StateService stateService, CityService cityService, UserMainDataService userMainDataService, UserDataService userDataService, UserService userService, NewsService newsService, NewsCoverService newsCoverService, BookmarkService bookmarkService, OrderService orderService, AddressService addressService) {
@@ -114,10 +130,10 @@ public class Generator {
 
     @GetMapping
     public String generate() {
+
         generateLang();
 
-        initStrings("c:/dp/library-back-end/controller/src/main/resources/vocabulary.txt", Pattern.compile("[A-Za-z]+"));
-//        initStrings("/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end/controller/src/main/resources/vocabulary.txt", Pattern.compile("[A-Za-z]+"));
+        initStrings(LIBRARY_BACK_END_PATH+VOCABULARY_EN, Pattern.compile("[A-Za-z]+"));
 
 
         generateAuthors(COUNT);
@@ -141,8 +157,7 @@ public class Generator {
         generateBookmark(COUNT, MIN_ID, MAX_ID);
 
 
-        initStrings("c:/dp/library-back-end/controller/src/main/resources/vocabulary_ru.txt", Pattern.compile("[А-Яа-я]+"));
-//        initStrings("/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end/controller/src/main/resources/vocabulary_ru.txt", Pattern.compile("[А-Яа-я]+"));
+        initStrings(LIBRARY_BACK_END_PATH+VOCABULARY_RU, Pattern.compile("[А-Яа-я]+"));
 
         generateAuthors(COUNT_RU);
         generateGenres(COUNT_RU);
@@ -165,8 +180,21 @@ public class Generator {
         return "Success!";
     }
 
-    private AddressDto getRandomAddressDto(int minId, int maxId){
-        return addressService.find((long)generateInt(minId, maxId), "admin");
+    private AddressDto getRandomAddressDto(String username, int minId, int maxId){
+        List<AddressDto> list = addressService.findByUsername(username);
+        if (list.size()>0){
+            return list.get(generateInt(0, list.size()-1));
+        }
+        AddressDto address = new AddressDto();
+        address.setCity(getRandomCity(minId, maxId));
+        address.setUser(userService.find(username));
+        address.setFirstName(address.getUser().getFirstName());
+        address.setLastName(address.getUser().getLastName());
+        address.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
+        address.setPostalCode(generateInt(100000, 999999));
+        address.setAddress(generateUrl());
+        return addressService.save(address, address.getUser().getUsername());
+
     }
 
     private void generateAddress(int count, int minId, int maxId){
@@ -179,7 +207,6 @@ public class Generator {
             address.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
             address.setPostalCode(generateInt(100000, 999999));
             address.setAddress(generateUrl());
-            address.setCity(getRandomCity(minId, maxId));
             addressService.save(address, address.getUser().getUsername());
         }
     }
@@ -220,7 +247,7 @@ public class Generator {
     private void generateOrder(int count, int minId, int maxId){
         for(int i=0; i<count; i++){
             OrderDto orderDto = new OrderDto();
-            orderDto.setAddress(getRandomAddressDto(minId, maxId));
+            orderDto.setAddress(getRandomAddressDto(getRandomUserMainDataDto(minId, maxId).getUsername(), minId, maxId));
             orderDto.setDetails(new HashSet<>());
 
             int countBook = generateInt(1, 5);
@@ -257,21 +284,30 @@ public class Generator {
             newsDto.setLanguage(languageDto);
             newsDto.setText(text);
             newsDto.setCreator(getRandomUserDataDto(minId, maxId));
-            newsDto.setPictureUrl(generateUrl());
-            newsDto.setThumbnailUrl(generateUrl());
+            newsDto.setPictureUrl(getRandomFile(NEWS_IMG));
+            newsDto.setThumbnailUrl(newsDto.getPictureUrl().replace("img","th"));
             newsService.save(newsDto, newsDto.getCreator().getUsername());
         }
     }
 
     private UserMainDataDto getRandomUserMainDataDto(int minId, int maxId){
+        if (generateInt(0, 100)<ADMIN_PERCENT){
+            return userMainDataService.find("admin");
+        }
         return userMainDataService.find((long)generateInt(minId, maxId));
     }
 
     private UserDataDto getRandomUserDataDto(int minId, int maxId){
+        if (generateInt(0, 100)<ADMIN_PERCENT){
+            return userDataService.find("admin");
+        }
         return userDataService.find((long)generateInt(minId, maxId));
     }
 
     private UserDto getRandomUserDto(int minId, int maxId){
+        if (generateInt(0, 100)<ADMIN_PERCENT){
+            return userService.find("admin");
+        }
         return userService.find((long)generateInt(minId, maxId));
     }
 
@@ -440,6 +476,14 @@ public class Generator {
         return bookDtos;
     }
 
+    private String getRandomFile(String str){
+        File dir = new File(DATA_FOLDER+str);
+        File[] files = dir.listFiles();
+        Random rand = new Random();
+        File file = files[rand.nextInt(files.length)];
+        return str+(file.getName());
+    }
+
     private BookDto generateBook(int minId, int maxId, LanguageDto languageDto){
         BookDto bookDto = new BookDto();
         bookDto.setTitle(getRandomWord(generateInt(1,6)));
@@ -479,10 +523,13 @@ public class Generator {
         if (generateInt(0, 10)>6){
             bookDto.setSize(generateInt(100, 300)+"x"+generateInt(100, 300));
         }
-        bookDto.setPictureUrl(generateUrl());
-        bookDto.setThumbnailUrl(generateUrl());
+        bookDto.setPictureUrl(getRandomFile(BOOK_IMG));
+        bookDto.setThumbnailUrl(bookDto.getPictureUrl().replace("img","th"));
         if (generateInt(0, 10)>6){
-            bookDto.setPdfUrl(generateUrl());
+            bookDto.setPdfUrl(getRandomFile(BOOK_PDF));
+        }
+        if (generateInt(0, 10)>6){
+            bookDto.setEPubUrl(getRandomFile(BOOK_EPUB));
         }
         if (generateInt(0, 10)>6){
             bookDto.setPrice(generateBigDecimal(0, 40));
@@ -668,6 +715,7 @@ public class Generator {
     }
 
     private int generateInt(int min, int max) {
+        if (min>=max) return min;
         Random random = new Random();
         return min + random.nextInt(max - min);
     }

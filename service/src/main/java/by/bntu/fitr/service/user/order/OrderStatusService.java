@@ -47,7 +47,7 @@ public class OrderStatusService {
     }
 
     public List<OrderStatusDto> findAll(Long orderId) {
-        return converter.convertToDtoList(repository.findOrderStatusesByOrderIdOrderByDateTimeDesc(orderId));
+        return converter.convertToDtoList(repository.findOrderStatusesByOrderIdOrderByDateTimeAsc(orderId));
     }
 
     public OrderStatus getPersistence(Long id) {
