@@ -7,6 +7,8 @@ import by.bntu.fitr.repository.user.util.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CountryService {
 
@@ -40,4 +42,7 @@ public class CountryService {
         repository.delete(converter.convertFromDto(countryDto));
     }
 
+    public List<CountryDto> findList(){
+        return converter.convertToDtoList(repository.findCountriesByOrderByNameAsc());
+    }
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.List;
 
 @Validated
 @RestController
@@ -61,5 +62,10 @@ public class CountryController {
         countryService.delete(id);
     }
 
+    @GetMapping
+    @PreAuthorize("hasAuthority('USER')")
+    public List<CountryDto> findAll() {
+        return countryService.findList();
+    }
 
 }

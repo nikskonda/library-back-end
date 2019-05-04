@@ -1,9 +1,18 @@
 package by.bntu.fitr.controller;
 
 import by.bntu.fitr.dto.PageableDto;
-import by.bntu.fitr.dto.book.*;
+import by.bntu.fitr.dto.book.AuthorDto;
+import by.bntu.fitr.dto.book.BookDto;
+import by.bntu.fitr.dto.book.BookmarkDto;
+import by.bntu.fitr.dto.book.GenreDto;
+import by.bntu.fitr.dto.book.LanguageDto;
+import by.bntu.fitr.dto.book.OrganizationDto;
+import by.bntu.fitr.dto.book.PublishingHouseDto;
 import by.bntu.fitr.dto.news.NewsDto;
-import by.bntu.fitr.dto.user.*;
+import by.bntu.fitr.dto.user.RoleDto;
+import by.bntu.fitr.dto.user.UserDataDto;
+import by.bntu.fitr.dto.user.UserDto;
+import by.bntu.fitr.dto.user.UserMainDataDto;
 import by.bntu.fitr.dto.user.order.OrderDetailDto;
 import by.bntu.fitr.dto.user.order.OrderDto;
 import by.bntu.fitr.dto.user.util.AddressDto;
@@ -12,7 +21,6 @@ import by.bntu.fitr.dto.user.util.CountryDto;
 import by.bntu.fitr.dto.user.util.StateDto;
 import by.bntu.fitr.model.book.Book;
 import by.bntu.fitr.model.book.Bookmark;
-import by.bntu.fitr.model.user.UserMainData;
 import by.bntu.fitr.model.user.order.OrderStatus;
 import by.bntu.fitr.service.book.AuthorService;
 import by.bntu.fitr.service.book.BookCoverService;
@@ -23,7 +31,10 @@ import by.bntu.fitr.service.book.OrganizationService;
 import by.bntu.fitr.service.book.PublishingHouseService;
 import by.bntu.fitr.service.news.NewsCoverService;
 import by.bntu.fitr.service.news.NewsService;
-import by.bntu.fitr.service.user.*;
+import by.bntu.fitr.service.user.BookmarkService;
+import by.bntu.fitr.service.user.UserDataService;
+import by.bntu.fitr.service.user.UserMainDataService;
+import by.bntu.fitr.service.user.UserService;
 import by.bntu.fitr.service.user.order.OrderService;
 import by.bntu.fitr.service.user.util.AddressService;
 import by.bntu.fitr.service.user.util.CityService;
@@ -31,7 +42,6 @@ import by.bntu.fitr.service.user.util.CountryService;
 import by.bntu.fitr.service.user.util.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,7 +92,7 @@ public class Generator {
     private AddressService addressService;
 
     private final static int ADMIN_PERCENT = 20;
-
+    private final static int COUNT_COUNTRY = 10;
     private final static int COUNT = 50;
     private final static int MIN_ID = 1;
     private final static int MAX_ID = MIN_ID+COUNT-1;
@@ -92,13 +102,13 @@ public class Generator {
     private final static int MIN_ID_RU = MAX_ID+1;
     private final static int MAX_ID_RU = MIN_ID_RU+COUNT_RU-1;
 
-//    private final static String LIBRARY_BACK_END_PATH = "c:/dp/library-back-end";
-    private final static String LIBRARY_BACK_END_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end";
+    private final static String LIBRARY_BACK_END_PATH = "c:/dp/library-back-end";
+//    private final static String LIBRARY_BACK_END_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end";
     private final static String VOCABULARY_EN = "/controller/src/main/resources/vocabulary.txt";
     private final static String VOCABULARY_RU = "/controller/src/main/resources/vocabulary_ru.txt";
 
-//    private final static String DATA_FOLDER = "c:/dp/files/uploads/";
-    private final static String DATA_FOLDER = "media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads/";
+    private final static String DATA_FOLDER = "c:/dp/files/uploads/";
+//    private final static String DATA_FOLDER = "media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads/";
     private final static String BOOK_IMG = "book/img/";
     private final static String BOOK_TH = "book/th/";
     private final static String BOOK_PDF = "book/pdf/";
@@ -143,9 +153,7 @@ public class Generator {
 
         generateBooks(COUNT, MIN_ID, MAX_ID, getEngLang());
 
-        generateCountry(COUNT);
-        generateState(COUNT, MIN_ID, MAX_ID);
-        generateCity(COUNT, MIN_ID, MAX_ID);
+        generateCountry(COUNT_COUNTRY, MIN_ID, MAX_ID);
 
         generateDefaultUsers(MIN_ID, MAX_ID);
 
@@ -166,9 +174,7 @@ public class Generator {
 
         generateBooks(COUNT_RU, MIN_ID_RU, MAX_ID_RU, getRuLang());
 
-        generateCountry(COUNT_RU);
-        generateState(COUNT_RU, MIN_ID_RU, MAX_ID_RU);
-        generateCity(COUNT_RU, MIN_ID_RU, MAX_ID_RU);
+        generateCountry(COUNT_COUNTRY, MIN_ID_RU, MAX_ID_RU);
 
         generateUser(COUNT_RU, MIN_ID_RU, MAX_ID_RU);
 
@@ -423,43 +429,44 @@ public class Generator {
         return cityService.find(generateLong(minId, maxId));
     }
 
-    private void generateCity(int count, int minId, int maxId){
+    private void generateCity(int count, int minId, int maxId, StateDto stateDto, List<String> city){
         List<String> strings = new ArrayList<>(words);
         for (int i=0; i<count; i++){
+            if (city.size()==0) break;
             CityDto cityDto = new CityDto();
-            String str = getRandomWord(strings);
+            String str = getRandomWord(city);
             cityDto.setName(str.substring(0, 1).toUpperCase() + str.substring(1));
-            cityDto.setState(getRandomState(minId, maxId));
+            cityDto.setState(stateDto);
             cityService.save(cityDto);
         }
     }
 
-    private StateDto getRandomState(int minId, int maxId){
-        return stateService.find(generateLong(minId, maxId));
-    }
-
-    private void generateState(int count, int minId, int maxId){
-        List<String> strings = new ArrayList<>(words);
+    private void generateState(int count, int minId, int maxId, CountryDto countryDto, List<String> state, List<String> city){
         for (int i=0; i<count; i++){
+            if (state.size()==0) break;
             StateDto stateDto = new StateDto();
-            String str = getRandomWord(strings);
+            String str = getRandomWord(state);
             stateDto.setName(str.substring(0, 1).toUpperCase() + str.substring(1));
-            stateDto.setCountry(getRandomCountry(minId, maxId));
-            stateService.save(stateDto);
+            stateDto.setCountry(countryDto);
+            stateDto = stateService.save(stateDto);
+            for (int j = 0; j< COUNT_COUNTRY; j++) {
+                generateCity(1, minId, maxId, stateDto, city);
+            }
         }
     }
 
-    private CountryDto getRandomCountry(int minId, int maxId){
-        return countryService.find(generateLong(minId, maxId));
-    }
-
-    private void generateCountry(int count){
+    private void generateCountry(int count, int minId, int maxId){
         List<String> strings = new ArrayList<>(words);
+        List<String> state = new ArrayList<>(words);
+        List<String> city = new ArrayList<>(words);
         for (int i=0; i<count; i++){
             CountryDto countryDto = new CountryDto();
             String str = getRandomWord(strings);
             countryDto.setName(str.substring(0, 1).toUpperCase() + str.substring(1));
-            countryService.save(countryDto);
+            countryDto = countryService.save(countryDto);
+            for (int j = 0; j< COUNT_COUNTRY; j++) {
+                generateState(1, minId, maxId, countryDto, state, city);
+            }
         }
     }
 
@@ -477,18 +484,19 @@ public class Generator {
     }
 
     private String getRandomFile(String str){
-//        File dir = new File(DATA_FOLDER+str);
-//        File[] files = dir.listFiles();
         Random rand = new Random();
-//        File file = files[rand.nextInt(files.length)];
-//        return str+(file.getName());
-        if (str.contains("pdf")){
-            return str+rand.nextInt(8)+".pdf";
-        }
-        if (str.contains("epub")){
-            return str+rand.nextInt(8)+".epub";
-        }
-        return str+rand.nextInt(11)+".jpg";
+        File dir = new File(DATA_FOLDER+str);
+        File[] files = dir.listFiles();
+
+        File file = files[rand.nextInt(files.length)];
+        return str+(file.getName());
+//        if (str.contains("pdf")){
+//            return str+(rand.nextInt(7)+1)+".pdf";
+//        }
+//        if (str.contains("epub")){
+//            return str+(rand.nextInt(6)+1)+".epub";
+//        }
+//        return str+(rand.nextInt(10)+1)+".jpg";
     }
 
     private BookDto generateBook(int minId, int maxId, LanguageDto languageDto){

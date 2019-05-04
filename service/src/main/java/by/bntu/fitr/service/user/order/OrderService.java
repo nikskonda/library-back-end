@@ -53,7 +53,13 @@ public class OrderService {
     public OrderDto save(OrderDto orderDto, String username) {
         Order order = new Order();
         if (orderDto.getId() == null) {
-            Address address = addressService.getPersistence(orderDto.getAddress().getId());
+            Address address;
+            if (orderDto.getAddress().getId()!=null){
+                address = addressService.getPersistence(orderDto.getAddress().getId());
+            } else {
+                address = addressService.getPersistence(
+                        addressService.save(orderDto.getAddress(), username).getId());
+            }
 
             if (!username.equals(address.getUser().getUsername())) {
                 throw new AccessDeniedException();
@@ -63,8 +69,9 @@ public class OrderService {
             order.setCreationDateTime(LocalDateTime.now());
             BigDecimal totalPrice = new BigDecimal(0);
             for (OrderDetailDto orderDetail : orderDto.getDetails()) {
-                if (orderDetail.getPrice()!=null){
-                    totalPrice = totalPrice.add(orderDetail.getPrice().multiply(new BigDecimal(orderDetail.getCount())));
+                BigDecimal price = orderDetail.getBook().getPrice();
+                if (price!=null){
+                    totalPrice = totalPrice.add(price.multiply(new BigDecimal(orderDetail.getCount())));
                 }
             }
             order.setTotalPrice(totalPrice);

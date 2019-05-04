@@ -63,20 +63,14 @@ public class AddressService {
     }
 
     private boolean isOwnerAccess(String username, User addressUser) {
-        if (!username.equals(addressUser.getUsername())) {
-            return false;
-        }
-        return true;
+        return username.equals(addressUser.getUsername());
     }
 
     private boolean isAdminAccess(String username) {
-        if (!userService
+        return userService
                 .getPersistant(username)
                 .getAuthorities()
-                .contains(userService.findRole(ROLE_FOR_ADDRESS_EDIT))) {
-            return false;
-        }
-        return true;
+                .contains(userService.findRole(ROLE_FOR_ADDRESS_EDIT));
     }
 
 

@@ -3,9 +3,9 @@ package by.bntu.fitr.service.book;
 import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.converter.book.BookCoverDtoConverter;
 import by.bntu.fitr.dto.PageableDto;
-import by.bntu.fitr.dto.book.*;
+import by.bntu.fitr.dto.book.BookCoverDto;
+import by.bntu.fitr.dto.book.BookSearchParameters;
 import by.bntu.fitr.model.book.Author;
-import by.bntu.fitr.model.book.BookCover;
 import by.bntu.fitr.model.book.Genre;
 import by.bntu.fitr.repository.book.BookCoverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -46,16 +45,20 @@ public class BookCoverService {
         Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
 
         if (params.getGenres() != null && !params.getGenres().isEmpty()) {
-            Set<Genre> genres = new HashSet<>();
+            Set<Genre> genreSet = new HashSet<>();
             for (String genreName : params.getGenres()) {
-                genres.addAll(genreService.findByParametersPersistents(genreName));
+                genreSet.addAll(genreService.findByParametersPersistents(genreName));
+//                List<Genre> genrePersistents = (genreService.findByParametersPersistents(genreName));
+//                for (Genre genre: genrePersistents){
+//                    genreSet.add(genre.getId());
+//                }
             }
             return converter.convertToDtoPage(
                     repository
                             .findBookCoversByLanguageTagAndTitleLikeAndGenres(
                                     params.getBookLangTag(),
                                     '%' + params.getSearchString() + '%',
-                                    genres,
+                                    genreSet,
                                     pageable));
         }
         if (params.getAuthors() != null && !params.getAuthors().isEmpty()) {
