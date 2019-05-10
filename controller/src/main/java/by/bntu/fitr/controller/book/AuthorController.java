@@ -1,7 +1,6 @@
 package by.bntu.fitr.controller.book;
 
 import by.bntu.fitr.dto.book.AuthorDto;
-import by.bntu.fitr.dto.book.LanguageDto;
 import by.bntu.fitr.service.book.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
-import java.util.Set;
 
 @Validated
 @RestController
@@ -58,7 +56,7 @@ public class AuthorController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     public AuthorDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                          @Validated() @RequestBody AuthorDto authorDto) {
+                          @Valid @RequestBody AuthorDto authorDto) {
         authorDto.setId(id);
         return authorService.save(authorDto);
     }

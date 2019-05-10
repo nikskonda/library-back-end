@@ -1,8 +1,6 @@
 package by.bntu.fitr.model.user.order;
 
 import by.bntu.fitr.model.BaseEntity;
-import by.bntu.fitr.model.book.Book;
-import by.bntu.fitr.model.user.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicUpdate;
@@ -42,7 +40,7 @@ public class OrderStatus extends BaseEntity {
 
 
     public enum Status{
-        COMPLETED, NEW, IN_PROCESS, CANCELLED
+        NEW, CONFIRMED, RECEIVED, RETURNED, CANCELLED
     }
 
 }

@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
-import java.util.Set;
 
 @Validated
 @RestController
@@ -57,7 +56,7 @@ public class OrganizationController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     public OrganizationDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                          @Validated() @RequestBody OrganizationDto organizationDto) {
+                          @Valid @RequestBody OrganizationDto organizationDto) {
         organizationDto.setId(id);
         return organizationService.save(organizationDto);
     }

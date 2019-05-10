@@ -58,12 +58,36 @@ public class OrderController {
         return orderService.addStatus(orderStatusDto, id, authentication.getName());
     }
 
-    @PostMapping("/{id}/cancel")
+    @PostMapping("/{id}/confirmed")
     @PreAuthorize("hasAuthority('USER')")
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderDto cancel(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+    public OrderDto confirmed(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
                            Authentication authentication) {
-        return orderService.cancel(id, authentication.getName());
+        return orderService.confirmed(id, authentication.getName());
+    }
+
+    @PostMapping("/{id}/received")
+    @PreAuthorize("hasAuthority('USER')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderDto received(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                              Authentication authentication) {
+        return orderService.received(id, authentication.getName());
+    }
+
+    @PostMapping("/{id}/returned")
+    @PreAuthorize("hasAuthority('USER')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderDto returned(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                           Authentication authentication) {
+        return orderService.returned(id, authentication.getName());
+    }
+
+    @PostMapping("/{id}/canceled")
+    @PreAuthorize("hasAuthority('USER')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderDto canceled(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                           Authentication authentication) {
+        return orderService.canceled(id, authentication.getName());
     }
 
     @GetMapping("/user")

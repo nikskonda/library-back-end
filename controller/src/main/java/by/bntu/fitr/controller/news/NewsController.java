@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.Set;
 
 @Validated
 @RestController
@@ -65,7 +63,7 @@ public class NewsController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     public NewsDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                          @Validated() @RequestBody NewsDto newsDto,
+                          @Valid @RequestBody NewsDto newsDto,
                           Authentication authentication) {
         newsDto.setId(id);
         return newsService.save(newsDto, authentication.getName());

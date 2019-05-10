@@ -4,7 +4,6 @@ import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.user.UserDataDto;
 import by.bntu.fitr.dto.user.UserDto;
 import by.bntu.fitr.dto.user.UserMainDataDto;
-import by.bntu.fitr.model.user.UserData;
 import by.bntu.fitr.service.user.UserDataService;
 import by.bntu.fitr.service.user.UserMainDataService;
 import by.bntu.fitr.service.user.UserService;
@@ -60,7 +59,7 @@ public class UserController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('USER')")
     public UserMainDataDto updateMainData(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                                          @Validated() @RequestBody UserMainDataDto user) {
+                                          @Valid @RequestBody UserMainDataDto user) {
         user.setId(id);
         return userMainDataService.save(user);
     }

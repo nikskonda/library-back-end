@@ -1,16 +1,16 @@
 package by.bntu.fitr.dto.book;
 
-import by.bntu.fitr.model.book.Language;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
 public class BookSearchParameters {
 
+    @Size(min = 0, max = 30, message = "exception.validation.bookSearchParams.searchString.size")
     private String searchString;
     private Set<String> genres;
     private Set<String> authors;

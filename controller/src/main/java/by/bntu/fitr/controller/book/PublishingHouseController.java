@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
-import java.util.Set;
 
 @Validated
 @RestController
@@ -57,7 +56,7 @@ public class PublishingHouseController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     public PublishingHouseDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                          @Validated() @RequestBody PublishingHouseDto publishingHouseDto) {
+                          @Valid @RequestBody PublishingHouseDto publishingHouseDto) {
         publishingHouseDto.setId(id);
         return service.save(publishingHouseDto);
     }

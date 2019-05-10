@@ -2,7 +2,6 @@ package by.bntu.fitr.model.user;
 
 import by.bntu.fitr.model.BaseEntity;
 import by.bntu.fitr.model.user.util.Address;
-import by.bntu.fitr.model.user.util.City;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicUpdate;
@@ -18,7 +17,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -39,7 +37,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "user_username", nullable = false, length = 30, unique = true)
     private String username;
 
-    @Column(name = "user_password", nullable = false)
+    @Column(name = "user_password", nullable = false, length = 30)
     private String password;
 
 //    @Fetch(FetchMode.JOIN)
@@ -70,8 +68,8 @@ public class User extends BaseEntity implements UserDetails {
     private String email;
 
     @OneToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_last_address_id")
-    private Address lastAddress;
+    @JoinColumn(name = "user_address_id")
+    private Address address;
 
 
     public User(){

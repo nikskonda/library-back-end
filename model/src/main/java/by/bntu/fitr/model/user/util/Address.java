@@ -49,8 +49,8 @@ public class Address extends BaseEntity {
     @Column(name = "address_address", length = 400)
     private String address;
 
-    @Column(name = "address_postalCode", length = 6)
-    private Integer postalCode;
+    @Column(name = "address_postalCode", length = 20)
+    private String postalCode;
 
     @Column(name = "address_creation_date_time", nullable = false)
     private LocalDateTime creationDateTime;

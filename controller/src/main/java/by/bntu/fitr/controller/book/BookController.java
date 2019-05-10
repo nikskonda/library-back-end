@@ -61,7 +61,7 @@ public class BookController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     public BookDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                          @Validated() @RequestBody BookDto bookDto) {
+                          @Valid @RequestBody BookDto bookDto) {
         bookDto.setId(id);
         return bookService.save(bookDto);
     }

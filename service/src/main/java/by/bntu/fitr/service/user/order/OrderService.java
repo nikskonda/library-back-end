@@ -6,7 +6,6 @@ import by.bntu.fitr.UnsupportedOperationException;
 import by.bntu.fitr.converter.user.OrderDtoConverter;
 import by.bntu.fitr.converter.user.OrderStatusDtoConverter;
 import by.bntu.fitr.dto.PageableDto;
-import by.bntu.fitr.dto.user.UserDto;
 import by.bntu.fitr.dto.user.order.OrderDetailDto;
 import by.bntu.fitr.dto.user.order.OrderDto;
 import by.bntu.fitr.dto.user.order.OrderStatusDto;
@@ -80,7 +79,7 @@ public class OrderService {
             for (OrderDetailDto orderDetailDto : orderDto.getDetails()) {
                 orderDetailService.save(orderDetailDto, order);
             }
-            orderStatusService.save(createStatusNew(order));
+            orderStatusService.save(createStatus(OrderStatus.Status.NEW, order));
 
             return find(order.getId(), username);
         } else {
@@ -98,16 +97,37 @@ public class OrderService {
 
     public OrderDto find(Long orderId, String username) {
         OrderDto order = converter.convertToDto(getPersistence(orderId));
-        checkAccess(username, order.getAddress().getUser());
+        checkAccess(username, order);
         order.setDetails(orderDetailService.findAll(order.getId()));
         order.setStatusList(orderStatusService.findAll(order.getId()));
         return order;
     }
 
-    public OrderDto cancel(Long orderId, String username) {
+    public OrderDto confirmed(Long orderId, String username) {
         OrderDto order = converter.convertToDto(getPersistence(orderId));
-        checkAccess(username, order.getAddress().getUser());
-        createStatusCancelled(converter.convertFromDto(order));
+        isAdminAccess(username);
+        orderStatusService.save(createStatus(OrderStatus.Status.CONFIRMED, converter.convertFromDto(order)));
+        return find(orderId, username);
+    }
+
+    public OrderDto received(Long orderId, String username) {
+        OrderDto order = converter.convertToDto(getPersistence(orderId));
+        isOwnerAccess(username, order);
+        orderStatusService.save(createStatus(OrderStatus.Status.RECEIVED, converter.convertFromDto(order)));
+        return find(orderId, username);
+    }
+
+    public OrderDto returned(Long orderId, String username) {
+        OrderDto order = converter.convertToDto(getPersistence(orderId));
+        isAdminAccess(username);
+        orderStatusService.save(createStatus(OrderStatus.Status.RETURNED, converter.convertFromDto(order)));
+        return find(orderId, username);
+    }
+
+    public OrderDto canceled(Long orderId, String username) {
+        OrderDto order = converter.convertToDto(getPersistence(orderId));
+        checkAccess(username, order);
+        orderStatusService.save(createStatus(OrderStatus.Status.CANCELLED, converter.convertFromDto(order)));
         return find(orderId, username);
     }
 
@@ -163,26 +183,16 @@ public class OrderService {
         return repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
     }
 
-    private OrderStatus createStatusNew(Order order) {
+    private OrderStatus createStatus(OrderStatus.Status status, Order order) {
         OrderStatus orderStatus = new OrderStatus();
         orderStatus.setDateTime(LocalDateTime.now());
-        orderStatus.setStatus(OrderStatus.Status.NEW);
+        orderStatus.setStatus(status);
         orderStatus.setOrder(order);
         return orderStatus;
     }
 
-    private OrderStatusDto createStatusCancelled(Order order) {
-        OrderStatus orderStatus = new OrderStatus();
-        orderStatus.setDateTime(LocalDateTime.now());
-        orderStatus.setStatus(OrderStatus.Status.CANCELLED);
-        Order o = new Order();
-        o.setId(order.getId());
-        orderStatus.setOrder(o);
-        return orderStatusService.save(orderStatus);
-    }
-
-    private boolean isOwnerAccess(String username, UserDto orderUser) {
-        if (!username.equals(orderUser.getUsername())) {
+    private boolean isOwnerAccess(String username, OrderDto orderDto) {
+        if (!username.equals(orderDto.getAddress().getUser().getUsername())) {
             return false;
         }
         return true;
@@ -201,8 +211,8 @@ public class OrderService {
     }
 
 
-    private boolean checkAccess(String username, UserDto orderUser) {
-        if (isOwnerAccess(username, orderUser) || isAdminAccess(username)) {
+    private boolean checkAccess(String username, OrderDto orderDto) {
+        if (isOwnerAccess(username, orderDto) || isAdminAccess(username)) {
             return true;
         } else {
             throw new AccessDeniedException();
