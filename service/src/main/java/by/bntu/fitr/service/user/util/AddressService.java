@@ -43,6 +43,18 @@ public class AddressService {
         return converter.convertToDto(address);
     }
 
+    public AddressDto findMain(String username){
+        Address address = findMainAddress(username);
+        if (address!=null){
+            return converter.convertToDto(address);
+        }
+        return null;
+    }
+
+    private Address findMainAddress(String username){
+        return repository.findAddressByUserUsernameAndMainTrue(username);
+    }
+
     public void delete(Long id, String username) {
         Address address = getPersistence(id);
         checkAccess(username, address.getUser());
@@ -62,13 +74,21 @@ public class AddressService {
         return repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
     }
 
+    public void removeMainAddress(String username){
+        Address address = findMainAddress(username);
+        if (address!=null){
+            address.setMain(false);
+            save(converter.convertToDto(address), username);
+        }
+    }
+
     private boolean isOwnerAccess(String username, User addressUser) {
         return username.equals(addressUser.getUsername());
     }
 
     private boolean isAdminAccess(String username) {
         return userService
-                .getPersistant(username)
+                .getPersistence(username)
                 .getAuthorities()
                 .contains(userService.findRole(ROLE_FOR_ADDRESS_EDIT));
     }

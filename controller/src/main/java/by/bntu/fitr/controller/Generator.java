@@ -93,12 +93,12 @@ public class Generator {
 
     private final static int ADMIN_PERCENT = 20;
     private final static int COUNT_COUNTRY = 10;
-    private final static int COUNT = 50;
+    private final static int COUNT = 10;
     private final static int MIN_ID = 1;
     private final static int MAX_ID = MIN_ID+COUNT-1;
 
 
-    private final static int COUNT_RU = 50;
+    private final static int COUNT_RU = 10;
     private final static int MIN_ID_RU = MAX_ID+1;
     private final static int MAX_ID_RU = MIN_ID_RU+COUNT_RU-1;
 
@@ -115,6 +115,8 @@ public class Generator {
     private final static String BOOK_EPUB = "book/epub/";
     private final static String NEWS_IMG = "news/img/";
     private final static String NEWS_TH = "news/th/";
+
+    private final static String USER_AVA = "user/avatar/";
 
     @Autowired
     public Generator(BookService bookService, BookCoverService bookCoverService, OrganizationService organizationService, LanguageService languageService, PublishingHouseService publishingHouseService, GenreService genreService, AuthorService authorService, CountryService countryService, StateService stateService, CityService cityService, UserMainDataService userMainDataService, UserDataService userDataService, UserService userService, NewsService newsService, NewsCoverService newsCoverService, BookmarkService bookmarkService, OrderService orderService, AddressService addressService) {
@@ -160,7 +162,6 @@ public class Generator {
         generateUser(COUNT-3, MIN_ID, MAX_ID);
 
         generateNews(COUNT, MIN_ID, MAX_ID, getEngLang());
-        generateAddress(COUNT, MIN_ID, MAX_ID);
         generateOrder(COUNT, MIN_ID, MAX_ID);
         generateBookmark(COUNT, MIN_ID, MAX_ID);
 
@@ -179,26 +180,26 @@ public class Generator {
         generateUser(COUNT_RU, MIN_ID_RU, MAX_ID_RU);
 
         generateNews(COUNT_RU, MIN_ID_RU, MAX_ID_RU, getRuLang());
-        generateAddress(COUNT_RU, MIN_ID_RU, MAX_ID_RU);
         generateOrder(COUNT_RU, MIN_ID_RU, MAX_ID_RU);
         generateBookmark(COUNT_RU, MIN_ID_RU, MAX_ID_RU);
 
         return "Success!";
     }
 
-    private AddressDto getRandomAddressDto(String username, int minId, int maxId){
-        List<AddressDto> list = addressService.findByUsername(username);
-        if (list.size()>0){
-            return list.get(generateInt(0, list.size()-1));
-        }
+    private AddressDto getRandomAddressDto(String username, boolean main, int minId, int maxId){
+//        List<AddressDto> list = addressService.findByUsername(username);
+//        if (list.size()>0){
+//            return list.get(generateInt(0, list.size()-1));
+//        }
         AddressDto address = new AddressDto();
         address.setCity(getRandomCity(minId, maxId));
         address.setUser(userService.find(username));
         address.setFirstName(address.getUser().getFirstName());
         address.setLastName(address.getUser().getLastName());
-        address.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
-        address.setPostalCode(generateInt(100000, 999999));
+        //address.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
+        address.setPostalCode(generateInt(100000, 999999)+"");
         address.setAddress(generateUrl());
+        address.setMain(main);
         return addressService.save(address, address.getUser().getUsername());
 
     }
@@ -210,8 +211,8 @@ public class Generator {
             address.setUser(getRandomUserDto(minId, maxId));
             address.setFirstName(address.getUser().getFirstName());
             address.setLastName(address.getUser().getLastName());
-            address.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
-            address.setPostalCode(generateInt(100000, 999999));
+            //address.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
+            address.setPostalCode(generateInt(100000, 999999)+"");
             address.setAddress(generateUrl());
             addressService.save(address, address.getUser().getUsername());
         }
@@ -253,7 +254,7 @@ public class Generator {
     private void generateOrder(int count, int minId, int maxId){
         for(int i=0; i<count; i++){
             OrderDto orderDto = new OrderDto();
-            orderDto.setAddress(getRandomAddressDto(getRandomUserMainDataDto(minId, maxId).getUsername(), minId, maxId));
+            orderDto.setAddress(getRandomAddressDto(getRandomUserMainDataDto(minId, maxId).getUsername(), false, minId, maxId));
             orderDto.setDetails(new HashSet<>());
 
             int countBook = generateInt(1, 5);
@@ -385,7 +386,11 @@ public class Generator {
                 userDto.setLastName(str.substring(0, 1).toUpperCase() + str.substring(1));
             if (generateInt(0, 10)>5)
                 userDto.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
+            if (generateInt(0, 10)>3)
+                userDto.setAvatarUrl(getRandomFile(USER_AVA));
             userService.save(userDto);
+            if (generateInt(0, 10)>5)
+                getRandomAddressDto(userDto.getUsername(), true, minId, maxId);
         }
     }
 

@@ -6,6 +6,8 @@ import by.bntu.fitr.dto.user.order.OrderStatusDto;
 import by.bntu.fitr.model.user.order.OrderStatus;
 import by.bntu.fitr.repository.user.OrderStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -52,6 +54,10 @@ public class OrderStatusService {
 
     public OrderStatus getPersistence(Long id) {
         return repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
+    }
+
+    public Page<OrderStatus> findAllByStatus(OrderStatus.Status status, Pageable pageable) {
+        return repository.findOrderStatusesByStatus(status, pageable);
     }
 
 }

@@ -54,4 +54,7 @@ public class Address extends BaseEntity {
 
     @Column(name = "address_creation_date_time", nullable = false)
     private LocalDateTime creationDateTime;
+
+    @Column(name = "address_main")
+    private Boolean main;
 }

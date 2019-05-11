@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -131,6 +132,31 @@ public class UserMainDataService implements UserDetailsService {
         }
     }
 
+    public void ban(Long id) {
+        UserMainData user = getPersistence(id);
+        changeBan(user);
+        userRepository.save(user);
+    }
+
+    public void ban(String username) {
+        UserMainData user = getPersistence(username);
+        changeBan(user);
+        userRepository.save(user);
+    }
+
+    private void changeBan(UserMainData user){
+        user.setEnabled(!user.getEnabled());
+    }
+
+    public UserMainData getPersistence(Long id) {
+        return (userRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
+    }
+
+    public UserMainData getPersistence(String username) {
+        Optional<UserMainData> user = userRepository.findByUsername(username);
+        return (userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
+    }
+
     public Page<UserMainDataDto> findAll(PageableDto pageableDto){
         Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
         return userDtoConverter.convertToDtoPage(userRepository.findAll(pageable));
@@ -138,7 +164,7 @@ public class UserMainDataService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
+        return getPersistence(username);
     }
 
     private void setDefaultRole(UserMainData user) {

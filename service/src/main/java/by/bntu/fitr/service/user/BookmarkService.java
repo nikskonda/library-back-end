@@ -41,7 +41,7 @@ public class BookmarkService {
         if (bookmarkDto.getId() == null) {
             bookmarkDto.setBook(bookService.find(bookmarkDto.getBook().getId()));
             bookmark = converter.convertFromDto(bookmarkDto);
-            bookmark.setUser(userService.getPersistant(username));
+            bookmark.setUser(userService.getPersistence(username));
         } else {
             bookmark = getPersist(bookmarkDto.getId());
             checkAccess(username, bookmark.getUser());
@@ -79,7 +79,7 @@ public class BookmarkService {
 
     public Page<BookmarkDto> findAll(String username, PageableDto pageableDto) {
         Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
-        return converter.convertToDtoPage(repository.findByUser(userService.getPersistant(username), pageable));
+        return converter.convertToDtoPage(repository.findByUser(userService.getPersistence(username), pageable));
     }
 
     public Bookmark getPersist(Long id) {

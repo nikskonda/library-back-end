@@ -9,6 +9,7 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -21,6 +22,8 @@ public class UserData extends BaseEntity {
     @Column(name = "user_username", nullable = false, length = 30, unique = true)
     private String username;
 
+    @Column(name = "user_avatar_url")
+    private String avatarUrl;
 
     @Column(name = "user_first_name", length = 30)
     private String firstName;
@@ -30,4 +33,6 @@ public class UserData extends BaseEntity {
     @Column(name = "user_email", length = 254)
     private String email;
 
+    @Column(name = "user_registration_date")
+    private LocalDateTime registrationDate;
 }

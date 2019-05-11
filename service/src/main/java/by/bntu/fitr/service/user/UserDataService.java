@@ -5,8 +5,10 @@ import by.bntu.fitr.UnsupportedOperationException;
 import by.bntu.fitr.converter.user.UserDataDtoConverter;
 import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.user.UserDataDto;
+import by.bntu.fitr.dto.user.util.AddressDto;
 import by.bntu.fitr.model.user.UserData;
 import by.bntu.fitr.repository.user.UserDataRepository;
+import by.bntu.fitr.service.user.util.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,11 +25,15 @@ public class UserDataService {
     private static final String NOT_FOUND_ERROR = "exception.not_found.user";
 
     private UserDataRepository userRepository;
+    private UserService userService;
+    private AddressService addressService;
     private UserDataDtoConverter userDtoConverter;
 
     @Autowired
-    public UserDataService(UserDataRepository userRepository, UserDataDtoConverter userDtoConverter) {
+    public UserDataService(UserDataRepository userRepository, UserService userService, AddressService addressService, UserDataDtoConverter userDtoConverter) {
         this.userRepository = userRepository;
+        this.userService = userService;
+        this.addressService = addressService;
         this.userDtoConverter = userDtoConverter;
     }
 
@@ -44,35 +50,61 @@ public class UserDataService {
     }
 
     public UserDataDto find(Long id) {
-        return userDtoConverter.convertToDto(getPersisten(id));
+        UserDataDto user = userDtoConverter.convertToDto(getPersistence(id));
+        setAddress(user);
+        return user;
     }
+
 
     public UserDataDto find(String username) {
-        return userDtoConverter.convertToDto(getPersisten(username));
+        UserDataDto user = userDtoConverter.convertToDto(getPersistence(username));
+        setAddress(user);
+        return user;
     }
 
+
     public void clear(Long id) {
-        UserData user = getPersisten(id);
+        UserData user = getPersistence(id);
         save(new UserDataDto(id, user.getUsername()), user.getUsername());
+        addressService.removeMainAddress(user.getUsername());
     }
 
     public void clear(String username) {
         save(new UserDataDto(find(username).getId(), username), username);
+        addressService.removeMainAddress(username);
     }
 
-    private UserData getPersisten(Long id){
-        System.out.println("UserDataService id="+id);
+    private UserData getPersistence(Long id) {
+        System.out.println("UserDataService id=" + id);
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
     }
 
-    private UserData getPersisten(String username){
-        System.out.println("UserDataService username="+username);
+    private UserData getPersistence(String username) {
+        System.out.println("UserDataService username=" + username);
         return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
     }
 
 
-    public Page<UserDataDto> findAll(PageableDto pageableDto) {
+    public Page<UserDataDto> findAllByUsername(String searchString, PageableDto pageableDto) {
+        if (searchString == null) {
+            searchString = "";
+        }
         Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
-        return userDtoConverter.convertToDtoPage(userRepository.findAll(pageable));
+        Page<UserDataDto> page = userDtoConverter.convertToDtoPage(userRepository.findUserDataByUsernameLike('%' + searchString + '%', pageable));
+        for (UserDataDto userDataDto : page.getContent()){
+            userDataDto.setBanned(userService.isBanned(userDataDto.getUsername()));
+            setAddress(userDataDto);
+        }
+        return page;
+    }
+
+    private void setAddress(UserDataDto user){
+        AddressDto addressDto = addressService.findMain(user.getUsername());
+        if (addressDto!=null){
+            addressDto.setUser(null);
+        }
+        user.setAddress(addressDto);
     }
 }
+
+

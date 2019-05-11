@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -62,18 +63,18 @@ public class UserService {
         } else if (userRepository.existsByUsername(user.getUsername())) {
             user.setPassword(find(user.getUsername()).getPassword());
         }
-
+        user.setRegistrationDate(LocalDateTime.now());
         user = userRepository.save(user);
         return userDtoConverter.convertToDto(user);
 //                .orElseThrow(() -> new ServiceException(String.format(SERVICE_ERROR, "creation", "user"))));
     }
 
     public UserDto find(Long id) {
-        return userDtoConverter.convertToDto(getPersistant(id));
+        return userDtoConverter.convertToDto(getPersistence(id));
     }
 
     public UserDto find(String username) {
-        return userDtoConverter.convertToDto(getPersistant(username));
+        return userDtoConverter.convertToDto(getPersistence(username));
     }
 
 
@@ -89,12 +90,16 @@ public class UserService {
         return roleRepository.findByAuthority(authority).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
     }
 
-    public User getPersistant(Long id) {
+    public User getPersistence(Long id) {
         return (userRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
     }
 
-    public User getPersistant(String username) {
+    public User getPersistence(String username) {
         return (userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
+    }
+
+    public Boolean isBanned(String username){
+        return userRepository.isBaned(username);
     }
 
     private void setDefaultRole(User user) {

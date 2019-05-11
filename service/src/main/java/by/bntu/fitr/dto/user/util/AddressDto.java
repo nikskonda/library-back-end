@@ -4,7 +4,6 @@ import by.bntu.fitr.dto.user.UserDto;
 import lombok.Data;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
@@ -29,9 +28,9 @@ public class AddressDto {
     @Size(min = 1, max = 20, message = "exception.validation.address.phone.size")
     private String phone;
 
-    @NotNull(message = "exception.validation.address.email.notNull")
-    @Email(message = "exception.validation.address.email")
-    private String email;
+//    @NotNull(message = "exception.validation.address.email.notNull")
+//    @Email(message = "exception.validation.address.email")
+//    private String email;
 
     @NotNull(message = "exception.validation.address.city.notNull")
     private @Valid CityDto city;
@@ -42,7 +41,9 @@ public class AddressDto {
 
     @NotNull(message = "exception.validation.address.postalCode.notNull")
     @Size(min = 1, max = 20, message = "exception.validation.address.postalCode.size")
-    private Integer postalCode;
+    private String postalCode;
+
+    private Boolean main;
 
     private LocalDateTime creationDateTime;
 }

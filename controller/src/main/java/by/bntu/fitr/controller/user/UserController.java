@@ -79,10 +79,10 @@ public class UserController {
         return userDataService.save(user, authentication.getName());
     }
 
-    @GetMapping
+    @GetMapping("/search")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Page<UserDataDto> findByPage(PageableDto pageableDto) {
-        return userDataService.findAll(pageableDto);
+    public Page<UserDataDto> findByPageAndUsername(String searchString, PageableDto pageableDto) {
+        return userDataService.findAllByUsername(searchString, pageableDto);
     }
 
     @DeleteMapping("/{id}")
@@ -92,5 +92,18 @@ public class UserController {
         userService.delete(id);
     }
 
+    @PostMapping("/ban")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void ban(@RequestBody String username) {
+        userMainDataService.ban(username);
+    }
+
+    @PostMapping("/clear")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void clear(@RequestBody String username) {
+        userDataService.clear(username);
+    }
 
 }
