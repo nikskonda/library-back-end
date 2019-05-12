@@ -56,8 +56,9 @@ public class OrderStatusService {
         return repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
     }
 
-    public Page<OrderStatus> findAllByStatus(OrderStatus.Status status, Pageable pageable) {
-        return repository.findOrderStatusesByStatus(status, pageable);
+    public void findAllByStatus(OrderStatus.Status status, Pageable pageable) {
+        Page<Long> longs = repository.findAllByStatus(status, pageable);
+        System.out.println("qwe");
     }
 
 }

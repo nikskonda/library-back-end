@@ -21,7 +21,8 @@ public class OrderDto {
     @NotEmpty(message = "exception.validation.order.details.notEmpty")
     private Set<@Valid OrderDetailDto> details;
 
-    private List<OrderStatusDto> statusList;
+    @NotEmpty(message = "exception.validation.order.status.notEmpty")
+    private List<@Valid OrderStatusDto> statusList;
 
     private BigDecimal totalPrice;
 

@@ -98,8 +98,8 @@ public class OrderService {
     public OrderDto find(Long orderId, String username) {
         OrderDto order = converter.convertToDto(getPersistence(orderId));
         checkAccess(username, order);
-        order.setDetails(orderDetailService.findAll(order.getId()));
-        order.setStatusList(orderStatusService.findAll(order.getId()));
+//        order.setDetails(orderDetailService.findAll(order.getId()));
+//        order.setStatusList(orderStatusService.findAll(order.getId()));
         return order;
     }
 
@@ -135,7 +135,7 @@ public class OrderService {
     public Page<OrderDto> findOrdersByUsername(String username, OrderStatus.Status status, PageableDto pageableDto) {
         Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
         Page<OrderDto> pageDto = converter.convertToDtoPage(repository.findOrdersByAddressUserUsername(username, pageable));
-        loadStatusListAndDetails(pageDto);
+//        loadStatusListAndDetails(pageDto);
         return pageDto;
 
     }
@@ -156,11 +156,12 @@ public class OrderService {
         isAdminAccess(username);
         Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
         if (status==null){
-            Page<OrderDto> pageDto = converter.convertToDtoPage(repository.findAll(pageable));
-            loadStatusListAndDetails(pageDto);
+            Page<Order> page = repository.findAll(pageable);
+            Page<OrderDto> pageDto = converter.convertToDtoPage(page);
+//            loadStatusListAndDetails(pageDto);
             return pageDto;
         } else {
-            Page<OrderStatus> pageDto = orderStatusService.findAllByStatus(status, pageable);
+            Page<Long> pageDto = repository.findOrdersByStatus(OrderStatus.Status.valueOf(status.toString()).ordinal(), pageable);
             return null;
         }
 

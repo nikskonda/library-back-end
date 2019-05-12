@@ -102,13 +102,13 @@ public class Generator {
     private final static int MIN_ID_RU = MAX_ID+1;
     private final static int MAX_ID_RU = MIN_ID_RU+COUNT_RU-1;
 
-    private final static String LIBRARY_BACK_END_PATH = "c:/dp/library-back-end";
-//    private final static String LIBRARY_BACK_END_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end";
+//    private final static String LIBRARY_BACK_END_PATH = "c:/dp/library-back-end";
+    private final static String LIBRARY_BACK_END_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end";
     private final static String VOCABULARY_EN = "/controller/src/main/resources/vocabulary.txt";
     private final static String VOCABULARY_RU = "/controller/src/main/resources/vocabulary_ru.txt";
 
-    private final static String DATA_FOLDER = "c:/dp/files/uploads/";
-//    private final static String DATA_FOLDER = "media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads/";
+//    private final static String DATA_FOLDER = "c:/dp/files/uploads/";
+    private final static String DATA_FOLDER = "media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads/";
     private final static String BOOK_IMG = "book/img/";
     private final static String BOOK_TH = "book/th/";
     private final static String BOOK_PDF = "book/pdf/";
@@ -117,6 +117,25 @@ public class Generator {
     private final static String NEWS_TH = "news/th/";
 
     private final static String USER_AVA = "user/avatar/";
+
+    private String getRandomFile(String str){
+        Random rand = new Random();
+//        File dir = new File(DATA_FOLDER+str);
+//        File[] files = dir.listFiles();
+//
+//        File file = files[rand.nextInt(files.length)];
+//        return str+(file.getName());
+        if (str.equals(USER_AVA)){
+            return str+(rand.nextInt(8)+1)+".png";
+        }
+        if (str.equals(BOOK_PDF)){
+            return str+(rand.nextInt(7)+1)+".pdf";
+        }
+        if (str.equals(BOOK_EPUB)){
+            return str+(rand.nextInt(6)+1)+".epub";
+        }
+        return str+(rand.nextInt(10)+1)+".jpg";
+    }
 
     @Autowired
     public Generator(BookService bookService, BookCoverService bookCoverService, OrganizationService organizationService, LanguageService languageService, PublishingHouseService publishingHouseService, GenreService genreService, AuthorService authorService, CountryService countryService, StateService stateService, CityService cityService, UserMainDataService userMainDataService, UserDataService userDataService, UserService userService, NewsService newsService, NewsCoverService newsCoverService, BookmarkService bookmarkService, OrderService orderService, AddressService addressService) {
@@ -488,21 +507,7 @@ public class Generator {
         return bookDtos;
     }
 
-    private String getRandomFile(String str){
-        Random rand = new Random();
-        File dir = new File(DATA_FOLDER+str);
-        File[] files = dir.listFiles();
 
-        File file = files[rand.nextInt(files.length)];
-        return str+(file.getName());
-//        if (str.contains("pdf")){
-//            return str+(rand.nextInt(7)+1)+".pdf";
-//        }
-//        if (str.contains("epub")){
-//            return str+(rand.nextInt(6)+1)+".epub";
-//        }
-//        return str+(rand.nextInt(10)+1)+".jpg";
-    }
 
     private BookDto generateBook(int minId, int maxId, LanguageDto languageDto){
         BookDto bookDto = new BookDto();
