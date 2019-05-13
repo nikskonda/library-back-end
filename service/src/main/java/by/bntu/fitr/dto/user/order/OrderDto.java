@@ -9,8 +9,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 public class OrderDto {
@@ -30,5 +32,12 @@ public class OrderDto {
     private @Valid AddressDto address;
 
     private LocalDateTime creationDateTime;
+
+    public void setStatusList(List<OrderStatusDto> statusList) {
+        statusList.stream()
+                .sorted(Comparator.comparing(OrderStatusDto::getDateTime).reversed())
+                .collect(Collectors.toList());
+        this.statusList = statusList;
+    }
 
 }

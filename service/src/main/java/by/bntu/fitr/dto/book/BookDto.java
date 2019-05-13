@@ -9,7 +9,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
-import java.math.BigDecimal;
 import java.util.Set;
 
 @Data
@@ -48,7 +47,7 @@ public class BookDto {
     @Max(value = 2020, message = "exception.validation.book.year.max")
     private Integer year;
 
-    private Book.Status status; //в наличии, на руках, на складе
+//    private Book.Status status; //в наличии, на руках, на складе
 
     @Min(value = 1, message = "exception.validation.book.weight.min")
     private Integer weight;
@@ -74,11 +73,23 @@ public class BookDto {
     private PublishingHouseDto publishingHouse;
     private OrganizationDto producer;
     private OrganizationDto importer;
-    @Null(message = "exception.validation.book.price.null")
-    private BigDecimal price;
 
+//    @Null(message = "exception.validation.book.price.null")
+//    private BigDecimal price;
+
+    @NotNull(message = "exception.validation.book.inLibraryUseOnly.notNull")
+    private Boolean inLibraryUseOnly;
+
+    @NotNull(message = "exception.validation.book.count.notNull")
+    @Min(value = 1, message = "exception.validation.book.count.min")
+    private Integer count;
     public BookDto() {
         this.rating = 0;
+        this.count = 1;
+        this.year = -1;
     }
 
+    public Boolean isInLibraryUseOnly() {
+        return inLibraryUseOnly;
+    }
 }

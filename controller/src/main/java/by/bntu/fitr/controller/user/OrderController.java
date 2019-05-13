@@ -99,22 +99,21 @@ public class OrderController {
         return orderService.findOrdersByUsername(authentication.getName(), status, pageableDto);
     }
 
-//    @GetMapping("/user/{id}")
-//    @PreAuthorize("hasAuthority('ADMIN')")
-//    public Page<OrderDto> findByUserId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-//                                       OrderStatus.Status status,
-//                                       Authentication authentication,
-//                                       PageableDto pageableDto) {
-//        return orderService.findOrdersByUserId(authentication.getName(), id, pageableDto);
-//    }
-//
-//    @GetMapping("/book/{id}")
-//    @PreAuthorize("hasAuthority('ADMIN')")
-//    public Page<OrderDto> findByBookId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-//                                       Authentication authentication,
-//                                       PageableDto pageableDto) {
-//        return orderService.findOrdersByBookId(authentication.getName(), id, pageableDto);
-//    }
+    @GetMapping("/user/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public Page<OrderDto> findByUserId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                                       OrderStatus.Status status,
+                                       PageableDto pageableDto) {
+        return orderService.findOrdersByUserId(id, status, pageableDto);
+    }
+
+    @GetMapping("/book/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public Page<OrderDto> findByBookId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
+                                       OrderStatus.Status status,
+                                       PageableDto pageableDto) {
+        return orderService.findOrdersByBookId(id, status, pageableDto);
+    }
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")

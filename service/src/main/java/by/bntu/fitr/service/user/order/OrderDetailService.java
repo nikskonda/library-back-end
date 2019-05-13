@@ -35,7 +35,6 @@ public class OrderDetailService {
         if (orderDetail.getId() == null || !repository.existsById(orderDetail.getId())) {
             orderDetail.setId(null);
             orderDetail.setBook(bookService.getPersistence(orderDetail.getBook().getId()));
-            orderDetail.setPrice(orderDetail.getBook().getPrice());
             return converter.convertToDto(repository.save(orderDetail));
         } else {
             throw new UnsupportedOperationException();

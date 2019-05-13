@@ -7,7 +7,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
-import java.math.BigDecimal;
 
 @Data
 public class OrderDetailDto {
@@ -18,8 +17,8 @@ public class OrderDetailDto {
     @NotNull(message = "exception.validation.orderDetail.book.notNull")
     private BookDto book;
 
-    @Null(message = "exception.validation.orderDetail.price.null")
-    private BigDecimal price;
+//    @Null(message = "exception.validation.orderDetail.price.null")
+//    private BigDecimal price;
 
     @Size(min = 1, max = 500, message = "exception.validation.orderDetail.comment.size")
     private String comment;

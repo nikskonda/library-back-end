@@ -54,9 +54,13 @@ public class BookService {
         if (book.getRating()==null){
             book.setRating(0);
         }
+        if (book.getInLibraryUseOnly()==null){
+            book.setInLibraryUseOnly(false);
+        }
+//        if (book.getCount()==null){
+//            book.setCount(1);
 //        }
         return converter.convertToDto(repository.save(book));
-//                .orElseThrow(() -> new ServiceException(String.format(SERVICE_ERROR, "creation", "user"))));
     }
 
 

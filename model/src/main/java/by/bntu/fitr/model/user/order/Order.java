@@ -2,10 +2,7 @@ package by.bntu.fitr.model.user.order;
 
 import by.bntu.fitr.model.BaseEntity;
 import by.bntu.fitr.model.user.util.Address;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,9 +20,13 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -38,11 +39,11 @@ import java.util.Set;
 @DynamicUpdate
 public class Order extends BaseEntity {
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade={CascadeType.ALL})
 //    @JsonManagedReference
     private Set<OrderDetail> details;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade={CascadeType.ALL})
 //    @JsonManagedReference
     private List<OrderStatus> statusList;
 
@@ -55,6 +56,38 @@ public class Order extends BaseEntity {
 
     @Column(name = "order_creation_date_time", nullable = false)
     private LocalDateTime creationDateTime;
+
+    public void setDetails(Set<OrderDetail> details) {
+        details.forEach(detail -> detail.setOrder(this));
+        this.details = details;
+    }
+
+    public void addDetail(OrderDetail detail){
+        if (this.details==null){
+            this.details = new HashSet<>();
+        }
+        detail.setOrder(this);
+        this.details.add(detail);
+    }
+
+    public void setStatusList(List<OrderStatus> statusList) {
+        statusList.forEach(status -> status.setOrder(this));
+        statusList.stream()
+                .sorted(Comparator.comparing(OrderStatus::getDateTime).reversed())
+                .collect(Collectors.toList());
+        this.statusList = statusList;
+    }
+
+    public void addStatus(OrderStatus status){
+        if (this.statusList==null){
+            this.statusList = new ArrayList<>();
+        }
+        status.setOrder(this);
+        this.statusList.add(status);
+        this.statusList.stream()
+                .sorted(Comparator.comparing(OrderStatus::getDateTime).reversed())
+                .collect(Collectors.toList());
+    }
 
     @Override
     public String toString() {

@@ -102,13 +102,13 @@ public class Generator {
     private final static int MIN_ID_RU = MAX_ID+1;
     private final static int MAX_ID_RU = MIN_ID_RU+COUNT_RU-1;
 
-//    private final static String LIBRARY_BACK_END_PATH = "c:/dp/library-back-end";
-    private final static String LIBRARY_BACK_END_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end";
+    private final static String LIBRARY_BACK_END_PATH = "c:/dp/library-back-end";
+//    private final static String LIBRARY_BACK_END_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end";
     private final static String VOCABULARY_EN = "/controller/src/main/resources/vocabulary.txt";
     private final static String VOCABULARY_RU = "/controller/src/main/resources/vocabulary_ru.txt";
 
-//    private final static String DATA_FOLDER = "c:/dp/files/uploads/";
-    private final static String DATA_FOLDER = "media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads/";
+    private final static String DATA_FOLDER = "c:/dp/files/uploads/";
+//    private final static String DATA_FOLDER = "media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads/";
     private final static String BOOK_IMG = "book/img/";
     private final static String BOOK_TH = "book/th/";
     private final static String BOOK_PDF = "book/pdf/";
@@ -120,21 +120,23 @@ public class Generator {
 
     private String getRandomFile(String str){
         Random rand = new Random();
-//        File dir = new File(DATA_FOLDER+str);
-//        File[] files = dir.listFiles();
-//
-//        File file = files[rand.nextInt(files.length)];
-//        return str+(file.getName());
-        if (str.equals(USER_AVA)){
-            return str+(rand.nextInt(8)+1)+".png";
-        }
-        if (str.equals(BOOK_PDF)){
-            return str+(rand.nextInt(7)+1)+".pdf";
-        }
-        if (str.equals(BOOK_EPUB)){
-            return str+(rand.nextInt(6)+1)+".epub";
-        }
-        return str+(rand.nextInt(10)+1)+".jpg";
+
+        File dir = new File(DATA_FOLDER+str);
+        File[] files = dir.listFiles();
+
+        File file = files[rand.nextInt(files.length)];
+        return str+(file.getName());
+
+//        if (str.equals(USER_AVA)){
+//            return str+(rand.nextInt(8)+1)+".png";
+//        }
+//        if (str.equals(BOOK_PDF)){
+//            return str+(rand.nextInt(7)+1)+".pdf";
+//        }
+//        if (str.equals(BOOK_EPUB)){
+//            return str+(rand.nextInt(6)+1)+".epub";
+//        }
+//        return str+(rand.nextInt(10)+1)+".jpg";
     }
 
     @Autowired
@@ -215,7 +217,7 @@ public class Generator {
         address.setUser(userService.find(username));
         address.setFirstName(address.getUser().getFirstName());
         address.setLastName(address.getUser().getLastName());
-        //address.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
+        address.setPhone(generateInt(100000, 999999)+"");
         address.setPostalCode(generateInt(100000, 999999)+"");
         address.setAddress(generateUrl());
         address.setMain(main);
@@ -281,7 +283,7 @@ public class Generator {
                 OrderDetailDto orderDetailDto = new OrderDetailDto();
 
                 BookDto bookDto = getRandomBook(minId, maxId);
-                while (bookDto.getPrice()==null){
+                while (bookDto.isInLibraryUseOnly()){
                     bookDto = getRandomBook(minId, maxId);
                 }
                 orderDetailDto.setBook(bookDto);
@@ -535,7 +537,6 @@ public class Generator {
             bookDto.setPublishingHouse(getRandomPH(minId, maxId));
         }
         bookDto.setType(getType());
-        bookDto.setStatus(getStatus());
         if (generateInt(0, 10)>3){
             bookDto.setRating(generateInt(0, 100));
         }
@@ -556,12 +557,15 @@ public class Generator {
         if (generateInt(0, 10)>6){
             bookDto.setEPubUrl(getRandomFile(BOOK_EPUB));
         }
-        if (generateInt(0, 10)>6){
-            bookDto.setPrice(generateBigDecimal(0, 40));
+        if (generateInt(0, 10)>7){
+            bookDto.setInLibraryUseOnly(true);
+        }else {
+            bookDto.setInLibraryUseOnly(false);
         }
         if (generateInt(0, 10)>6){
             bookDto.setIsbn(generateInt(1000000, Integer.MAX_VALUE)+"");
         }
+        bookDto.setCount(generateInt(1, 100));
         return bookDto;
     }
 
@@ -569,9 +573,9 @@ public class Generator {
         return Book.Type.values()[generateInt(0, Book.Type.values().length)];
     }
 
-    private Book.Status getStatus(){
-        return Book.Status.values()[generateInt(0, Book.Status.values().length)];
-    }
+//    private Book.Status getStatus(){
+//        return Book.Status.values()[generateInt(0, Book.Status.values().length)];
+//    }
 
     private void generateBooks(int count, int minId, int maxId, LanguageDto languageDto){
         for (int i=0; i<count; i++){

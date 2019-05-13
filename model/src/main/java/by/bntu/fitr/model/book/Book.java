@@ -16,7 +16,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 import java.util.Set;
 
 @Data
@@ -67,8 +66,9 @@ public class Book extends BaseEntity {
     private Integer rating;
     @Column(name = "book_year")
     private Integer year;
-    @Column(name = "book_status")
-    private Status status; //в наличии, на руках, на складе
+
+//    @Column(name = "book_status")
+//    private Status status; //в наличии, на руках, на складе
 
     @Column(name = "book_weight")
     private Integer weight;
@@ -99,16 +99,24 @@ public class Book extends BaseEntity {
     @JoinColumn(name = "importer_id")
     private Organization importer;
 
-    @Column(name = "book_price", precision = 10, scale = 2, nullable = true)
-    private BigDecimal price;
+//    @Column(name = "book_price", precision = 10, scale = 2, nullable = true)
+//    private BigDecimal price;
+
+    @Column(name = "book_in_library_use_only", nullable = false)
+    private Boolean inLibraryUseOnly;
+
+    @Column(name = "book_count", nullable = false)
+    private Integer count;
 
     public Book() {
         this.rating = 0;
+        this.count = 1;
+        this.year = -1;
     }
 
-    public enum Status{
-        IN_STOCK, ON_HAND, UNKNOWN
-    }
+//    public enum Status{
+//        IN_STOCK, ON_HAND, UNKNOWN
+//    }
 
     public enum Type{
         BOOK, COMICS, MAGAZINE

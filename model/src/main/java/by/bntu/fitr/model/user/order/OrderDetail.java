@@ -2,11 +2,7 @@ package by.bntu.fitr.model.user.order;
 
 import by.bntu.fitr.model.BaseEntity;
 import by.bntu.fitr.model.book.Book;
-import by.bntu.fitr.model.user.User;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,13 +14,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -47,8 +39,8 @@ public class OrderDetail extends BaseEntity {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    @Column(name = "order_detail_price", nullable = false)
-    private BigDecimal price;
+//    @Column(name = "order_detail_price", nullable = false)
+//    private BigDecimal price;
 
     @Column(name = "order_detail_comment", length = 500)
     private String comment;
@@ -60,7 +52,6 @@ public class OrderDetail extends BaseEntity {
     public String toString() {
         return "OrderDetail{" +
                 "book=" + book +
-                ", price=" + price +
                 ", comment='" + comment + '\'' +
                 ", count=" + count +
                 '}';
@@ -73,13 +64,12 @@ public class OrderDetail extends BaseEntity {
         if (!super.equals(o)) return false;
         OrderDetail that = (OrderDetail) o;
         return Objects.equals(book, that.book) &&
-                Objects.equals(price, that.price) &&
                 Objects.equals(comment, that.comment) &&
                 Objects.equals(count, that.count);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), book, price, comment, count);
+        return Objects.hash(super.hashCode(), book, comment, count);
     }
 }

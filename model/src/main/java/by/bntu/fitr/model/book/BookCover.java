@@ -16,7 +16,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 import java.util.Set;
 
 @Data
@@ -57,28 +56,24 @@ public class BookCover extends BaseEntity {
     private Set<Author> translators;
 
     @Column(name = "book_type")
-    private Type type; //журнал, книга, комикс
+    private Book.Type type; //журнал, книга, комикс
     @Column(name = "book_age_restriction")
     private String ageRestriction;
     @Column(name = "book_rating")
     private Integer rating;
     @Column(name = "book_year")
     private Integer year;
-    @Column(name = "book_status")
-    private Status status; //в наличии, на руках, на складе
 
     @Column(name = "book_thumbnail_url")
     private String thumbnailUrl;
 
-    @Column(name = "book_price", precision = 10, scale = 2, nullable = false)
-    private BigDecimal price;
+//    @Column(name = "book_price", precision = 10, scale = 2, nullable = false)
+//    private BigDecimal price;
 
+    @Column(name = "book_in_library_use_only", nullable = false)
+    private Boolean inLibraryUseOnly;
 
-    public enum Status{
-        IN_STOCK, ON_HAND, UNKNOWN
-    }
+    @Column(name = "book_count", nullable = false)
+    private Integer count;
 
-    public enum Type{
-        BOOK, COMICS, MAGAZIN
-    }
 }
