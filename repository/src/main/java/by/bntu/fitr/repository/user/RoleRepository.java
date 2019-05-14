@@ -11,5 +11,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 
     Optional<Role> findByAuthority(String authority);
 
+//    List<Role> findOrderByPriorityAuthority();
+
     Boolean existsByAuthority(String authority);
 }

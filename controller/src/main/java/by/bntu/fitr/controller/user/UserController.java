@@ -1,9 +1,11 @@
 package by.bntu.fitr.controller.user;
 
 import by.bntu.fitr.dto.PageableDto;
+import by.bntu.fitr.dto.user.RoleDto;
 import by.bntu.fitr.dto.user.UserDataDto;
 import by.bntu.fitr.dto.user.UserDto;
 import by.bntu.fitr.dto.user.UserMainDataDto;
+import by.bntu.fitr.dto.user.UsernameAndAuthority;
 import by.bntu.fitr.service.user.UserDataService;
 import by.bntu.fitr.service.user.UserMainDataService;
 import by.bntu.fitr.service.user.UserService;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.List;
 
 @Validated
 @RestController
@@ -104,6 +107,26 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public void clear(@RequestBody String username) {
         userDataService.clear(username);
+    }
+
+    @PostMapping("/role")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public UserMainDataDto createRole(@Valid @RequestBody UsernameAndAuthority data) {
+        return userMainDataService.addRoleByUsername(data.getUsername(), data.getAuthority());
+    }
+
+    @DeleteMapping("/role")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void deleteRole(@Valid @RequestBody UsernameAndAuthority data) {
+        userMainDataService.deleteRoleByUsername(data.getUsername(), data.getAuthority());
+    }
+
+    @GetMapping("/role")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<RoleDto> findAll() {
+        return userMainDataService.findAllRoles();
     }
 
 }

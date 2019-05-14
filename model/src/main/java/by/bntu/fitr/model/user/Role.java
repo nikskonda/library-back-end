@@ -22,11 +22,16 @@ public class Role extends BaseEntity implements GrantedAuthority {
     @Column(name = "role_authority", unique = true, nullable = false)
     private String authority;
 
+    @Column(name = "role_priority", nullable = false)
+    private Integer priority;
+
     public Role(){
+        this.priority = 1;
     }
 
     public Role(String authority) {
         this.authority = authority;
+        this.priority = 1;
     }
 
     @Override

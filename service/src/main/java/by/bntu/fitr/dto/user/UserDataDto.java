@@ -6,6 +6,10 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Data
@@ -15,6 +19,8 @@ public class UserDataDto {
     private Long id;
     @Null(message = "exception.validation.user.username.null")
     private String username;
+
+    private List<RoleDto> authorities;
 
     @Size(min = 1, max = 255, message = "exception.validation.user.avatarUrl.size")
     private String avatarUrl;
@@ -37,5 +43,22 @@ public class UserDataDto {
     public UserDataDto(Long id, String username) {
         this.id = id;
         this.username = username;
+    }
+
+
+    public void setAuthorities(List<RoleDto> authorities) {
+        this.authorities = authorities.stream()
+                .sorted(Comparator.comparing(RoleDto::getPriority))
+                .collect(Collectors.toList());
+    }
+
+    public void addRole(RoleDto role){
+        if (this.authorities==null){
+            this.authorities = new ArrayList<>();
+        }
+        this.authorities.add(role);
+        this.authorities.stream()
+                .sorted(Comparator.comparing(RoleDto::getPriority))
+                .collect(Collectors.toList());
     }
 }

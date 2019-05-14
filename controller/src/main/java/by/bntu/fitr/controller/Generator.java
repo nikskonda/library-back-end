@@ -93,12 +93,12 @@ public class Generator {
 
     private final static int ADMIN_PERCENT = 20;
     private final static int COUNT_COUNTRY = 10;
-    private final static int COUNT = 10;
+    private final static int COUNT = 50;
     private final static int MIN_ID = 1;
     private final static int MAX_ID = MIN_ID+COUNT-1;
 
 
-    private final static int COUNT_RU = 10;
+    private final static int COUNT_RU = 50;
     private final static int MIN_ID_RU = MAX_ID+1;
     private final static int MAX_ID_RU = MIN_ID_RU+COUNT_RU-1;
 
@@ -180,7 +180,7 @@ public class Generator {
 
         generateDefaultUsers(MIN_ID, MAX_ID);
 
-        generateUser(COUNT-3, MIN_ID, MAX_ID);
+        generateUser(COUNT-4, MIN_ID, MAX_ID);
 
         generateNews(COUNT, MIN_ID, MAX_ID, getEngLang());
         generateOrder(COUNT, MIN_ID, MAX_ID);
@@ -359,7 +359,7 @@ public class Generator {
         userDto.setPassword("librarian");
         set = new HashSet<>();
         set.add(roleList.get(0));
-        set.add(roleList.get(1));
+        set.add(roleList.get(2));
         userDto.setAuthorities(set);
         str = getRandomWord();
         userDto.setFirstName(str.substring(0, 1).toUpperCase() + str.substring(1));
@@ -375,6 +375,21 @@ public class Generator {
         set.add(roleList.get(0));
         set.add(roleList.get(1));
         set.add(roleList.get(2));
+        set.add(roleList.get(3));
+        userDto.setAuthorities(set);
+        str = getRandomWord();
+        userDto.setFirstName(str.substring(0, 1).toUpperCase() + str.substring(1));
+        str = getRandomWord();
+        userDto.setLastName(str.substring(0, 1).toUpperCase() + str.substring(1));
+        userDto.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
+        userService.save(userDto);
+
+        userDto = new UserDto();
+        userDto.setUsername("courier");
+        userDto.setPassword("courier");
+        set = new HashSet<>();
+        set.add(roleList.get(0));
+        set.add(roleList.get(1));
         userDto.setAuthorities(set);
         str = getRandomWord();
         userDto.setFirstName(str.substring(0, 1).toUpperCase() + str.substring(1));
@@ -425,15 +440,10 @@ public class Generator {
 
     private List<RoleDto> generateDefRole() {
         List<RoleDto> list = new ArrayList<>();
-        RoleDto roleDto = new RoleDto();
-        roleDto.setAuthority("USER");
-        list.add(roleDto);
-        roleDto = new RoleDto();
-        roleDto.setAuthority("ADMIN");
-        list.add(roleDto);
-        roleDto = new RoleDto();
-        roleDto.setAuthority("LIBRARIAN");
-        list.add(roleDto);
+        list.add(new RoleDto("USER", 0));
+        list.add(new RoleDto("COURIER", 25));
+        list.add(new RoleDto("LIBRARIAN", 50));
+        list.add(new RoleDto("ADMIN", 100));
         return list;
     }
 
