@@ -10,7 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -26,7 +26,7 @@ public class State extends BaseEntity {
     @Column(name = "state_name", unique = true, nullable = false)
     private String name;
 
-    @OneToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.EAGER)
     @JoinColumn(name = "country_id", referencedColumnName = "country_id")
     private Country country;
 

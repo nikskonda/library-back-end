@@ -73,11 +73,17 @@ public class UserController {
         return userDataService.find(authentication.getName());
     }
 
+    @GetMapping("/data/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public UserDataDto getUserData(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long userId) {
+        return userDataService.find(userId);
+    }
+
     @PutMapping("/data/{id}")
     @PreAuthorize("hasAuthority('USER')")
     public UserDataDto updateData(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
                                   Authentication authentication,
-                                  @Validated() @RequestBody UserDataDto user) {
+                                  @Valid @RequestBody UserDataDto user) {
         user.setId(id);
         return userDataService.save(user, authentication.getName());
     }

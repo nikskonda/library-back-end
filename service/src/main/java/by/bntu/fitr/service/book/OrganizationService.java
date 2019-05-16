@@ -7,9 +7,9 @@ import by.bntu.fitr.model.book.Organization;
 import by.bntu.fitr.repository.book.OrganizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class OrganizationService {
@@ -36,7 +36,7 @@ public class OrganizationService {
     }
 
     public List<OrganizationDto> findBySearchString(String searchString){
-        return  converter.convertToDtoList(repository.findAllByTitleLikeOrderByTitleAsc(searchString));
+        return  converter.convertToDtoList(repository.findAllByTitleLikeOrderByTitleAsc("%"+searchString+"%"));
     }
 
     public void delete(Long id) {
@@ -47,8 +47,7 @@ public class OrganizationService {
         repository.delete(converter.convertFromDto(organizationDto));
     }
 
-    public Organization getPersistences(Organization organization) {
-        System.out.println("Organization Service ="+organization);
+    public Organization getPersistence(Organization organization) {
         if (organization == null) {
             return null;
         }
@@ -56,10 +55,11 @@ public class OrganizationService {
             return repository
                     .findById(organization.getId())
                     .orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
-        } else {
-            organization.setId(null);
-            return repository.save(organization);
         }
-
+        if (!StringUtils.isEmpty(organization.getTitle())){
+            return repository.findByTitle(organization.getTitle()).orElse(repository.save(organization));
+        } else {
+            return null;
+        }
     }
 }

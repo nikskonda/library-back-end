@@ -33,7 +33,7 @@ public class NewsService {
     public NewsDto save(NewsDto newsDto, String username){
         News news = converter.convertFromDto(newsDto);
         if (news.getId()!=null && repository.existsById(news.getId())){
-            news.setLanguage(languageService.getPersistences(newsDto.getLanguage()));
+            news.setLanguage(languageService.getPersistence(newsDto.getLanguage()));
             news.setModificationDate(LocalDateTime.now());
             news.setCreationDate(find(news.getId()).getCreationDate());
         } else {

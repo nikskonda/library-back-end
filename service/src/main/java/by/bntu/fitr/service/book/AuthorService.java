@@ -1,15 +1,12 @@
 package by.bntu.fitr.service.book;
 
 import by.bntu.fitr.NotFoundException;
-import by.bntu.fitr.UnsupportedOperationException;
 import by.bntu.fitr.converter.book.AuthorDtoConverter;
 import by.bntu.fitr.dto.book.AuthorDto;
-import by.bntu.fitr.dto.book.LanguageDto;
 import by.bntu.fitr.model.book.Author;
 import by.bntu.fitr.repository.book.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -40,12 +37,12 @@ public class AuthorService {
     }
 
     public List<AuthorDto> findBySearchString(String searchString){
-        return  converter.convertToDtoList(findBySearchStringPersistents(searchString));
+        return  converter.convertToDtoList(findBySearchStringPersistence(searchString));
     }
 
-    public List<Author> findBySearchStringPersistents(String searchString){
+    public List<Author> findBySearchStringPersistence(String searchString){
         if (searchString==null){
-            throw new UnsupportedOperationException();
+            searchString="";
         }
         return  repository.findBySearchString('%'+searchString+'%');
     }
@@ -58,7 +55,7 @@ public class AuthorService {
         repository.delete(converter.convertFromDto(authorDto));
     }
 
-    public Set<Author> getPersistences(Set<Author> authors){
+    public Set<Author> getPersistence(Set<Author> authors){
         if (authors == null || authors.isEmpty()) {
             return null;
         }

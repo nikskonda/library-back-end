@@ -1,10 +1,7 @@
 package by.bntu.fitr.model.user.order;
 
 import by.bntu.fitr.model.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -49,7 +46,7 @@ public class OrderStatus extends BaseEntity {
 
 
     public enum Status{
-        NEW, CONFIRMED, RECEIVED, RETURNED, CANCELLED
+        NEW, CONFIRMED, HANDED_OUT, AT_COURIER,  RECEIVED, RETURN_TO_COURIER, RETURNED, CANCELLED
     }
 
     @Override

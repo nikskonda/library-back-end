@@ -6,7 +6,7 @@ import by.bntu.fitr.converter.user.OrderDetailDtoConverter;
 import by.bntu.fitr.dto.user.order.OrderDetailDto;
 import by.bntu.fitr.model.user.order.Order;
 import by.bntu.fitr.model.user.order.OrderDetail;
-import by.bntu.fitr.repository.user.OrderDetailRepository;
+import by.bntu.fitr.repository.user.order.OrderDetailRepository;
 import by.bntu.fitr.service.book.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

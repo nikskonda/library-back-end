@@ -1,4 +1,4 @@
-package by.bntu.fitr.repository.user;
+package by.bntu.fitr.repository.user.order;
 
 import by.bntu.fitr.model.user.order.Order;
 import org.springframework.data.domain.Page;
@@ -13,7 +13,12 @@ import java.util.List;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    Page<Order> findOrdersByAddressUserUsername(String username, Pageable pageable);
+    @Query("select o from Order o " +
+            "INNER JOIN o.userOrder uo " +
+            "INNER JOIN uo.user u " +
+            "WHERE u.username=:username ")
+    Page<Order> findOrdersByAddressUserUsername(@Param("username") String username,
+                                                Pageable pageable);
 
     List<Order> findOrdersByIdIn(List<Long> ids);
 
@@ -86,7 +91,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "   subselect.order_status=:status AND od.book_id=:bookId ", nativeQuery = true)
     Long countOrdersByStatusAndBookId(@Param("status") Integer status, @Param("bookId") Long bookId);
 
-    Page<Order> findOrdersByAddressUserId(Long userId, Pageable pageable);
+    @Query("select o from Order o " +
+            "INNER JOIN o.userOrder uo " +
+            "INNER JOIN uo.user u " +
+            "WHERE u.id=:userId ")
+    Page<Order> findOrdersByAddressUserId(@Param("userId") Long userId,
+                                          Pageable pageable);
 
     @Query(value =  "select subselect.order_id " +
             "       from ( " +
@@ -97,10 +107,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "    order_status " +
             "group by " +
             "    order_status.order_id) as subselect " +
-            "inner join \"order\" o on o.order_id=subselect.order_id " +
-            "inner join address \"a\" on \"a\".address_id=o.address_id " +
+            "inner join userOrder uo on uo.order_id=subselect.order_id " +
             "WHERE " +
-            "   subselect.order_status=:status AND \"a\".user_id=:userId" +
+            "   subselect.order_status=:status AND uo.user_id=:userId" +
             "ORDER BY subselect.order_id ASC " +
             "LIMIT :limit OFFSET :offset ",
             nativeQuery = true)
@@ -120,10 +129,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "    order_status " +
             "group by " +
             "    order_status.order_id) as subselect " +
-            "inner join \"order\" o on o.order_id=subselect.order_id " +
-            "inner join address \"a\" on \"a\".address_id=o.address_id " +
+            "inner join userOrder uo on uo.order_id=subselect.order_id " +
             "WHERE " +
-            "   subselect.order_status=:status AND \"a\".user_id=:userId" +
+            "   subselect.order_status=:status AND uo.user_id=:userId" +
             "WHERE " +
             "   subselect.order_status=:status AND od.book_id=:userId ", nativeQuery = true)
     Long countOrdersByStatusAndUserId(@Param("status") Integer status, @Param("userId") Long userId);

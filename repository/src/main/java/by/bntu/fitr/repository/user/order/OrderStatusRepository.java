@@ -1,4 +1,4 @@
-package by.bntu.fitr.repository.user;
+package by.bntu.fitr.repository.user.order;
 
 import by.bntu.fitr.model.user.order.OrderStatus;
 import org.springframework.data.domain.Page;

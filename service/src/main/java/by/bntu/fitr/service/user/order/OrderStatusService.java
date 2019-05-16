@@ -4,7 +4,7 @@ import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.converter.user.OrderStatusDtoConverter;
 import by.bntu.fitr.dto.user.order.OrderStatusDto;
 import by.bntu.fitr.model.user.order.OrderStatus;
-import by.bntu.fitr.repository.user.OrderStatusRepository;
+import by.bntu.fitr.repository.user.order.OrderStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

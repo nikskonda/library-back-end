@@ -1,7 +1,6 @@
 package by.bntu.fitr.model.user.util;
 
 import by.bntu.fitr.model.BaseEntity;
-import by.bntu.fitr.model.user.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicUpdate;
@@ -27,12 +26,9 @@ import java.time.LocalDateTime;
 @DynamicUpdate
 public class Address extends BaseEntity {
 
-    @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @Column(name = "address_first_name", length = 30)
     private String firstName;
+
     @Column(name = "address_last_name", length = 30)
     private String lastName;
 
@@ -55,6 +51,4 @@ public class Address extends BaseEntity {
     @Column(name = "address_creation_date_time", nullable = false)
     private LocalDateTime creationDateTime;
 
-    @Column(name = "address_main")
-    private Boolean main;
 }

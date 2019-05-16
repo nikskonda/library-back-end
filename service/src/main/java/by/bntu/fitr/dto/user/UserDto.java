@@ -45,7 +45,7 @@ public class UserDto {
     @Email(message = "exception.validation.user.email")
     private String email;
 
-    private AddressDto address;
+    private AddressDto registrationAddress;
 
     public UserDto(){
         this.accountNonExpired = true;

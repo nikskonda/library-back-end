@@ -1,7 +1,6 @@
 package by.bntu.fitr.model.user.order;
 
 import by.bntu.fitr.model.BaseEntity;
-import by.bntu.fitr.model.user.util.Address;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,9 +12,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.math.BigDecimal;
@@ -39,20 +37,17 @@ import java.util.stream.Collectors;
 @DynamicUpdate
 public class Order extends BaseEntity {
 
+    @OneToOne(mappedBy = "order", fetch = FetchType.EAGER, cascade = {CascadeType.ALL })
+    private UserOrder userOrder;
+
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade={CascadeType.ALL})
-//    @JsonManagedReference
     private Set<OrderDetail> details;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade={CascadeType.ALL})
-//    @JsonManagedReference
     private List<OrderStatus> statusList;
 
     @Column(name="order_total_price")
     private BigDecimal totalPrice;
-
-    @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
-    private Address address;
 
     @Column(name = "order_creation_date_time", nullable = false)
     private LocalDateTime creationDateTime;
@@ -89,11 +84,15 @@ public class Order extends BaseEntity {
                 .collect(Collectors.toList());
     }
 
+    public void setUserOrder(UserOrder userOrder) {
+        userOrder.setOrder(this);
+        this.userOrder = userOrder;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
                 "details=" + details +
-                ", address=" + address +
                 ", creationDateTime=" + creationDateTime +
                 '}';
     }
@@ -105,12 +104,11 @@ public class Order extends BaseEntity {
         if (!super.equals(o)) return false;
         Order order = (Order) o;
         return Objects.equals(totalPrice, order.totalPrice) &&
-                Objects.equals(address, order.address) &&
                 Objects.equals(creationDateTime, order.creationDateTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), totalPrice, address, creationDateTime);
+        return Objects.hash(super.hashCode(), totalPrice, creationDateTime);
     }
 }

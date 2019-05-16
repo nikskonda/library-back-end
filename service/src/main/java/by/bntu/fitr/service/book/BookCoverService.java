@@ -64,7 +64,7 @@ public class BookCoverService {
         if (params.getAuthors() != null && !params.getAuthors().isEmpty()) {
             Set<Author> authors = new HashSet<>();
             for (String partOfName : params.getAuthors()) {
-                authors.addAll(authorService.findBySearchStringPersistents(partOfName));
+                authors.addAll(authorService.findBySearchStringPersistence(partOfName));
             }
             return converter.convertToDtoPage(
                     repository

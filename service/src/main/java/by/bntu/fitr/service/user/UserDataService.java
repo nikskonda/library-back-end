@@ -5,7 +5,6 @@ import by.bntu.fitr.UnsupportedOperationException;
 import by.bntu.fitr.converter.user.UserDataDtoConverter;
 import by.bntu.fitr.dto.PageableDto;
 import by.bntu.fitr.dto.user.UserDataDto;
-import by.bntu.fitr.dto.user.util.AddressDto;
 import by.bntu.fitr.model.user.UserData;
 import by.bntu.fitr.repository.user.UserDataRepository;
 import by.bntu.fitr.service.user.util.AddressService;
@@ -42,6 +41,12 @@ public class UserDataService {
         user.setUsername(username);
         if (user.getId() != null && userRepository.existsById(user.getId()) &&
                 !StringUtils.isEmpty(user.getUsername()) && userRepository.existsByUsername(user.getUsername())) {
+            if (userDataDto.getRegistrationAddress()!=null){
+                if (userDataDto.getRegistrationAddress().getId() == null) {
+                    userDataDto.setRegistrationAddress(addressService.save(userDataDto.getRegistrationAddress()));
+                }
+                user.setRegistrationAddress(addressService.getPersistence(userDataDto.getRegistrationAddress().getId()));
+            }
             user = userRepository.save(user);
             return userDtoConverter.convertToDto(user);
         } else {
@@ -51,14 +56,12 @@ public class UserDataService {
 
     public UserDataDto find(Long id) {
         UserDataDto user = userDtoConverter.convertToDto(getPersistence(id));
-        setAddress(user);
         return user;
     }
 
 
     public UserDataDto find(String username) {
         UserDataDto user = userDtoConverter.convertToDto(getPersistence(username));
-        setAddress(user);
         return user;
     }
 
@@ -66,12 +69,10 @@ public class UserDataService {
     public void clear(Long id) {
         UserData user = getPersistence(id);
         save(new UserDataDto(id, user.getUsername()), user.getUsername());
-        addressService.removeMainAddress(user.getUsername());
     }
 
     public void clear(String username) {
         save(new UserDataDto(find(username).getId(), username), username);
-        addressService.removeMainAddress(username);
     }
 
     private UserData getPersistence(Long id) {
@@ -93,18 +94,10 @@ public class UserDataService {
         Page<UserDataDto> page = userDtoConverter.convertToDtoPage(userRepository.findUserDataByUsernameLike('%' + searchString + '%', pageable));
         for (UserDataDto userDataDto : page.getContent()){
             userDataDto.setBanned(userService.isBanned(userDataDto.getUsername()));
-            setAddress(userDataDto);
         }
         return page;
     }
 
-    private void setAddress(UserDataDto user){
-        AddressDto addressDto = addressService.findMain(user.getUsername());
-        if (addressDto!=null){
-            addressDto.setUser(null);
-        }
-        user.setAddress(addressDto);
-    }
 }
 
 

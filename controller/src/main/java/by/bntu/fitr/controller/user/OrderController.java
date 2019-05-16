@@ -51,6 +51,13 @@ public class OrderController {
         return orderService.save(orderDto, authentication.getName());
     }
 
+    @PostMapping("/handOut")
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderDto handOut(@Valid @RequestBody OrderDto orderDto) {
+        return orderService.handBook(orderDto);
+    }
+
     @PostMapping("/{id}/status")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     public OrderDto addStatus(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,

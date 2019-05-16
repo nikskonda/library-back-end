@@ -13,8 +13,8 @@ import by.bntu.fitr.dto.user.order.OrderStatusDto;
 import by.bntu.fitr.model.user.order.Order;
 import by.bntu.fitr.model.user.order.OrderDetail;
 import by.bntu.fitr.model.user.order.OrderStatus;
-import by.bntu.fitr.model.user.util.Address;
-import by.bntu.fitr.repository.user.OrderRepository;
+import by.bntu.fitr.model.user.order.UserOrder;
+import by.bntu.fitr.repository.user.order.OrderRepository;
 import by.bntu.fitr.service.user.UserService;
 import by.bntu.fitr.service.user.util.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class OrderService {
@@ -40,6 +42,7 @@ public class OrderService {
     private UserService userService;
     private AddressService addressService;
 
+
     @Autowired
     public OrderService(OrderRepository repository, OrderDtoConverter converter, OrderStatusDtoConverter statusConverter, OrderDetailDtoConverter detailConverter, UserService userService, AddressService addressService) {
         this.repository = repository;
@@ -53,34 +56,125 @@ public class OrderService {
     public OrderDto save(OrderDto orderDto, String username) {
         Order order = new Order();
         if (orderDto.getId() == null) {
-            Address address;
+            UserOrder userOrder = new UserOrder();
             if (orderDto.getAddress().getId() != null) {
-                address = addressService.getPersistence(orderDto.getAddress().getId());
+                userOrder.setAddress(addressService.getPersistence(orderDto.getAddress().getId()));
             } else {
-                address = addressService.getPersistence(
-                        addressService.save(orderDto.getAddress(), username).getId());
+                userOrder.setAddress(addressService.getPersistence(addressService.save(orderDto.getAddress()).getId()));
             }
+            userOrder.setUser(userService.getPersistence(username));
+            order.setUserOrder(userOrder);
 
-            if (!username.equals(address.getUser().getUsername())) {
-                throw new AccessDeniedException();
-            }
-
-            order.setAddress(address);
             order.setCreationDateTime(LocalDateTime.now());
             order.addStatus(statusConverter.convertFromDto(createStatus(OrderStatus.Status.NEW)));
 
             for (OrderDetailDto orderDetailDto : orderDto.getDetails()) {
                 boolean flag = true;
-                if (order.getDetails()!=null){
-                    for (OrderDetail orderDetail: order.getDetails()){
-                        if (orderDetail.getBook().getId().equals(orderDetailDto.getBook().getId())){
-                            orderDetail.setCount(orderDetail.getCount()+orderDetailDto.getCount());
-                            flag=false;
+                if (order.getDetails() != null) {
+                    for (OrderDetail orderDetail : order.getDetails()) {
+                        if (orderDetail.getBook().getId().equals(orderDetailDto.getBook().getId())) {
+                            orderDetail.setCount(orderDetail.getCount() + orderDetailDto.getCount());
+                            flag = false;
                             break;
                         }
                     }
                 }
-                if (flag){
+                if (flag) {
+                    order.addDetail(detailConverter.convertFromDto(orderDetailDto));
+                }
+
+            }
+            return converter.convertToDto(repository.save(order));
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public OrderDto handBook(OrderDto orderDto) {
+        if (this.isContainInLibraryReadBookOnly(orderDto)) {
+            OrderDto inLibraryReadBookOnlyOrder = new OrderDto();
+            Set<OrderDetailDto> detailSet = new HashSet<>();
+            for (OrderDetailDto detail : orderDto.getDetails()) {
+                if (detail.getBook().isInLibraryUseOnly()) {
+                    detailSet.add(detail);
+                }
+            }
+            orderDto.getDetails().removeAll(detailSet);
+            inLibraryReadBookOnlyOrder.setDetails(detailSet);
+
+            inLibraryReadBookOnlyOrder = this.saveOrderWithoutAddress(inLibraryReadBookOnlyOrder, orderDto.getUser().getUsername());
+            addStatus(new OrderStatusDto(OrderStatus.Status.HANDED_OUT), inLibraryReadBookOnlyOrder.getId(), orderDto.getUser().getUsername());
+        }
+        orderDto = this.saveOrderOnRegistrationAddress(orderDto, orderDto.getUser().getUsername());
+        addStatus(new OrderStatusDto(OrderStatus.Status.HANDED_OUT), orderDto.getId(), orderDto.getUser().getUsername());
+        return orderDto;
+    }
+
+    private boolean isContainInLibraryReadBookOnly(OrderDto order) {
+        for (OrderDetailDto detail : order.getDetails()) {
+            if (detail.getBook().isInLibraryUseOnly()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public OrderDto saveOrderOnRegistrationAddress(OrderDto orderDto, String username) {
+        Order order = new Order();
+        if (orderDto.getId() == null) {
+            UserOrder userOrder = new UserOrder();
+            userOrder.setUser(userService.getPersistence(username));
+            userOrder.setAddress(userOrder.getUser().getRegistrationAddress());
+
+            order.setUserOrder(userOrder);
+
+            order.setCreationDateTime(LocalDateTime.now());
+            order.addStatus(statusConverter.convertFromDto(createStatus(OrderStatus.Status.NEW)));
+
+            for (OrderDetailDto orderDetailDto : orderDto.getDetails()) {
+                boolean flag = true;
+                if (order.getDetails() != null) {
+                    for (OrderDetail orderDetail : order.getDetails()) {
+                        if (orderDetail.getBook().getId().equals(orderDetailDto.getBook().getId())) {
+                            orderDetail.setCount(orderDetail.getCount() + orderDetailDto.getCount());
+                            flag = false;
+                            break;
+                        }
+                    }
+                }
+                if (flag) {
+                    order.addDetail(detailConverter.convertFromDto(orderDetailDto));
+                }
+
+            }
+            return converter.convertToDto(repository.save(order));
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    private OrderDto saveOrderWithoutAddress(OrderDto orderDto, String username) {
+        Order order = new Order();
+        if (orderDto.getId() == null) {
+            UserOrder userOrder = new UserOrder();
+            userOrder.setUser(userService.getPersistence(username));
+            order.setUserOrder(userOrder);
+
+            order.setCreationDateTime(LocalDateTime.now());
+            order.addStatus(statusConverter.convertFromDto(createStatus(OrderStatus.Status.NEW)));
+
+            for (OrderDetailDto orderDetailDto : orderDto.getDetails()) {
+                boolean flag = true;
+                if (order.getDetails() != null) {
+                    for (OrderDetail orderDetail : order.getDetails()) {
+                        if (orderDetail.getBook().getId().equals(orderDetailDto.getBook().getId())) {
+                            orderDetail.setCount(orderDetail.getCount() + orderDetailDto.getCount());
+                            flag = false;
+                            break;
+                        }
+                    }
+                }
+                if (flag) {
                     order.addDetail(detailConverter.convertFromDto(orderDetailDto));
                 }
 
@@ -93,36 +187,28 @@ public class OrderService {
 
     public OrderDto addStatus(OrderStatusDto orderStatusDto, Long orderId, String username) {
         Order order = getPersistence(orderId);
-        checkAccess(username, converter.convertToDto(order));
+        orderStatusDto.setDateTime(LocalDateTime.now());
+        checkAccess(username, order.getUserOrder().getUser().getUsername());
         order.addStatus(statusConverter.convertFromDto(orderStatusDto));
         return converter.convertToDto(repository.save(order));
     }
 
     public OrderDto find(Long orderId, String username) {
-        OrderDto order = converter.convertToDto(getPersistence(orderId));
-        checkAccess(username, order);
-        return order;
+        Order order = getPersistence(orderId);
+        checkAccess(username, order.getUserOrder().getUser().getUsername());
+        return converter.convertToDto(order);
     }
 
     public OrderDto confirmed(Long orderId, String username) {
-        if (isAdminAccess(username)) {
-            return this.addStatus(createStatus(OrderStatus.Status.CONFIRMED), orderId, username);
-        }
-        throw new AccessDeniedException();
+        return this.addStatus(createStatus(OrderStatus.Status.CONFIRMED), orderId, username);
     }
 
     public OrderDto received(Long orderId, String username) {
-        if (isOwnerAccess(username, find(orderId, username))) {
-            return this.addStatus(createStatus(OrderStatus.Status.RECEIVED), orderId, username);
-        }
-        throw new AccessDeniedException();
+        return this.addStatus(createStatus(OrderStatus.Status.RECEIVED), orderId, username);
     }
 
     public OrderDto returned(Long orderId, String username) {
-        if (isAdminAccess(username)) {
-            return this.addStatus(createStatus(OrderStatus.Status.RETURNED), orderId, username);
-        }
-        throw new AccessDeniedException();
+        return this.addStatus(createStatus(OrderStatus.Status.RETURNED), orderId, username);
     }
 
     public OrderDto canceled(Long orderId, String username) {
@@ -131,10 +217,15 @@ public class OrderService {
 
 
     public Page<OrderDto> findOrdersByUsername(String username, OrderStatus.Status status, PageableDto pageableDto) {
-        Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
-        Page<OrderDto> pageDto = converter.convertToDtoPage(repository.findOrdersByAddressUserUsername(username, pageable));
-        return pageDto;
-
+        Pageable pageable;
+        if (status == null) {
+            pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
+            Page<OrderDto> pageDto = converter.convertToDtoPage(repository.findOrdersByAddressUserUsername(username, pageable));
+            return pageDto;
+        } else {
+            Long userId = userService.getPersistence(username).getId();
+            return findOrdersByUserId(userId, status, pageableDto);
+        }
     }
 
     public Page<OrderDto> findOrdersByUserId(Long userId, OrderStatus.Status status, PageableDto pageableDto) {
@@ -182,7 +273,6 @@ public class OrderService {
     }
 
     public Page<OrderDto> findAll(String username, OrderStatus.Status status, PageableDto pageableDto) {
-        isAdminAccess(username);
         Pageable pageable;
         if (status == null) {
             pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
@@ -216,28 +306,20 @@ public class OrderService {
         return orderStatus;
     }
 
-    private boolean isOwnerAccess(String username, OrderDto orderDto) {
-        if (!username.equals(orderDto.getAddress().getUser().getUsername())) {
-            return false;
-        }
-        return true;
+    private boolean isOwnerAccess(String username, String orderUsername) {
+        return username.equals(orderUsername);
     }
 
     private boolean isAdminAccess(String username) {
-//        User userDto = userService.getPersistence(username);
-//        Role role = userService.findRole(ROLE_FOR_ORDER_EDIT);
-        if (!userService
+        return userService
                 .getPersistence(username)
                 .getAuthorities()
-                .contains(userService.findRole(ROLE_FOR_ORDER_EDIT))) {
-            return false;
-        }
-        return true;
+                .contains(userService.findRole(ROLE_FOR_ORDER_EDIT));
     }
 
 
-    private boolean checkAccess(String username, OrderDto orderDto) {
-        if (isOwnerAccess(username, orderDto) || isAdminAccess(username)) {
+    private boolean checkAccess(String username, String orderUsername) {
+        if (isOwnerAccess(username, orderUsername) || isAdminAccess(username)) {
             return true;
         } else {
             throw new AccessDeniedException();

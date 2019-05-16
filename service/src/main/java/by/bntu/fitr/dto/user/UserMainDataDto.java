@@ -24,4 +24,10 @@ public class UserMainDataDto {
 
     private Set<RoleDto> authorities;
 
+    public UserMainDataDto() {
+    }
+
+    public UserMainDataDto(String username) {
+        this.username = username;
+    }
 }

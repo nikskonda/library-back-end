@@ -1,6 +1,5 @@
 package by.bntu.fitr.dto.user.util;
 
-import by.bntu.fitr.dto.user.UserDto;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -14,8 +13,6 @@ import java.time.LocalDateTime;
 public class AddressDto {
     @Null(message = "exception.validation.address.id.null")
     private Long id;
-
-    private UserDto user;
 
     @NotNull(message = "exception.validation.address.firstName.notNull")
     @Size(min = 1, max = 30, message = "exception.validation.address.firstName.size")

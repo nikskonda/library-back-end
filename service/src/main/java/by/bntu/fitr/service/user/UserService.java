@@ -5,8 +5,10 @@ import by.bntu.fitr.converter.user.UserDtoConverter;
 import by.bntu.fitr.dto.user.UserDto;
 import by.bntu.fitr.model.user.Role;
 import by.bntu.fitr.model.user.User;
+import by.bntu.fitr.model.user.util.Address;
 import by.bntu.fitr.repository.user.RoleRepository;
 import by.bntu.fitr.repository.user.UserRepository;
+import by.bntu.fitr.service.user.util.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,16 +30,15 @@ public class UserService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private UserDtoConverter userDtoConverter;
+    private AddressService addressService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository,
-                       RoleRepository roleRepository,
-                       UserDtoConverter userDtoConverter,
-                       BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, UserDtoConverter userDtoConverter, AddressService addressService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userDtoConverter = userDtoConverter;
+        this.addressService = addressService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -63,6 +64,9 @@ public class UserService {
         } else if (userRepository.existsByUsername(user.getUsername())) {
             user.setPassword(find(user.getUsername()).getPassword());
         }
+
+        addressService.setAddress(user, userDto.getRegistrationAddress());
+
         user.setRegistrationDate(LocalDateTime.now());
         user = userRepository.save(user);
         return userDtoConverter.convertToDto(user);
@@ -100,6 +104,10 @@ public class UserService {
 
     public Boolean isBanned(String username){
         return userRepository.isBaned(username);
+    }
+
+    public Address getRegistrationAddress(String username){
+        return this.getPersistence(username).getRegistrationAddress();
     }
 
     private void setDefaultRole(User user) {

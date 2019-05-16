@@ -1,6 +1,7 @@
 package by.bntu.fitr.model.user;
 
 import by.bntu.fitr.model.BaseEntity;
+import by.bntu.fitr.model.user.util.Address;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicUpdate;
@@ -13,6 +14,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -45,8 +47,11 @@ public class UserData extends BaseEntity {
     @Column(name = "user_email", length = 254)
     private String email;
 
+    @ManyToOne(cascade = {CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "registration_address_id")
+    private Address registrationAddress;
+
     @Column(name = "user_registration_date")
     private LocalDateTime registrationDate;
-
 
 }

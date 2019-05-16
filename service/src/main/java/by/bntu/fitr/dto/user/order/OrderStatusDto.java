@@ -18,4 +18,10 @@ public class OrderStatusDto {
 
     private String comment;
 
+    public OrderStatusDto() {
+    }
+
+    public OrderStatusDto(OrderStatus.Status status) {
+        this.status = status;
+    }
 }

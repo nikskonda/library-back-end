@@ -42,11 +42,11 @@ public class BookService {
         Book book = converter.convertFromDto(bookDto);
 //        if (book.getId()!=null && repository.existsById(book.getId())){
         book.setGenres(genreService.getPersistences(book.getGenres()));
-        book.setAuthors(authorService.getPersistences(book.getAuthors()));
-        book.setTranslators(authorService.getPersistences(book.getTranslators()));
-        book.setLanguage(languageService.getPersistences(bookDto.getLanguage()));
-        book.setImporter(organizationService.getPersistences(book.getImporter()));
-        book.setProducer(organizationService.getPersistences(book.getProducer()));
+        book.setAuthors(authorService.getPersistence(book.getAuthors()));
+        book.setTranslators(authorService.getPersistence(book.getTranslators()));
+        book.setLanguage(languageService.getPersistence(bookDto.getLanguage()));
+        book.setImporter(organizationService.getPersistence(book.getImporter()));
+        book.setProducer(organizationService.getPersistence(book.getProducer()));
         book.setPublishingHouse(publishingHouseService.getPersistences(book.getPublishingHouse()));
         if (book.getYear()==null){
             book.setYear(-1);

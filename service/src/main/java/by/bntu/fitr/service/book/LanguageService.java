@@ -34,13 +34,13 @@ public class LanguageService {
     public LanguageDto find(Long id){
         LanguageDto language = new LanguageDto();
         language.setId(id);
-        return  converter.convertToDto(getPersistences(language));
+        return  converter.convertToDto(getPersistence(language));
     }
 
     public LanguageDto findByTag(String tag){
         LanguageDto language = new LanguageDto();
         language.setTag(tag);
-        return  converter.convertToDto(getPersistences(language));
+        return  converter.convertToDto(getPersistence(language));
     }
 
     public Set<LanguageDto> findAll(){
@@ -59,8 +59,7 @@ public class LanguageService {
         repository.delete(converter.convertFromDto(languageDto));
     }
 
-    public Language getPersistences(LanguageDto language) {
-        System.out.println("Language Service ="+language);
+    public Language getPersistence(LanguageDto language) {
         if (language == null) {
             return null;
         }

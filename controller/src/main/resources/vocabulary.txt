@@ -383,7 +383,6 @@ grip
 brick
 champagne
 apathy
-user
 devote
 fortune
 rifle

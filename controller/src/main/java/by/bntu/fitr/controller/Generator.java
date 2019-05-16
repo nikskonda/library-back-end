@@ -21,7 +21,6 @@ import by.bntu.fitr.dto.user.util.CountryDto;
 import by.bntu.fitr.dto.user.util.StateDto;
 import by.bntu.fitr.model.book.Book;
 import by.bntu.fitr.model.book.Bookmark;
-import by.bntu.fitr.model.user.order.OrderStatus;
 import by.bntu.fitr.service.book.AuthorService;
 import by.bntu.fitr.service.book.BookCoverService;
 import by.bntu.fitr.service.book.BookService;
@@ -93,12 +92,12 @@ public class Generator {
 
     private final static int ADMIN_PERCENT = 20;
     private final static int COUNT_COUNTRY = 10;
-    private final static int COUNT = 50;
+    private final static int COUNT = 200;
     private final static int MIN_ID = 1;
     private final static int MAX_ID = MIN_ID+COUNT-1;
 
 
-    private final static int COUNT_RU = 50;
+    private final static int COUNT_RU = COUNT;
     private final static int MIN_ID_RU = MAX_ID+1;
     private final static int MAX_ID_RU = MIN_ID_RU+COUNT_RU-1;
 
@@ -207,37 +206,23 @@ public class Generator {
         return "Success!";
     }
 
-    private AddressDto getRandomAddressDto(String username, boolean main, int minId, int maxId){
+    private AddressDto getRandomAddressDto(String firstName, String lastName, int minId, int maxId){
 //        List<AddressDto> list = addressService.findByUsername(username);
 //        if (list.size()>0){
 //            return list.get(generateInt(0, list.size()-1));
 //        }
         AddressDto address = new AddressDto();
         address.setCity(getRandomCity(minId, maxId));
-        address.setUser(userService.find(username));
-        address.setFirstName(address.getUser().getFirstName());
-        address.setLastName(address.getUser().getLastName());
+        address.setFirstName(firstName);
+        address.setLastName(lastName);
         address.setPhone(generateInt(100000, 999999)+"");
         address.setPostalCode(generateInt(100000, 999999)+"");
         address.setAddress(generateUrl());
-        address.setMain(main);
-        return addressService.save(address, address.getUser().getUsername());
+        return address;
 
     }
 
-    private void generateAddress(int count, int minId, int maxId){
-        for(int i=0; i<count; i++){
-            AddressDto address = new AddressDto();
-            address.setCity(getRandomCity(minId, maxId));
-            address.setUser(getRandomUserDto(minId, maxId));
-            address.setFirstName(address.getUser().getFirstName());
-            address.setLastName(address.getUser().getLastName());
-            //address.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
-            address.setPostalCode(generateInt(100000, 999999)+"");
-            address.setAddress(generateUrl());
-            addressService.save(address, address.getUser().getUsername());
-        }
-    }
+
 
     private void generateBookmark(int count, int minId, int maxId){
         for(int i=0; i<count; i++){
@@ -275,7 +260,16 @@ public class Generator {
     private void generateOrder(int count, int minId, int maxId){
         for(int i=0; i<count; i++){
             OrderDto orderDto = new OrderDto();
-            orderDto.setAddress(getRandomAddressDto(getRandomUserMainDataDto(minId, maxId).getUsername(), false, minId, maxId));
+            orderDto.setUser(getRandomUserDataDto(minId, maxId));
+            if (generateInt(0, 10)>5)
+                orderDto.setAddress(getRandomAddressDto(orderDto.getUser().getFirstName(), orderDto.getUser().getLastName(), minId, maxId));
+            else {
+                if (orderDto.getUser().getRegistrationAddress()!=null && generateInt(0, 10)>6)
+                    orderDto.setAddress(orderDto.getUser().getRegistrationAddress());
+                else
+                    orderDto.setAddress(getRandomAddressDto(getRandomWordWithFirstUpper(), getRandomWordWithFirstUpper(), minId, maxId));
+            }
+
             orderDto.setDetails(new HashSet<>());
 
             int countBook = generateInt(1, 5);
@@ -293,12 +287,8 @@ public class Generator {
                 orderDto.getDetails().add(orderDetailDto);
             }
 
-            orderService.save(orderDto, orderDto.getAddress().getUser().getUsername());
+            orderService.save(orderDto, orderDto.getUser().getUsername());
         }
-    }
-
-    private OrderStatus.Status getOrderStatus(){
-        return OrderStatus.Status.values()[generateInt(0, OrderStatus.Status.values().length)];
     }
 
     private void generateNews(int count, int minId, int maxId, LanguageDto languageDto){
@@ -424,9 +414,9 @@ public class Generator {
                 userDto.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
             if (generateInt(0, 10)>3)
                 userDto.setAvatarUrl(getRandomFile(USER_AVA));
-            userService.save(userDto);
             if (generateInt(0, 10)>5)
-                getRandomAddressDto(userDto.getUsername(), true, minId, maxId);
+                userDto.setRegistrationAddress(getRandomAddressDto(userDto.getFirstName(), userDto.getLastName(), minId, maxId));
+            userService.save(userDto);
         }
     }
 
@@ -733,6 +723,11 @@ public class Generator {
             newWords.add(text.substring(m.start(), m.end()).toLowerCase());
         }
         this.words = new ArrayList<>(newWords);
+    }
+
+    private String getRandomWordWithFirstUpper(){
+        String str = getRandomWord();
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
     private String getRandomWord(List<String> words){

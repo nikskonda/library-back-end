@@ -32,7 +32,7 @@ public class UserDataDto {
     @Email(message = "exception.validation.user.email")
     private String email;
 
-    private AddressDto address;
+    private AddressDto registrationAddress;
 
     private Boolean banned;
 
