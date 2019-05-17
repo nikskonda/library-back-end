@@ -46,9 +46,9 @@ public class NewsController {
     }
 
     @GetMapping
-    public Page<NewsCoverDto> findByParameters(String searchString,
-                                               String languageTag,
-                                               PageableDto pageableDto) {
+    public Page<NewsCoverDto> findByParameters(@Valid String searchString,
+                                               @Valid String languageTag,
+                                               @Valid PageableDto pageableDto) {
         return newsCoverService.findByParameters(searchString, languageTag, pageableDto);
     }
 

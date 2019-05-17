@@ -3,10 +3,14 @@ package by.bntu.fitr.dto;
 import lombok.Data;
 import org.springframework.data.domain.Sort;
 
+import javax.validation.constraints.Min;
+
 @Data
 public class PageableDto {
 
+    @Min(value = 0, message="exception.validation.pageable.number.min")
     private Integer number;
+    @Min(value = 1)
     private Integer size;
     private String[] sort;
     private Sort.Direction direction;

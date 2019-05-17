@@ -117,6 +117,9 @@ public class Generator {
 
     private final static String USER_AVA = "user/avatar/";
 
+    private final static String ENGLISH = "en-US";
+    private final static String RUSSIAN = "ru-RU";
+
     private String getRandomFile(String str){
         Random rand = new Random();
 
@@ -345,11 +348,39 @@ public class Generator {
         userService.save(userDto);
 
         userDto = new UserDto();
+        userDto.setUsername("courier");
+        userDto.setPassword("courier");
+        set = new HashSet<>();
+        set.add(roleList.get(0));
+        set.add(roleList.get(1));
+        userDto.setAuthorities(set);
+        str = getRandomWord();
+        userDto.setFirstName(str.substring(0, 1).toUpperCase() + str.substring(1));
+        str = getRandomWord();
+        userDto.setLastName(str.substring(0, 1).toUpperCase() + str.substring(1));
+        userDto.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
+        userService.save(userDto);
+
+        userDto = new UserDto();
+        userDto.setUsername("journalist");
+        userDto.setPassword("journalist");
+        set = new HashSet<>();
+        set.add(roleList.get(0));
+        set.add(roleList.get(2));
+        userDto.setAuthorities(set);
+        str = getRandomWord();
+        userDto.setFirstName(str.substring(0, 1).toUpperCase() + str.substring(1));
+        str = getRandomWord();
+        userDto.setLastName(str.substring(0, 1).toUpperCase() + str.substring(1));
+        userDto.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
+        userService.save(userDto);
+
+        userDto = new UserDto();
         userDto.setUsername("librarian");
         userDto.setPassword("librarian");
         set = new HashSet<>();
         set.add(roleList.get(0));
-        set.add(roleList.get(2));
+        set.add(roleList.get(3));
         userDto.setAuthorities(set);
         str = getRandomWord();
         userDto.setFirstName(str.substring(0, 1).toUpperCase() + str.substring(1));
@@ -366,6 +397,7 @@ public class Generator {
         set.add(roleList.get(1));
         set.add(roleList.get(2));
         set.add(roleList.get(3));
+        set.add(roleList.get(4));
         userDto.setAuthorities(set);
         str = getRandomWord();
         userDto.setFirstName(str.substring(0, 1).toUpperCase() + str.substring(1));
@@ -374,26 +406,14 @@ public class Generator {
         userDto.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
         userService.save(userDto);
 
-        userDto = new UserDto();
-        userDto.setUsername("courier");
-        userDto.setPassword("courier");
-        set = new HashSet<>();
-        set.add(roleList.get(0));
-        set.add(roleList.get(1));
-        userDto.setAuthorities(set);
-        str = getRandomWord();
-        userDto.setFirstName(str.substring(0, 1).toUpperCase() + str.substring(1));
-        str = getRandomWord();
-        userDto.setLastName(str.substring(0, 1).toUpperCase() + str.substring(1));
-        userDto.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
-        userService.save(userDto);
+
     }
 
     private void generateUser(int count, int minId, int maxId){
         UserDto userDto = new UserDto();
         String str;
 
-        List<RoleDto> roleList = generateRole(count);
+        List<RoleDto> roleList = generateDefRole();
 
         List<String> usernames = new ArrayList<>(words);
         for (int i=0; i<count; i++){
@@ -432,6 +452,7 @@ public class Generator {
         List<RoleDto> list = new ArrayList<>();
         list.add(new RoleDto("USER", 0));
         list.add(new RoleDto("COURIER", 25));
+        list.add(new RoleDto("JOURNALIST", 40));
         list.add(new RoleDto("LIBRARIAN", 50));
         list.add(new RoleDto("ADMIN", 100));
         return list;
@@ -639,20 +660,20 @@ public class Generator {
 
 
     private LanguageDto getEngLang(){
-        return languageService.findByTag("US_en");
+        return languageService.findByTag(ENGLISH);
     }
 
     private LanguageDto getRuLang(){
-        return languageService.findByTag("RU_ru");
+        return languageService.findByTag(RUSSIAN);
     }
 
     private void generateLang(){
         LanguageDto dto = new LanguageDto();
         dto.setName("English");
-        dto.setTag("US_en");
+        dto.setTag(ENGLISH);
         languageService.save(dto);
         dto.setName("Руский");
-        dto.setTag("RU_ru");
+        dto.setTag(RUSSIAN);
         languageService.save(dto);
 
     }
