@@ -3,8 +3,10 @@ package by.bntu.fitr;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class ApiError {
+public class ApiError implements Serializable {
 
     private String message;
 

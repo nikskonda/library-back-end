@@ -92,7 +92,7 @@ public class Generator {
 
     private final static int ADMIN_PERCENT = 20;
     private final static int COUNT_COUNTRY = 10;
-    private final static int COUNT = 200;
+    private final static int COUNT = 50;
     private final static int MIN_ID = 1;
     private final static int MAX_ID = MIN_ID+COUNT-1;
 
@@ -101,13 +101,15 @@ public class Generator {
     private final static int MIN_ID_RU = MAX_ID+1;
     private final static int MAX_ID_RU = MIN_ID_RU+COUNT_RU-1;
 
-    private final static String LIBRARY_BACK_END_PATH = "c:/dp/library-back-end";
-//    private final static String LIBRARY_BACK_END_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end";
+//    private final static String LIBRARY_BACK_END_PATH = "c:/dp/library-back-end";
+    private final static String LIBRARY_BACK_END_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end";
+
     private final static String VOCABULARY_EN = "/controller/src/main/resources/vocabulary.txt";
     private final static String VOCABULARY_RU = "/controller/src/main/resources/vocabulary_ru.txt";
 
-    private final static String DATA_FOLDER = "c:/dp/files/uploads/";
-//    private final static String DATA_FOLDER = "media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads/";
+//    private final static String DATA_FOLDER = "c:/dp/files/uploads/";
+    private final static String DATA_FOLDER = "media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads/";
+
     private final static String BOOK_IMG = "book/img/";
     private final static String BOOK_TH = "book/th/";
     private final static String BOOK_PDF = "book/pdf/";
@@ -122,23 +124,23 @@ public class Generator {
 
     private String getRandomFile(String str){
         Random rand = new Random();
+//
+//        File dir = new File(DATA_FOLDER+str);
+//        File[] files = dir.listFiles();
+//
+//        File file = files[rand.nextInt(files.length)];
+//        return str+(file.getName());
 
-        File dir = new File(DATA_FOLDER+str);
-        File[] files = dir.listFiles();
-
-        File file = files[rand.nextInt(files.length)];
-        return str+(file.getName());
-
-//        if (str.equals(USER_AVA)){
-//            return str+(rand.nextInt(8)+1)+".png";
-//        }
-//        if (str.equals(BOOK_PDF)){
-//            return str+(rand.nextInt(7)+1)+".pdf";
-//        }
-//        if (str.equals(BOOK_EPUB)){
-//            return str+(rand.nextInt(6)+1)+".epub";
-//        }
-//        return str+(rand.nextInt(10)+1)+".jpg";
+        if (str.equals(USER_AVA)){
+            return str+(rand.nextInt(8)+1)+".png";
+        }
+        if (str.equals(BOOK_PDF)){
+            return str+(rand.nextInt(7)+1)+".pdf";
+        }
+        if (str.equals(BOOK_EPUB)){
+            return str+(rand.nextInt(6)+1)+".epub";
+        }
+        return str+(rand.nextInt(10)+1)+".jpg";
     }
 
     @Autowired
@@ -297,8 +299,8 @@ public class Generator {
     private void generateNews(int count, int minId, int maxId, LanguageDto languageDto){
         for (int i=0; i<count; i++){
             NewsDto newsDto = new NewsDto();
-            newsDto.setTitle(getRandomWord(generateInt(4, 14)));
-            String text = getRandomWord(generateInt(500, 1000));
+            newsDto.setTitle(getRandomSentence(generateInt(4, 14)));
+            String text = getRandomParagraphs(generateInt(4, 20));
             if (text.length()>=10000){
                 text = text.substring(0, 9999);
             }
@@ -535,7 +537,7 @@ public class Generator {
     private BookDto generateBook(int minId, int maxId, LanguageDto languageDto){
         BookDto bookDto = new BookDto();
         bookDto.setTitle(getRandomWord(generateInt(1,6)));
-        String text = getRandomWord(generateInt(200, 300));
+        String text = getRandomParagraphs(generateInt(2,6));
         if (text.length()>=3000){
             text = text.substring(0, 2999);
         }
@@ -545,7 +547,9 @@ public class Generator {
             bookDto.setTranslators(getRandomAuthorSet(minId, maxId, generateInt(1, 3)));
         }
         bookDto.setGenres(getRandomGenreSet(minId, maxId, generateInt(2, 5)));
-        bookDto.setAgeRestriction("+"+generateInt(14, 22));
+        if (generateInt(0, 10)>8) {
+            bookDto.setAgeRestriction(generateInt(14, 22)+"+");
+        }
         if (generateInt(0, 10)>6){
             bookDto.setImporter(getRandomOrg(minId, maxId));
         }
@@ -749,6 +753,31 @@ public class Generator {
     private String getRandomWordWithFirstUpper(){
         String str = getRandomWord();
         return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    private String getRandomParagraphs(int count){
+        StringBuilder stringBuilder = new StringBuilder(getRandomParagraph(generateInt(1, 10)));
+        for (int i=0; i<count-1; i++){
+            stringBuilder.append("\n").append(getRandomParagraph(generateInt(1, 10)));
+        }
+        return stringBuilder.toString();
+    }
+
+    private String getRandomParagraph(int countSentences){
+        StringBuilder stringBuilder = new StringBuilder(getRandomSentence(generateInt(3, 15)));
+        for (int i=0; i<countSentences-1; i++){
+            stringBuilder.append(" ").append(getRandomSentence(generateInt(3, 15)));
+        }
+        return stringBuilder.toString();
+    }
+
+    private String getRandomSentence(int words){
+        StringBuilder stringBuilder = new StringBuilder(getRandomWordWithFirstUpper());
+        for (int i=0; i<words-1; i++){
+            stringBuilder.append(" ").append(getRandomWord());
+        }
+        stringBuilder.append(".");
+        return stringBuilder.toString();
     }
 
     private String getRandomWord(List<String> words){

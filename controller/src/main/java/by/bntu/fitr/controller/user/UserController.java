@@ -67,7 +67,7 @@ public class UserController {
         return userMainDataService.save(user);
     }
 
-    @GetMapping("/data/")
+    @GetMapping("/data")
     @PreAuthorize("hasAuthority('USER')")
     public UserDataDto getUserData(Authentication authentication) {
         return userDataService.find(authentication.getName());
