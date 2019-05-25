@@ -1,6 +1,7 @@
 package by.bntu.fitr.service.user;
 
 import by.bntu.fitr.NotFoundException;
+import by.bntu.fitr.config.UserRole;
 import by.bntu.fitr.converter.user.UserDtoConverter;
 import by.bntu.fitr.dto.user.UserDto;
 import by.bntu.fitr.model.user.Role;
@@ -25,7 +26,7 @@ public class UserService {
     private static final String SERVICE_ERROR = "exception.service_error.%s.%s";
     private static final String NOT_FOUND_ERROR = "exception.not_found.user";
 
-    private static final String DEFAULT_ROLE = "USER";
+    private UserRole userRole;
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
@@ -34,7 +35,8 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, UserDtoConverter userDtoConverter, AddressService addressService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserRole userRole, UserRepository userRepository, RoleRepository roleRepository, UserDtoConverter userDtoConverter, AddressService addressService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRole = userRole;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userDtoConverter = userDtoConverter;
@@ -102,6 +104,10 @@ public class UserService {
         return (userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR)));
     }
 
+    public Set<Role> getAllRoleByUsername(String username){
+        return roleRepository.findAllByUsername(username);
+    }
+
     public Boolean isBanned(String username){
         return userRepository.isBaned(username);
     }
@@ -113,10 +119,10 @@ public class UserService {
     private void setDefaultRole(User user) {
         Role defaultUserRole;
         try {
-            defaultUserRole = findRole(DEFAULT_ROLE);
+            defaultUserRole = findRole(userRole.getUser());
 
         } catch (NotFoundException ex) {
-            defaultUserRole = roleRepository.save(new Role(DEFAULT_ROLE));
+            defaultUserRole = roleRepository.save(new Role(userRole.getUser()));
         }
         if (!user.getAuthorities().contains(defaultUserRole)) {
             user.getAuthorities().add(defaultUserRole);

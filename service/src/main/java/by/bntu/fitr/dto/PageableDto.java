@@ -10,7 +10,7 @@ public class PageableDto {
 
     @Min(value = 0, message="exception.validation.pageable.number.min")
     private Integer number;
-    @Min(value = 1)
+    @Min(value = 1, message="exception.validation.pageable.number.min")
     private Integer size;
     private String[] sort;
     private Sort.Direction direction;

@@ -4,6 +4,7 @@ import by.bntu.fitr.dto.user.util.AddressDto;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -17,9 +18,10 @@ public class UserDataDto {
 
     @Null(message = "exception.validation.user.id.null")
     private Long id;
-    @Null(message = "exception.validation.user.username.null")
+    @NotNull(message = "exception.validation.user.username.notNull")
     private String username;
 
+    @Null(message = "exception.validation.user.authorities.null")
     private List<RoleDto> authorities;
 
     @Size(min = 1, max = 255, message = "exception.validation.user.avatarUrl.size")

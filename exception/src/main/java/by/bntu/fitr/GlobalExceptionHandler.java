@@ -143,7 +143,7 @@ public class GlobalExceptionHandler {
         StringBuilder defLang = new StringBuilder();
         StringBuilder userLang = new StringBuilder();
         for (ObjectError error : bindingResult.getAllErrors()) {
-            if (error.getDefaultMessage().matches("^([a-z_]+\\.)+([a-z_]+)$")){
+            if (error.getDefaultMessage().matches("^([a-zA-z_]+\\.)+([a-zA-z_]+)$")){
                 defLang.append(messageSource.getMessage(error.getDefaultMessage(), null, Locale.getDefault()))
                         .append(' ');
                 userLang.append(messageSource.getMessage(error.getDefaultMessage(), null, locale))

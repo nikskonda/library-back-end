@@ -2,6 +2,7 @@ package by.bntu.fitr.service.user;
 
 import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.UnsupportedOperationException;
+import by.bntu.fitr.config.UserRole;
 import by.bntu.fitr.converter.user.RoleDtoConverter;
 import by.bntu.fitr.converter.user.UserMainDataDtoConverter;
 import by.bntu.fitr.dto.PageableDto;
@@ -39,7 +40,7 @@ public class UserMainDataService implements UserDetailsService {
     private static final Sort.Direction ROLE_SORTING_DIRECTION = Sort.Direction.ASC;
     private static final String[] ROLE_SORTING_FIELDS = {"priority", "authority"};
 
-    private static final String DEFAULT_ROLE = "USER";
+    private UserRole userRole;
 
     private UserMainDataRepository userRepository;
     private RoleRepository roleRepository;
@@ -48,7 +49,8 @@ public class UserMainDataService implements UserDetailsService {
     private RoleDtoConverter roleConverter;
 
     @Autowired
-    public UserMainDataService(UserMainDataRepository userRepository, RoleRepository roleRepository, UserMainDataDtoConverter converter, BCryptPasswordEncoder bCryptPasswordEncoder, RoleDtoConverter roleConverter) {
+    public UserMainDataService(UserRole userRole, UserMainDataRepository userRepository, RoleRepository roleRepository, UserMainDataDtoConverter converter, BCryptPasswordEncoder bCryptPasswordEncoder, RoleDtoConverter roleConverter) {
+        this.userRole = userRole;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.converter = converter;
@@ -188,10 +190,10 @@ public class UserMainDataService implements UserDetailsService {
     private void setDefaultRole(UserMainData user) {
         Role defaultUserRole;
         try {
-            defaultUserRole = findRole(DEFAULT_ROLE);
+            defaultUserRole = findRole(userRole.getUser());
 
         } catch (NotFoundException ex) {
-            defaultUserRole = roleRepository.save(new Role(DEFAULT_ROLE));
+            defaultUserRole = roleRepository.save(new Role(userRole.getUser()));
         }
         if (!user.getAuthorities().contains(defaultUserRole)) {
             user.getAuthorities().add(defaultUserRole);

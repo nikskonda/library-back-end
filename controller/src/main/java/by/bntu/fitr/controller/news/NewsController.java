@@ -52,6 +52,8 @@ public class NewsController {
         return newsCoverService.findByParameters(searchString, languageTag, pageableDto);
     }
 
+
+
     @PostMapping
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     @ResponseStatus(HttpStatus.CREATED)

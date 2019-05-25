@@ -2,8 +2,8 @@ package by.bntu.fitr.service;
 
 import by.bntu.fitr.FileNotFoundException;
 import by.bntu.fitr.FileStorageException;
+import by.bntu.fitr.config.FileStorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -21,16 +21,16 @@ import java.util.Random;
 @Service
 public class FileStorageService {
 
-    //    @Value("${file.upload-dir}")
-    @Value("/dp/files/uploads")
-//    private String FILE_UPLOAD_PATH = "/dp/files/uploads";
-    private String FILE_UPLOAD_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads";
+//    //    @Value("${file.upload-dir}")
+//    @Value("${file.upload-dir}")
+//    private String fileUploadPath;
+////    private String FILE_UPLOAD_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads";
 
     private final Path fileStorageLocation;
 
     @Autowired
-    public FileStorageService() {
-        this.fileStorageLocation = Paths.get(FILE_UPLOAD_PATH)
+    public FileStorageService(FileStorageProperties fileStorageProperties) {
+        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
 
         try {
