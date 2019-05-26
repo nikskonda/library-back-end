@@ -40,6 +40,7 @@ import by.bntu.fitr.service.user.util.CityService;
 import by.bntu.fitr.service.user.util.CountryService;
 import by.bntu.fitr.service.user.util.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -101,13 +102,18 @@ public class Generator {
     private final static int MIN_ID_RU = MAX_ID+1;
     private final static int MAX_ID_RU = MIN_ID_RU+COUNT_RU-1;
 
-    private final static String LIBRARY_BACK_END_PATH = "c:/dp/library-back-end";
+    @Value("${file.back}")
+    private String LIBRARY_BACK_END_PATH;
+//    private final static String LIBRARY_BACK_END_PATH = "c:/dp/library-back-end";
 //    private final static String LIBRARY_BACK_END_PATH = "/media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end";
 
     private final static String VOCABULARY_EN = "/controller/src/main/resources/vocabulary.txt";
     private final static String VOCABULARY_RU = "/controller/src/main/resources/vocabulary_ru.txt";
 
-    private final static String DATA_FOLDER = "c:/dp/files/uploads/";
+    @Value("${file.uploadDir}")
+    private String DATA_FOLDER;
+
+//    private final static String DATA_FOLDER = "c:/dp/files/uploads/";
 //    private final static String DATA_FOLDER = "media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads/";
 
     private final static String BOOK_IMG = "book/img/";
