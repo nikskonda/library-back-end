@@ -14,7 +14,7 @@ import java.util.Set;
 @Service
 public class PublishingHouseService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.publishing_house";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.publishingHouse";
 
     private PublishingHouseRepository repository;
     private PublishingHouseDtoConverter converter;

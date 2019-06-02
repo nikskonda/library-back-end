@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class GenreService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.genre";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.genre";
     private static final Integer COUNT_POPULAR_ENTITIES = 20;
 
     private GenreRepository repository;

@@ -23,7 +23,7 @@ import org.springframework.util.StringUtils;
 public class UserDataService {
 
     private static final String SERVICE_ERROR = "exception.service_error.%s.%s";
-    private static final String NOT_FOUND_ERROR = "exception.not_found.user";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.user";
 
     private UserRole userRole;
 

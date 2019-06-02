@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class CountryService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.country";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.country";
 
     private CountryRepository repository;
 

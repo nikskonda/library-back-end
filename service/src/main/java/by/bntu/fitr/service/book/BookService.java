@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class BookService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.book";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.book";
 
     private BookRepository repository;
     private BookDtoConverter converter;

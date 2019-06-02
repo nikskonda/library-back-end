@@ -55,7 +55,7 @@ public class NewsController {
 
 
     @PostMapping
-    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    @PreAuthorize("hasAuthority('JOURNALIST')")
     @ResponseStatus(HttpStatus.CREATED)
     public NewsDto create(@Valid @RequestBody NewsDto newsDto,
                           Authentication authentication) {
@@ -63,7 +63,7 @@ public class NewsController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    @PreAuthorize("hasAuthority('JOURNALIST')")
     public NewsDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
                           @Valid @RequestBody NewsDto newsDto,
                           Authentication authentication) {
@@ -73,7 +73,7 @@ public class NewsController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    @PreAuthorize("hasAuthority('JOURNALIST')")
     public void remove(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
         newsService.delete(id);
     }

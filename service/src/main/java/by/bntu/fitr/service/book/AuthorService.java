@@ -15,7 +15,7 @@ import java.util.Set;
 @Service
 public class AuthorService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.author";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.author";
 
     private AuthorRepository repository;
     private AuthorDtoConverter converter;

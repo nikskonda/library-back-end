@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class CityService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.city";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.city";
 
     private CityRepository repository;
     private CityDtoConverter converter;

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Service
 public class NewsService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.news";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.news";
 
     private NewsRepository repository;
     private NewsDtoConverter converter;

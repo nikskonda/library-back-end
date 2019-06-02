@@ -10,6 +10,7 @@ import by.bntu.fitr.service.user.UserDataService;
 import by.bntu.fitr.service.user.UserMainDataService;
 import by.bntu.fitr.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -74,13 +75,13 @@ public class UserController {
     }
 
     @GetMapping("/data/{userId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('OPERATOR')")
     public UserDataDto getUserData(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long userId) {
         return userDataService.find(userId);
     }
 
     @PutMapping("/data/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('USER') || hasAuthority('OPERATOR') || hasAuthority('ADMIN')")
     public UserDataDto updateData(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
                                   Authentication authentication,
                                   @Valid @RequestBody UserDataDto user) {
@@ -89,17 +90,17 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('OPERATOR') || hasAuthority('ADMIN')")
     public Page<UserDataDto> findByPageAndUsername(String searchString, PageableDto pageableDto) {
         return userDataService.findAllByUsername(searchString, pageableDto);
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public void remove(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
-        userService.delete(id);
-    }
+//    @DeleteMapping("/{id}")
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    @PreAuthorize("hasAuthority('ADMIN')")
+//    public void remove(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
+//        userService.delete(id);
+//    }
 
     @PostMapping("/ban")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -110,7 +111,7 @@ public class UserController {
 
     @PostMapping("/clear")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('OPERATOR') || hasAuthority('ADMIN')")
     public void clear(@RequestBody String username) {
         userDataService.clear(username);
     }

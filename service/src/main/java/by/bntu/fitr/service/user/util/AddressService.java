@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class AddressService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.address";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.address";
     private static final String ROLE_FOR_ADDRESS_EDIT = "ADMIN";
 
     private AddressRepository repository;

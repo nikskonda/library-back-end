@@ -1,6 +1,7 @@
 package by.bntu.fitr.service.user;
 
 import by.bntu.fitr.NotFoundException;
+import by.bntu.fitr.UnsupportedOperationException;
 import by.bntu.fitr.config.UserRole;
 import by.bntu.fitr.converter.user.UserDtoConverter;
 import by.bntu.fitr.dto.user.UserDto;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -24,7 +26,8 @@ import java.util.Set;
 public class UserService {
 
     private static final String SERVICE_ERROR = "exception.service_error.%s.%s";
-    private static final String NOT_FOUND_ERROR = "exception.not_found.user";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.user";
+    private static final String ALREADY_EXISTS_ERROR = "exception.user.alreadyExists";
 
     private UserRole userRole;
 
@@ -46,6 +49,11 @@ public class UserService {
 
     public UserDto save(UserDto userDto) {
         User user = this.userDtoConverter.convertFromDto(userDto);
+
+        if (StringUtils.isEmpty(user.getUsername()) || userRepository.existsByUsername(user.getUsername())) {
+            throw new UnsupportedOperationException(ALREADY_EXISTS_ERROR);
+        }
+
         if (user.getAuthorities() == null || user.getAuthorities().isEmpty()) {
             user.setAuthorities(new HashSet<>());
         } else {

@@ -41,14 +41,14 @@ public class CountryController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    @PreAuthorize("hasAuthority('OPERATOR')")
     @ResponseStatus(HttpStatus.CREATED)
     public CountryDto create(@Valid @RequestBody CountryDto countryDto) {
         return countryService.save(countryDto);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    @PreAuthorize("hasAuthority('OPERATOR')")
     public CountryDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
                           @Validated() @RequestBody CountryDto countryDto) {
         countryDto.setId(id);
@@ -57,7 +57,7 @@ public class CountryController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    @PreAuthorize("hasAuthority('OPERATOR')")
     public void remove(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
         countryService.delete(id);
     }

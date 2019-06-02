@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 public class BookmarkDto {
 
-    @Null(message = "exception.validation.bookmark.id.null")
+//    @Null(message = "exception.validation.bookmark.id.null")
     private Long id;
 
     @NotNull(message = "exception.validation.bookmark.page.notNull")

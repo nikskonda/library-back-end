@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 public class OrderStatusService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.order";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.order";
 
     private OrderStatusRepository repository;
     private OrderStatusDtoConverter converter;

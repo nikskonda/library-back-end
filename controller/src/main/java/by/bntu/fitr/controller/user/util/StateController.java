@@ -43,14 +43,14 @@ public class StateController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    @PreAuthorize("hasAuthority('OPERATOR')")
     @ResponseStatus(HttpStatus.CREATED)
     public StateDto create(@Valid @RequestBody StateDto stateDto) {
         return stateService.save(stateDto);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    @PreAuthorize("hasAuthority('OPERATOR')")
     public StateDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
                           @Validated() @RequestBody StateDto stateDto) {
         stateDto.setId(id);
@@ -59,7 +59,7 @@ public class StateController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    @PreAuthorize("hasAuthority('OPERATOR')")
     public void remove(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
         stateService.delete(id);
     }

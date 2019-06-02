@@ -15,7 +15,7 @@ import org.springframework.util.StringUtils;
 @Service
 public class NewsCoverService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.news";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.news";
 
     private NewsCoverRepository repository;
     private NewsCoverDtoConverter converter;

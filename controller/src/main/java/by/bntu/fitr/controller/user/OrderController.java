@@ -52,14 +52,14 @@ public class OrderController {
     }
 
     @PostMapping("/handOut")
-    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    @PreAuthorize("hasAuthority('OPERATOR')")
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto handOut(@Valid @RequestBody OrderDto orderDto) {
         return orderService.handBook(orderDto);
     }
 
     @PostMapping("/{id}/status")
-    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    @PreAuthorize("hasAuthority('USER') || hasAuthority('COURIER')")
     public OrderDto addStatus(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
                               @Valid @RequestBody OrderStatusDto orderStatusDto,
                               Authentication authentication) {
@@ -67,7 +67,7 @@ public class OrderController {
     }
 
     @PostMapping("/{id}/confirmed")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('OPERATOR')")
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto confirmed(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
                               Authentication authentication) {
@@ -83,7 +83,7 @@ public class OrderController {
     }
 
     @PostMapping("/{id}/returned")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('OPERATOR')")
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto returned(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
                              Authentication authentication) {
@@ -107,7 +107,7 @@ public class OrderController {
     }
 
     @GetMapping("/user/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('OPERATOR')")
     public Page<OrderDto> findByUserId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
                                        OrderStatus.Status status,
                                        PageableDto pageableDto) {
@@ -115,7 +115,7 @@ public class OrderController {
     }
 
     @GetMapping("/book/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('OPERATOR')")
     public Page<OrderDto> findByBookId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
                                        OrderStatus.Status status,
                                        PageableDto pageableDto) {
@@ -123,7 +123,7 @@ public class OrderController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('COURIER') || hasAuthority('OPERATOR')")
     public Page<OrderDto> findByPage(Authentication authentication, OrderStatus.Status status, PageableDto pageableDto) {
         return orderService.findAll(authentication.getName(), status, pageableDto);
     }

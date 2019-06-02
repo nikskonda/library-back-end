@@ -20,7 +20,7 @@ import java.util.Set;
 @Service
 public class BookCoverService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.book";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.book";
 
     private BookCoverRepository repository;
     private BookCoverDtoConverter converter;

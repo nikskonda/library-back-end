@@ -35,7 +35,7 @@ import java.util.Set;
 public class UserMainDataService implements UserDetailsService {
 
     private static final String SERVICE_ERROR = "exception.service_error.%s.%s";
-    private static final String NOT_FOUND_ERROR = "exception.not_found.user";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.user";
 
     private static final Sort.Direction ROLE_SORTING_DIRECTION = Sort.Direction.ASC;
     private static final String[] ROLE_SORTING_FIELDS = {"priority", "authority"};
@@ -87,7 +87,7 @@ public class UserMainDataService implements UserDetailsService {
             return converter.convertToDto(user);
 
         } else {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException(NOT_FOUND_ERROR);
         }
 //                .orElseThrow(() -> new ServiceException(String.format(SERVICE_ERROR, "creation", "user"))));
     }

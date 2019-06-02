@@ -18,7 +18,10 @@ dependencies {
     compile group: 'org.springframework.security', name: 'spring-security-core', version: '5.0.9.RELEASE'
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.0.Final'
     compile group: 'org.springframework', name: 'spring-tx', version: '5.0.9.RELEASE'
-
+// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
+// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.8'
     compile project(':model')
 
 //    testCompile('org.springframework.boot:spring-boot-starter-test')

@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
 
     private static final String INVALID_REQUEST_PARAMETERS = "exception.invalid_request_parameters";
     private static final String DURING_REQUEST_PROCESSING = "exception.during_request_processing";
-    private static final String ACCESS_DENIED = "exception.access_denied";
+    private static final String ACCESS_DENIED = "exception.accessDenied";
     private static final String HTTP_MESSAGE_NOT_READABLE = "exception.http_message_not_readable";
     private static final String NOT_SUPPORTED_MEDIA_TYPE = "exception.http_not_supported_media_type";
     private static final String DUPLICATE_ENTITY = "exception.duplicate_entity";

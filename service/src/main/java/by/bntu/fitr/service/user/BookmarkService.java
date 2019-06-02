@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Service
 public class BookmarkService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.book";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.book";
     private static final String ROLE_FOR_BOOKMARK_EDIT = "ADMIN";
 
     private BookmarkRepository repository;

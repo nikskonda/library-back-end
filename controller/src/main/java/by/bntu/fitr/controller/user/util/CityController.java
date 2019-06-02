@@ -45,14 +45,14 @@ public class CityController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    @PreAuthorize("hasAuthority('OPERATOR')")
     @ResponseStatus(HttpStatus.CREATED)
     public CityDto create(@Valid @RequestBody CityDto cityDto) {
         return cityService.save(cityDto);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    @PreAuthorize("hasAuthority('OPERATOR')")
     public CityDto update(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
                           @Validated() @RequestBody CityDto cityDto) {
         cityDto.setId(id);
@@ -61,7 +61,7 @@ public class CityController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    @PreAuthorize("hasAuthority('OPERATOR')")
     public void remove(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
         cityService.delete(id);
     }

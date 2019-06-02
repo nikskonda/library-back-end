@@ -43,7 +43,7 @@ public class BookDto {
     @Max(value = 100, message = "exception.validation.book.rating.max")
     private Integer rating;
 
-    @Min(value = 0, message = "exception.validation.book.year.min")
+    @Min(value = -1, message = "exception.validation.book.year.min")
     @Max(value = 2020, message = "exception.validation.book.year.max")
     private Integer year;
 
@@ -84,7 +84,7 @@ public class BookDto {
     @Min(value = 1, message = "exception.validation.book.count.min")
     private Integer count;
     public BookDto() {
-        this.rating = 0;
+        this.rating = 1;
         this.count = 1;
         this.year = -1;
     }

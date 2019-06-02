@@ -14,7 +14,7 @@ import java.util.Set;
 @Service
 public class LanguageService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.organization";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.organization";
 
     private LanguageRepository repository;
     private LanguageDtoConverter converter;

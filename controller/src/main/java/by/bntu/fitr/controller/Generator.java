@@ -93,7 +93,7 @@ public class Generator {
 
     private final static int ADMIN_PERCENT = 20;
     private final static int COUNT_COUNTRY = 10;
-    private final static int COUNT = 30;
+    private final static int COUNT = 500;
     private final static int MIN_ID = 1;
     private final static int MAX_ID = MIN_ID+COUNT-1;
 
@@ -130,23 +130,29 @@ public class Generator {
 
     private String getRandomFile(String str){
         Random rand = new Random();
+//
+//        File dir = new File(DATA_FOLDER+str);
+//        File[] files = dir.listFiles();
+//
+//        File file = files[rand.nextInt(files.length)];
+//        return str+(file.getName());
 
-        File dir = new File(DATA_FOLDER+str);
-        File[] files = dir.listFiles();
-
-        File file = files[rand.nextInt(files.length)];
-        return str+(file.getName());
-
-//        if (str.equals(USER_AVA)){
-//            return str+(rand.nextInt(8)+1)+".png";
-//        }
-//        if (str.equals(BOOK_PDF)){
-//            return str+(rand.nextInt(7)+1)+".pdf";
-//        }
-//        if (str.equals(BOOK_EPUB)){
-//            return str+(rand.nextInt(6)+1)+".epub";
-//        }
-//        return str+(rand.nextInt(10)+1)+".jpg";
+        if (str.equals(USER_AVA)){
+            return str+(rand.nextInt(20)+1)+".png";
+        }
+        if (str.equals(BOOK_PDF)){
+            return str+(rand.nextInt(20)+1)+".pdf";
+        }
+        if (str.equals(BOOK_EPUB)){
+            return str+(rand.nextInt(6)+1)+".epub";
+        }
+        if (str.equals(BOOK_IMG)){
+            return str+(rand.nextInt(22)+1)+".jpg";
+        }
+        if (str.equals(BOOK_TH)){
+            return str+(rand.nextInt(22)+1)+".jpg";
+        }
+        return str+(rand.nextInt(20)+1)+".jpg";
     }
 
     @Autowired
@@ -612,12 +618,12 @@ public class Generator {
         }
         bookDto.setPictureUrl(getRandomFile(BOOK_IMG));
         bookDto.setThumbnailUrl(bookDto.getPictureUrl().replace("img","th"));
-        if (generateInt(0, 10)>6){
+        if (generateInt(0, 10)>4){
             bookDto.setPdfUrl(getRandomFile(BOOK_PDF));
         }
-        if (generateInt(0, 10)>6){
-            bookDto.setEPubUrl(getRandomFile(BOOK_EPUB));
-        }
+//        if (generateInt(0, 10)>6){
+//            bookDto.setEPubUrl(getRandomFile(BOOK_EPUB));
+//        }
         if (generateInt(0, 10)>7){
             bookDto.setInLibraryUseOnly(true);
         }else {
@@ -657,7 +663,6 @@ public class Generator {
     }
 
     private void generateAuthors(int count){
-        List<String> strings = new ArrayList<>(words);
         for (int i=0; i<count; i++){
             AuthorDto authorDto = new AuthorDto();
             String str = getRandomWord();
@@ -666,8 +671,8 @@ public class Generator {
             authorDto.setLastName(str.substring(0, 1).toUpperCase() + str.substring(1));
             if (generateInt(0, 10)>5){
                 String text = getRandomWord(generateInt(150, 300));
-                if (text.length()>=3000){
-                    text = text.substring(0, 2999);
+                if (text.length()>=500){
+                    text = text.substring(0, 499);
                 }
                 authorDto.setDescription(text);
                 authorDto.setWikiLink(generateLink());

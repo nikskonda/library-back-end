@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class OrganizationService {
 
-    private static final String NOT_FOUND_ERROR = "exception.not_found.organization";
+    private static final String NOT_FOUND_ERROR = "exception.notFound.organization";
 
     private OrganizationRepository repository;
     private OrganizationDtoConverter converter;
