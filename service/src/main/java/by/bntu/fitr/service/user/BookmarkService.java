@@ -87,10 +87,7 @@ public class BookmarkService {
     }
 
     private boolean checkAccess(String username, User user) {
-        if (!username.equals(user.getUsername()) ||
-                !user
-                        .getAuthorities()
-                        .contains(userService.findRole(ROLE_FOR_BOOKMARK_EDIT))) {
+        if (!username.equals(user.getUsername())) {
             throw new AccessDeniedException();
         }
         return true;

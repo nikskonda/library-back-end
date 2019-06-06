@@ -39,7 +39,7 @@ public class BookSearchParameters {
 
     public void setSearchString(String searchString) {
         if (!StringUtils.isEmpty(searchString)) {
-            this.searchString = searchString;
+            this.searchString = searchString.toUpperCase();
         }
     }
 

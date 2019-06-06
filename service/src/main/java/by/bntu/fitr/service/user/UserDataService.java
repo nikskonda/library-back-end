@@ -63,7 +63,8 @@ public class UserDataService {
     }
 
     private boolean isAdminAccess(String username){
-        if (userService.getPersistence(username).getAuthorities().contains(userService.findRole(userRole.getAdmin()))){
+        if (userService.getPersistence(username).getAuthorities().contains(userService.findRole(userRole.getOperator())) ||
+                userService.getPersistence(username).getAuthorities().contains(userService.findRole(userRole.getAdmin()))){
             return true;
         } else {
             throw new AccessDeniedException();

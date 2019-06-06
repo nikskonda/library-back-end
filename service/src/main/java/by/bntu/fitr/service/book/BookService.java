@@ -40,6 +40,7 @@ public class BookService {
 
     public BookDto save(BookDto bookDto) {
         Book book = converter.convertFromDto(bookDto);
+        book.setTitle(book.getTitle().toUpperCase());
 //        if (book.getId()!=null && repository.existsById(book.getId())){
         book.setGenres(genreService.getPersistences(book.getGenres()));
         book.setAuthors(authorService.getPersistence(book.getAuthors()));

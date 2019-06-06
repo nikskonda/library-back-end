@@ -3,6 +3,7 @@ package by.bntu.fitr.service.user.order;
 import by.bntu.fitr.AccessDeniedException;
 import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.UnsupportedOperationException;
+import by.bntu.fitr.config.UserRole;
 import by.bntu.fitr.converter.user.OrderDetailDtoConverter;
 import by.bntu.fitr.converter.user.OrderDtoConverter;
 import by.bntu.fitr.converter.user.OrderStatusDtoConverter;
@@ -33,7 +34,6 @@ import java.util.Set;
 public class OrderService {
 
     private static final String NOT_FOUND_ERROR = "exception.notFound.order";
-    private static final String ROLE_FOR_ORDER_EDIT = "ADMIN";
 
     private OrderRepository repository;
     private OrderDtoConverter converter;
@@ -41,16 +41,17 @@ public class OrderService {
     private OrderDetailDtoConverter detailConverter;
     private UserService userService;
     private AddressService addressService;
-
+    private UserRole userRole;
 
     @Autowired
-    public OrderService(OrderRepository repository, OrderDtoConverter converter, OrderStatusDtoConverter statusConverter, OrderDetailDtoConverter detailConverter, UserService userService, AddressService addressService) {
+    public OrderService(OrderRepository repository, OrderDtoConverter converter, OrderStatusDtoConverter statusConverter, OrderDetailDtoConverter detailConverter, UserService userService, AddressService addressService, UserRole userRole) {
         this.repository = repository;
         this.converter = converter;
         this.statusConverter = statusConverter;
         this.detailConverter = detailConverter;
         this.userService = userService;
         this.addressService = addressService;
+        this.userRole = userRole;
     }
 
     public OrderDto save(OrderDto orderDto, String username) {
@@ -316,7 +317,7 @@ public class OrderService {
         return userService
                 .getPersistence(username)
                 .getAuthorities()
-                .contains(userService.findRole(ROLE_FOR_ORDER_EDIT));
+                .contains(userService.findRole(userRole.getOperator()));
     }
 
 
