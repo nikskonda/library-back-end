@@ -49,9 +49,6 @@ public class BookService {
         book.setImporter(organizationService.getPersistence(book.getImporter()));
         book.setProducer(organizationService.getPersistence(book.getProducer()));
         book.setPublishingHouse(publishingHouseService.getPersistences(book.getPublishingHouse()));
-        if (book.getYear()==null){
-            book.setYear(-1);
-        }
         if (book.getRating()==null){
             book.setRating(0);
         }

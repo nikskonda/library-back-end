@@ -34,16 +34,14 @@ public class UserService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private UserDtoConverter userDtoConverter;
-    private AddressService addressService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserService(UserRole userRole, UserRepository userRepository, RoleRepository roleRepository, UserDtoConverter userDtoConverter, AddressService addressService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserRole userRole, UserRepository userRepository, RoleRepository roleRepository, UserDtoConverter userDtoConverter, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRole = userRole;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userDtoConverter = userDtoConverter;
-        this.addressService = addressService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -75,7 +73,7 @@ public class UserService {
             user.setPassword(find(user.getUsername()).getPassword());
         }
 
-        addressService.setAddress(user, userDto.getRegistrationAddress());
+//        addressService.setAddress(user, userDto.getRegistrationAddress());
 
         user.setRegistrationDate(LocalDateTime.now());
         user = userRepository.save(user);

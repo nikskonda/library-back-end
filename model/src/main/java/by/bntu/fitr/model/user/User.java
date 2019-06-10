@@ -68,7 +68,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "user_email", length = 254)
     private String email;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "registration_address_id")
     private Address registrationAddress;
 

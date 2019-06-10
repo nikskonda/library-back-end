@@ -30,9 +30,8 @@ public class AddressController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('USER')")
-    public AddressDto find(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id,
-                           Authentication authentication) {
-        return addressService.find(id, authentication.getName());
+    public AddressDto find(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long id) {
+        return addressService.find(id);
     }
 
 //    @PostMapping
@@ -61,7 +60,7 @@ public class AddressController {
 //    }
 
     @GetMapping("/user/{userId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('OPERATOR') || hasAuthority('ADMIN')")
     public List<AddressDto> findByUserId(@PathVariable @Min(value = 1, message = "exception.validation.min.id") Long userId) {
         return addressService.findByUserId(userId);
     }

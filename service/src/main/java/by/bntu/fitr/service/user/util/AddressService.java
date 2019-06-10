@@ -3,38 +3,45 @@ package by.bntu.fitr.service.user.util;
 import by.bntu.fitr.AccessDeniedException;
 import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.UnsupportedOperationException;
+import by.bntu.fitr.config.UserRole;
 import by.bntu.fitr.converter.AbstractDtoConverter;
+import by.bntu.fitr.converter.user.util.AddressDtoConverter;
 import by.bntu.fitr.dto.user.util.AddressDto;
+import by.bntu.fitr.model.user.Role;
 import by.bntu.fitr.model.user.User;
 import by.bntu.fitr.model.user.util.Address;
 import by.bntu.fitr.repository.user.util.AddressRepository;
+import by.bntu.fitr.service.user.UserDataService;
 import by.bntu.fitr.service.user.UserMainDataService;
+import by.bntu.fitr.service.user.UserService;
 import by.bntu.fitr.service.user.order.UserOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class AddressService {
 
     private static final String NOT_FOUND_ERROR = "exception.notFound.address";
-    private static final String ROLE_FOR_ADDRESS_EDIT = "ADMIN";
 
     private AddressRepository repository;
-    private AbstractDtoConverter<Address, AddressDto> converter;
-    private UserMainDataService userService;
+    private AddressDtoConverter converter;
+    private UserService userService;
     private UserOrderService userOrderService;
+    private UserRole userRole;
 
     @Autowired
-    public AddressService(AddressRepository repository, AbstractDtoConverter<Address, AddressDto> converter, UserMainDataService userService, UserOrderService userOrderService) {
+    public AddressService(AddressRepository repository, AddressDtoConverter converter, UserService userService, UserOrderService userOrderService, UserRole userRole) {
         this.repository = repository;
         this.converter = converter;
         this.userService = userService;
         this.userOrderService = userOrderService;
+        this.userRole = userRole;
     }
-
 
     public AddressDto save(AddressDto addressDto){
         if (addressDto.getId()!=null){
@@ -53,7 +60,7 @@ public class AddressService {
         }
     }
 
-    public AddressDto find(Long id, String username){
+    public AddressDto find(Long id){
         Address address = getPersistence(id);
         return converter.convertToDto(address);
     }
@@ -64,7 +71,16 @@ public class AddressService {
     }
 
     public List<AddressDto> findByUsername(String username){
-        return converter.convertToDtoList(userOrderService.findAddressesByUsername(username));
+        List<Address> list = userOrderService.findAddressesByUsername(username);
+        Address registerAddress = userService.getPersistence(username).getRegistrationAddress();
+        if (registerAddress != null){
+            if (list.size()>0){
+                list.set(0, registerAddress);
+            } else {
+                list.add(registerAddress);
+            }
+        }
+        return converter.convertToDtoList(list);
     }
 
     public Address getPersistence(Long id){
@@ -77,10 +93,13 @@ public class AddressService {
     }
 
     private boolean isAdminAccess(String username) {
-        return userService
-                .getPersistence(username)
-                .getAuthorities()
-                .contains(userService.findRole(ROLE_FOR_ADDRESS_EDIT));
+        Collection<Role> roles = userService.getPersistence(username).getAuthorities();
+        for (Role r : roles){
+            if (userRole.getOperator().equals(r.getAuthority())){
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean checkAccess(String username, User addressUser) {

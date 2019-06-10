@@ -54,6 +54,8 @@ public class UserDataService {
                     userDataDto.setRegistrationAddress(addressService.save(userDataDto.getRegistrationAddress()));
                 }
                 user.setRegistrationAddress(addressService.getPersistence(userDataDto.getRegistrationAddress().getId()));
+                user.setFirstName(user.getRegistrationAddress().getFirstName());
+                user.setLastName(user.getRegistrationAddress().getLastName());
             }
             user = userRepository.save(user);
             return userDtoConverter.convertToDto(user);
@@ -94,12 +96,12 @@ public class UserDataService {
 
 
 
-    private UserData getPersistence(Long id) {
+    public UserData getPersistence(Long id) {
         System.out.println("UserDataService id=" + id);
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
     }
 
-    private UserData getPersistence(String username) {
+    public UserData getPersistence(String username) {
         System.out.println("UserDataService username=" + username);
         return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERROR));
     }

@@ -26,12 +26,12 @@ public class GlobalExceptionHandler {
 
     private static final Logger LOGGER = Logger.getLogger(GlobalExceptionHandler.class);
 
-    private static final String INVALID_REQUEST_PARAMETERS = "exception.invalid_request_parameters";
-    private static final String DURING_REQUEST_PROCESSING = "exception.during_request_processing";
+    private static final String INVALID_REQUEST_PARAMETERS = "exception.invalidRequestParameters";
+    private static final String DURING_REQUEST_PROCESSING = "exception.duringRequestProcessing";
     private static final String ACCESS_DENIED = "exception.accessDenied";
-    private static final String HTTP_MESSAGE_NOT_READABLE = "exception.http_message_not_readable";
-    private static final String NOT_SUPPORTED_MEDIA_TYPE = "exception.http_not_supported_media_type";
-    private static final String DUPLICATE_ENTITY = "exception.duplicate_entity";
+    private static final String HTTP_MESSAGE_NOT_READABLE = "exception.httpMessageNotReadable";
+    private static final String NOT_SUPPORTED_MEDIA_TYPE = "exception.httpNotSupportedMediaType";
+    private static final String DUPLICATE_ENTITY = "exception.duplicateEntity";
 
 
     private MessageSource messageSource;
@@ -151,9 +151,9 @@ public class GlobalExceptionHandler {
             } else {
 
                 if (error.getDefaultMessage().contains("NumberFormatException")){
-                    defLang.append(messageSource.getMessage("exception.validation.number_format", null, Locale.getDefault()))
+                    defLang.append(messageSource.getMessage("exception.validation.numberFormat", null, Locale.getDefault()))
                             .append(' ');
-                    userLang.append(messageSource.getMessage("exception.validation.number_format", null, locale))
+                    userLang.append(messageSource.getMessage("exception.validation.numberFormat", null, locale))
                             .append(' ');
                 } else {
                     defLang.append(error.getDefaultMessage())

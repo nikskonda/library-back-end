@@ -93,7 +93,7 @@ public class Generator {
 
     private final static int ADMIN_PERCENT = 20;
     private final static int COUNT_COUNTRY = 10;
-    private final static int COUNT = 500;
+    private final static int COUNT = 200;
     private final static int MIN_ID = 1;
     private final static int MAX_ID = MIN_ID+COUNT-1;
 
@@ -248,7 +248,7 @@ public class Generator {
             book.setId((long)generateInt(minId, maxId));
             bookmarkDto.setBook(book);
             bookmarkDto.setPage(generateInt(10, 1000));
-            bookmarkDto.setType(getBookmarkType());
+            bookmarkDto.setType(Bookmark.Type.PDF);
             PageableDto pageableDto =  new PageableDto();
             pageableDto.setNumber(0);
             pageableDto.setSize(count);
@@ -477,8 +477,11 @@ public class Generator {
                 userDto.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
             if (generateInt(0, 10)>3)
                 userDto.setAvatarUrl(getRandomFile(USER_AVA));
-            if (generateInt(0, 10)>5)
-                userDto.setRegistrationAddress(getRandomAddressDto(userDto.getFirstName(), userDto.getLastName(), minId, maxId));
+            if (generateInt(0, 10)>5){
+                AddressDto addressDto = getRandomAddressDto(userDto.getFirstName(), userDto.getLastName(), minId, maxId);
+                addressDto = addressService.save(addressDto);
+                userDto.setRegistrationAddress(addressDto);
+            }
             userService.save(userDto);
         }
     }
