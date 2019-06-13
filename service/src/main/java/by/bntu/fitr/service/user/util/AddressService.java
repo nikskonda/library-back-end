@@ -4,24 +4,21 @@ import by.bntu.fitr.AccessDeniedException;
 import by.bntu.fitr.NotFoundException;
 import by.bntu.fitr.UnsupportedOperationException;
 import by.bntu.fitr.config.UserRole;
-import by.bntu.fitr.converter.AbstractDtoConverter;
 import by.bntu.fitr.converter.user.util.AddressDtoConverter;
 import by.bntu.fitr.dto.user.util.AddressDto;
 import by.bntu.fitr.model.user.Role;
 import by.bntu.fitr.model.user.User;
 import by.bntu.fitr.model.user.util.Address;
 import by.bntu.fitr.repository.user.util.AddressRepository;
-import by.bntu.fitr.service.user.UserDataService;
-import by.bntu.fitr.service.user.UserMainDataService;
 import by.bntu.fitr.service.user.UserService;
 import by.bntu.fitr.service.user.order.UserOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class AddressService {
@@ -67,6 +64,7 @@ public class AddressService {
 
     public List<AddressDto> findByUserId(Long userId){
         String username = userService.getPersistence(userId).getUsername();
+
         return converter.convertToDtoList(userOrderService.findAddressesByUsername(username));
     }
 
@@ -74,13 +72,15 @@ public class AddressService {
         List<Address> list = userOrderService.findAddressesByUsername(username);
         Address registerAddress = userService.getPersistence(username).getRegistrationAddress();
         if (registerAddress != null){
-            if (list.size()>0){
-                list.set(0, registerAddress);
-            } else {
-                list.add(registerAddress);
+            list.add(0, registerAddress);
+        }
+        List<Address> listWithUnique = new ArrayList<>();
+        for (Address address : list){
+            if (!listWithUnique.contains(address)){
+                listWithUnique.add(address);
             }
         }
-        return converter.convertToDtoList(list);
+        return converter.convertToDtoList(listWithUnique);
     }
 
     public Address getPersistence(Long id){

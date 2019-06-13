@@ -20,7 +20,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Page<Order> findOrdersByAddressUserUsername(@Param("username") String username,
                                                 Pageable pageable);
 
-    List<Order> findOrdersByIdIn(List<Long> ids);
+    List<Order> findOrdersByIdIn(List<Long> ids, Pageable pageable);
 
     @Query(value =  "select order_id " +
                     "       from ( " +
@@ -33,7 +33,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                     "    order_status.order_id) as subselect " +
                     "where " +
                     "    subselect.order_status=:status " +
-                    "ORDER BY order_id ASC " +
+                    "ORDER BY order_id DESC " +
                     "LIMIT :limit OFFSET :offset ",
             nativeQuery = true)
     List<Long> findOrdersByStatus(@Param("status") Integer status,
@@ -67,7 +67,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "inner join order_detail od on subselect.order_id=od.order_id " +
             "WHERE " +
             "   subselect.order_status=:status AND od.book_id=:bookId " +
-            "ORDER BY subselect.order_id ASC " +
+            "ORDER BY subselect.order_id DESC " +
             "LIMIT :limit OFFSET :offset ",
             nativeQuery = true)
     List<Long> findOrdersByStatusAndBookId(@Param("status") Integer status,
@@ -110,7 +110,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "inner join userOrder uo on uo.order_id=subselect.order_id " +
             "WHERE " +
             "   subselect.order_status=:status AND uo.user_id=:userId" +
-            "ORDER BY subselect.order_id ASC " +
+            "ORDER BY subselect.order_id DESC " +
             "LIMIT :limit OFFSET :offset ",
             nativeQuery = true)
     List<Long> findOrdersByStatusAndUserId(@Param("status") Integer status,

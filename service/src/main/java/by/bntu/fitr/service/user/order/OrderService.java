@@ -106,9 +106,11 @@ public class OrderService {
             inLibraryReadBookOnlyOrder = this.saveOrderWithoutAddress(inLibraryReadBookOnlyOrder, orderDto.getUser().getUsername());
             addStatus(new OrderStatusDto(OrderStatus.Status.HANDED_OUT), inLibraryReadBookOnlyOrder.getId(), orderDto.getUser().getUsername());
         }
-        orderDto = this.saveOrderOnRegistrationAddress(orderDto, orderDto.getUser().getUsername());
-        addStatus(new OrderStatusDto(OrderStatus.Status.HANDED_OUT), orderDto.getId(), orderDto.getUser().getUsername());
-        return orderDto;
+        if (!orderDto.getDetails().isEmpty()){
+            orderDto = this.saveOrderOnRegistrationAddress(orderDto, orderDto.getUser().getUsername());
+            addStatus(new OrderStatusDto(OrderStatus.Status.HANDED_OUT), orderDto.getId(), orderDto.getUser().getUsername());
+        }
+        return null;
     }
 
     private boolean isContainInLibraryReadBookOnly(OrderDto order) {
@@ -230,67 +232,58 @@ public class OrderService {
     }
 
     public Page<OrderDto> findOrdersByUserId(Long userId, OrderStatus.Status status, PageableDto pageableDto) {
-        Pageable pageable;
+        Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
         if (status == null) {
-            pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
+
             Page<Order> page = repository.findOrdersByAddressUserId(userId, pageable);
             Page<OrderDto> pageDto = converter.convertToDtoPage(page);
             return pageDto;
         } else {
-            pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize());
             List<Long> idList = repository.findOrdersByStatusAndUserId(
                     OrderStatus.Status.valueOf(status.toString()).ordinal(),
                     userId,
                     pageableDto.getSize(),
                     pageableDto.getNumber() * pageableDto.getSize()
-//                    " order_id DESC "
             );
-            List<OrderDto> list = converter.convertToDtoList(repository.findOrdersByIdIn(idList));
+            List<OrderDto> list = converter.convertToDtoList(repository.findOrdersByIdIn(idList, pageable));
             Page<OrderDto> page = new PageImpl<>(list, pageable, repository.countOrdersByStatusAndUserId(OrderStatus.Status.valueOf(status.toString()).ordinal(), userId));
             return page;
         }
     }
 
     public Page<OrderDto> findOrdersByBookId(Long bookId, OrderStatus.Status status, PageableDto pageableDto) {
-        Pageable pageable;
+        Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
         if (status == null) {
-            pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
             Page<Order> page = repository.findByDetails_BookId(bookId, pageable);
             Page<OrderDto> pageDto = converter.convertToDtoPage(page);
             return pageDto;
         } else {
-            pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize());
             List<Long> idList = repository.findOrdersByStatusAndBookId(
                     OrderStatus.Status.valueOf(status.toString()).ordinal(),
                     bookId,
                     pageableDto.getSize(),
                     pageableDto.getNumber() * pageableDto.getSize()
-//                    " DESC "
             );
-            List<OrderDto> list = converter.convertToDtoList(repository.findOrdersByIdIn(idList));
+            List<OrderDto> list = converter.convertToDtoList(repository.findOrdersByIdIn(idList, pageable));
             Page<OrderDto> page = new PageImpl<>(list, pageable, repository.countOrdersByStatusAndBookId(OrderStatus.Status.valueOf(status.toString()).ordinal(), bookId));
             return page;
         }
     }
 
     public Page<OrderDto> findAll(String username, OrderStatus.Status status, PageableDto pageableDto) {
-        Pageable pageable;
+        Pageable pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
         if (status == null) {
-            pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize(), pageableDto.getDirection(), pageableDto.getSort());
             Page<Order> page = repository.findAll(pageable);
             Page<OrderDto> pageDto = converter.convertToDtoPage(page);
             return pageDto;
         } else {
-            pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize());
+//            pageable = PageRequest.of(pageableDto.getNumber(), pageableDto.getSize());
             List<Long> idList = repository.findOrdersByStatus(
                     OrderStatus.Status.valueOf(status.toString()).ordinal(),
                     pageableDto.getSize(),
                     pageableDto.getNumber() * pageableDto.getSize()
-//                    " order_id DESC "
             );
-
-
-            List<OrderDto> list = converter.convertToDtoList(repository.findOrdersByIdIn(idList));
+            List<OrderDto> list = converter.convertToDtoList(repository.findOrdersByIdIn(idList, pageable));
             Page<OrderDto> page = new PageImpl<>(list, pageable, repository.countOrdersByStatus(OrderStatus.Status.valueOf(status.toString()).ordinal()));
             return page;
         }

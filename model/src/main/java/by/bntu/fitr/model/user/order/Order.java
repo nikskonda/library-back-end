@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @DynamicUpdate
 public class Order extends BaseEntity {
 
-    @OneToOne(mappedBy = "order", fetch = FetchType.EAGER, cascade = {CascadeType.ALL })
+    @OneToOne(mappedBy = "order", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private UserOrder userOrder;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade={CascadeType.ALL})

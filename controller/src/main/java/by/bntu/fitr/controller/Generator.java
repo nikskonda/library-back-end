@@ -128,31 +128,33 @@ public class Generator {
     private final static String ENGLISH = "en-US";
     private final static String RUSSIAN = "ru-RU";
 
+    private String currentLanguage;
+
     private String getRandomFile(String str){
         Random rand = new Random();
-//
-//        File dir = new File(DATA_FOLDER+str);
-//        File[] files = dir.listFiles();
-//
-//        File file = files[rand.nextInt(files.length)];
-//        return str+(file.getName());
 
-        if (str.equals(USER_AVA)){
-            return str+(rand.nextInt(20)+1)+".png";
-        }
-        if (str.equals(BOOK_PDF)){
-            return str+(rand.nextInt(20)+1)+".pdf";
-        }
-        if (str.equals(BOOK_EPUB)){
-            return str+(rand.nextInt(6)+1)+".epub";
-        }
-        if (str.equals(BOOK_IMG)){
-            return str+(rand.nextInt(22)+1)+".jpg";
-        }
-        if (str.equals(BOOK_TH)){
-            return str+(rand.nextInt(22)+1)+".jpg";
-        }
-        return str+(rand.nextInt(20)+1)+".jpg";
+        File dir = new File(DATA_FOLDER+str);
+        File[] files = dir.listFiles();
+
+        File file = files[rand.nextInt(files.length)];
+        return str+(file.getName());
+
+//        if (str.equals(USER_AVA)){
+//            return str+(rand.nextInt(20)+1)+".png";
+//        }
+//        if (str.equals(BOOK_PDF)){
+//            return str+(rand.nextInt(20)+1)+".pdf";
+//        }
+//        if (str.equals(BOOK_EPUB)){
+//            return str+(rand.nextInt(6)+1)+".epub";
+//        }
+//        if (str.equals(BOOK_IMG)){
+//            return str+(rand.nextInt(22)+1)+".jpg";
+//        }
+//        if (str.equals(BOOK_TH)){
+//            return str+(rand.nextInt(22)+1)+".jpg";
+//        }
+//        return str+(rand.nextInt(20)+1)+".jpg";
     }
 
     @Autowired
@@ -179,9 +181,9 @@ public class Generator {
 
     @GetMapping
     public String generate() {
-
         generateLang();
 
+        currentLanguage = ENGLISH;
         initStrings(LIBRARY_BACK_END_PATH+VOCABULARY_EN, Pattern.compile("[A-Za-z]+"));
 
 
@@ -203,6 +205,7 @@ public class Generator {
         generateBookmark(COUNT, MIN_ID, MAX_ID);
 
 
+        currentLanguage = RUSSIAN;
         initStrings(LIBRARY_BACK_END_PATH+VOCABULARY_RU, Pattern.compile("[А-Яа-я]+"));
 
         generateAuthors(COUNT_RU);
@@ -230,15 +233,21 @@ public class Generator {
 //        }
         AddressDto address = new AddressDto();
         address.setCity(getRandomCity(minId, maxId));
-        address.setFirstName(firstName);
-        address.setLastName(lastName);
+        address.setFirstName(getRandomWordWithFirstUpper());
+        address.setLastName(getRandomWordWithFirstUpper());
         address.setPhone(generateInt(100000, 999999)+"");
         address.setPostalCode(generateInt(100000, 999999)+"");
-        address.setAddress(generateUrl());
+        address.setAddress(generateAddressPoint());
         return address;
 
     }
 
+    private String generateAddressPoint(){
+        if (RUSSIAN.equals(currentLanguage)){
+            return String.format("Улица %s, дом %d, квартира %d", getRandomWordWithFirstUpper(), generateInt(1, 100), generateInt(1, 100));
+        }
+        return String.format("Apartment %d, %d %s Street",generateInt(1, 100), generateInt(1, 100), getRandomWordWithFirstUpper());
+    }
 
 
     private void generateBookmark(int count, int minId, int maxId){
@@ -468,11 +477,11 @@ public class Generator {
             set.add(roleList.get(0));
             userDto.setAuthorities(set);
             str = getRandomWord();
-            if (generateInt(0, 10)>5)
-                userDto.setFirstName(str.substring(0, 1).toUpperCase() + str.substring(1));
-            str = getRandomWord();
-            if (generateInt(0, 10)>5)
-                userDto.setLastName(str.substring(0, 1).toUpperCase() + str.substring(1));
+//            if (generateInt(0, 10)>5)
+//                userDto.setFirstName(str.substring(0, 1).toUpperCase() + str.substring(1));
+//            str = getRandomWord();
+//            if (generateInt(0, 10)>5)
+//                userDto.setLastName(str.substring(0, 1).toUpperCase() + str.substring(1));
             if (generateInt(0, 10)>5)
                 userDto.setEmail(getRandomWord()+'@'+getRandomWord()+".com");
             if (generateInt(0, 10)>3)

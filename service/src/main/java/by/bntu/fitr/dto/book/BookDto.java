@@ -44,7 +44,7 @@ public class BookDto {
     private Integer rating;
 
     @Min(value = -1, message = "exception.validation.book.year.min")
-    @Max(value = 2020, message = "exception.validation.book.year.max")
+    @Max(value = 2030, message = "exception.validation.book.year.max")
     private Integer year;
 
 //    private Book.Status status; //в наличии, на руках, на складе

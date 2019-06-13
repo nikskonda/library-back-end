@@ -25,14 +25,14 @@ spring:
     allow-bean-definition-overriding: true
 file:
 
-  uploadDir:  /media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads
-  back: /media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end
+#  uploadDir:  /media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/files/uploads
+#  back: /media/nikskonda/20B6EA8BB6EA60B0/homeProject/dp/library-back-end
 
 #  uploadDir: d:/homeProject/dp/files/uploads/
 #  back: d:/homeProject/dp/library-back-end
 
-#  uploadDir: c:/dp/files/uploads/
-#  back: c:/dp/library-back-end
+  uploadDir: c:/dp/files/uploads/
+  back: c:/dp/library-back-end
 
 user.role:
   user: USER
